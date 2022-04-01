@@ -19,6 +19,7 @@ void *operator new(size_t size, MyHeap *heap, const char *text) {
 }
 
 int main() {
+
     MyHeap heap(123);
     std::unique_ptr<int>(new (&heap, "meow") int(0));
     std::cout << "hi" << std::endl;
