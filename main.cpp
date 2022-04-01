@@ -13,7 +13,7 @@ class MyHeap {
 
 void *operator new(size_t size, MyHeap *heap, const char *text) {
     heap->f();
-    std::cout << "text: " << text << std::endl;
+    std::cout << "textttt: " << text << std::endl;
     std::cout << "operator new() size: " << size << std::endl;
     return new int();
 }
