@@ -1,14 +1,15 @@
 #include <iostream>
 #include <memory>
 
-template <typename T> class X {
-  public:
-    void f() { static_cast<T *>(this)->f(); }
+template <typename T>
+class X {
+public:
+    void f() { static_cast<T*>(this)->f(); }
 };
 
 class A : public X<A> {
-  public:
-    void f() { std::cout << "hi" << std::endl; }
+public:
+    void f() { std::cout << "hiiii" << std::endl; }
 };
 
 int main() {
