@@ -13,7 +13,7 @@ public:
 class A : public X<A> {
 public:
     void f() {
-        std::cout << "hiiii" << std::endl;
+        std::cout << "hiiii " << std::endl;
     }
 };
 
@@ -29,6 +29,10 @@ public:
 
     void f(int j) const {
         std::cout << "f : " << i << " j: " << j << std::endl;
+    }
+
+    void ff() const {
+        std::cout << "ff : " << i << std::endl;
     }
 
     void operator()() {
@@ -66,6 +70,23 @@ int main() {
     fn();
     std::function<void(int)> fn1 = y;
     fn1(1);
+
+    auto py = std::make_unique<Y>(777);
+    //    std::function<void(std::unique_ptr<Y>)> fn100 = &Y::ff;
+    std::function<void(Y*)> fn100 = &Y::ff;
+    fn100(py.get());
+    std::function<void(Y&)> fn101 = &Y::ff;
+    fn101(*py);
+
+    std::function<void(Y*)> fn10 = &Y::ff;
+    fn10(&y);
+
+    std::function<void(const Y&)> fn11 = &Y::ff;
+    fn11(y);
+    fn11(123555);
+    auto memfn11 = std::mem_fn(&Y::ff);
+    memfn11(y);
+    memfn11(Y(5555));
 
     std::function<void(const Y&, int)> fn2 = &Y::f;
     fn2(y, 1);
