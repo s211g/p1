@@ -1,88 +1,48 @@
 {
-    "tasks": [
-        {
-            "type": "cppbuild",
-            "label": "C/C++: g++.exe сборка активного файла",
-            "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
-            "args": [
-                "-fdiagnostics-color=always",
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
-            ],
-            "options": {
-                "cwd": "${fileDirname}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": "build",
-            "detail": "Задача создана отладчиком."
-        },
-        {
-            "type": "cppbuild",
-            "label": "C/C++: g++.exe сборка активного файла",
-            "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
-            "args": [
-                "-fdiagnostics-color=always",
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
-            ],
-            "options": {
-                "cwd": "${fileDirname}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "detail": "компилятор: C:\\msys64\\mingw64\\bin\\g++.exe"
-        },
-        {
-            "type": "cppbuild",
-            "label": "C/C++: cpp.exe сборка активного файла",
-            "command": "C:\\msys64\\mingw64\\bin\\cpp.exe",
-            "args": [
-                "-fdiagnostics-color=always",
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
-            ],
-            "options": {
-                "cwd": "${fileDirname}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": "build",
-            "detail": "компилятор: C:\\msys64\\mingw64\\bin\\cpp.exe"
-        },
-        {
-            "type": "cppbuild",
-            "label": "C/C++: gcc.exe сборка активного файла",
-            "command": "C:\\msys64\\mingw64\\bin\\gcc.exe",
-            "args": [
-                "-fdiagnostics-color=always",
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
-            ],
-            "options": {
-                "cwd": "${fileDirname}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": "build",
-            "detail": "компилятор: C:\\msys64\\mingw64\\bin\\gcc.exe"
-        }
-    ],
-    "version": "2.0.0"
+     "tasks": [
+          {
+               "type": "cppbuild",
+               "label": "C/C++: cpp.exe сборка",
+               "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
+               "args": [
+                    "-fdiagnostics-color=always",
+                    "-g",
+                    "${file}",
+                    "-o",
+                    "${fileDirname}\\${fileBasenameNoExtension}.exe"
+               ],
+               "options": {
+                    "cwd": "${fileDirname}"
+               },
+               "problemMatcher": [
+                    "$gcc"
+               ],
+               "group": {
+                    "kind": "build",
+                    "isDefault": true
+               },
+               "detail": "компилятор: C:\\msys64\\mingw64\\bin\\g++.exe"
+          },
+          {
+               "type": "cppbuild",
+               "label": "C/C++: clang-cpp.exe сборка активного файла",
+               "command": "C:\\Program Files\\LLVM\\bin\\clang-cpp.exe",
+               "args": [
+                    "-fdiagnostics-color=always",
+                    "-g",
+                    "${file}",
+                    "-o",
+                    "${fileDirname}\\${fileBasenameNoExtension}.exe"
+               ],
+               "options": {
+                    "cwd": "${fileDirname}"
+               },
+               "problemMatcher": [
+                    "$gcc"
+               ],
+               "group": "build",
+               "detail": "Задача создана отладчиком."
+          }
+     ],
+     "version": "2.0.0"
 }
