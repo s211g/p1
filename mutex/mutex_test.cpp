@@ -1,18 +1,13 @@
 
 #include <iostream>
 #include <mutex>
+#include <shared_mutex>
 #include <thread>
 #include <functional>
 
 #include "mutex_test.hpp"
 
 namespace mutex_test {
-    void test() {
-        std::cout << "mutex_test()" << std::endl;
-        //test_mutex();
-        //test_recursive_mutex();
-        test_timed_mutex();
-    }
 
     void test_mutex() {
         std::cout << "test std::mutex" << std::endl;
@@ -28,7 +23,7 @@ namespace mutex_test {
                     std::cout << "thread: " << name << " end" << std::endl;
                 }
 
-                // ???????????
+                // ????????????
                 std::this_thread::sleep_for(std::chrono::milliseconds(20));
             }
         };
@@ -153,5 +148,116 @@ namespace mutex_test {
             th2.join();
             th3.join();
         }
+    }
+
+
+    void test_shared_mutex() {
+        std::cout << "test std::shared_mutex" << std::endl;
+
+        auto th_fn = [](std::string name, std::shared_mutex& mtx, int c) {
+            std::cout << "Start thread " << name << std::endl
+                      << std::flush;
+            while (c--) {
+                std::cout << "thread " << name << " try lock ..." << std::endl;
+                {
+                    std::lock_guard lock(mtx);
+                    std::cout << "--------------- thread " << name << " lock, c = " << c << std::endl
+                              << std::flush;
+                    std::this_thread::sleep_for(std::chrono::seconds(1));
+                }
+                std::cout << "----------------- thread " << name << " unlock" << std::endl;
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+            std::cout << "Stop thread " << name << std::endl
+                      << std::flush;
+        };
+
+        auto th_fn_shared_lock = [](std::string name, std::shared_mutex& mtx, int interval_ms, bool& terminate) {
+            std::cout << "Start thread " << name << std::endl
+                      << std::flush;
+            while (!terminate) {
+                std::cout << "thread " << name << " try shared lock ..." << std::endl;
+                {
+                    std::shared_lock lock(mtx);
+                    std::cout << "thread " << name << " shared lock" << std::endl
+                              << std::flush;
+                    std::this_thread::sleep_for(std::chrono::milliseconds(interval_ms));
+                }
+                std::cout << "thread " << name << "shared unlock" << std::endl;
+            }
+            std::cout << "Stop thread " << name << std::endl
+                      << std::flush;
+        };
+
+        bool terminate = false;
+
+        std::shared_mutex mtx;
+        std::thread th1 = std::thread(th_fn, "1", std::ref(mtx), 5);
+        std::thread th2 = std::thread(th_fn_shared_lock, "2", std::ref(mtx), 200, std::ref(terminate));
+        std::thread th3 = std::thread(th_fn_shared_lock, "3", std::ref(mtx), 50, std::ref(terminate));
+
+        th1.join();
+        terminate = true;
+        th2.join();
+        th3.join();
+    }
+
+    void test_multiple_lock() {
+        auto th_fn = [](std::string name, std::mutex& mtx, int c, int lock_ms, int unlock_ms) {
+            std::cout << "Start thread " << name << std::endl
+                      << std::flush;
+            while (c--) {
+                std::cout << "thread " << name << " try lock ..." << std::endl;
+                {
+                    std::lock_guard lock(mtx);
+                    std::cout << "thread " << name << " lock, c = " << c << std::endl
+                              << std::flush;
+                    std::this_thread::sleep_for(std::chrono::milliseconds(lock_ms));
+                }
+                std::cout << "thread " << name << " unlock" << std::endl;
+                std::this_thread::sleep_for(std::chrono::milliseconds(unlock_ms));
+            }
+            std::cout << "Stop thread " << name << std::endl
+                      << std::flush;
+        };
+
+        auto th_fn_multiple_lock = [](std::string name, std::mutex& mtx1, std::mutex& mtx2, int lock_ms, int unlock_ms, bool& terminate) {
+            std::cout << "Start thread " << name << std::endl
+                      << std::flush;
+            while (!terminate) {
+                std::cout << "thread " << name << " try lock ..." << std::endl;
+                {
+                    // equivalent approach 1:
+                    // std::lock(mtx1, mtx2);
+                    // std::adopt_lock - calling thread already has ownership of the mutex
+                    //std::lock_guard lock1(mtx1, std::adopt_lock);
+                    //std::lock_guard lock2(mtx2, std::adopt_lock);
+
+                    // equivalent approach 2:
+                    // defer_lock -	do not acquire ownership of the mutex
+                    std::unique_lock lock1{mtx1, std::defer_lock};
+                    std::unique_lock lock2{mtx2, std::defer_lock};
+                    std::lock(lock1, lock2);
+
+                    std::this_thread::sleep_for(std::chrono::milliseconds(lock_ms));
+                }
+                std::cout << "thread " << name << " unlock" << std::endl;
+                std::this_thread::sleep_for(std::chrono::milliseconds(unlock_ms));
+            }
+            std::cout << "Stop thread " << name << std::endl
+                      << std::flush;
+        };
+
+        bool terminate = false;
+        std::mutex mtx1;
+        std::mutex mtx2;
+        std::thread th1 = std::thread(th_fn, "1", std::ref(mtx1), 100, 100, 100);
+        std::thread th2 = std::thread(th_fn, "2", std::ref(mtx2), 100, 100, 100);
+        std::thread th3 = std::thread(th_fn_multiple_lock, " ------------ 3", std::ref(mtx1), std::ref(mtx2), 2000, 2000, std::ref(terminate));
+
+        th1.join();
+        terminate = true;
+        th2.join();
+        th3.join();
     }
 }
