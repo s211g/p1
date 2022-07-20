@@ -213,8 +213,8 @@ namespace mutex_test {
                     std::cout << "thread " << name << " lock, c = " << c << std::endl
                               << std::flush;
                     std::this_thread::sleep_for(std::chrono::milliseconds(lock_ms));
+                    std::cout << "thread " << name << " unlock" << std::endl;
                 }
-                std::cout << "thread " << name << " unlock" << std::endl;
                 std::this_thread::sleep_for(std::chrono::milliseconds(unlock_ms));
             }
             std::cout << "Stop thread " << name << std::endl
@@ -238,10 +238,11 @@ namespace mutex_test {
                     std::unique_lock lock1{mtx1, std::defer_lock};
                     std::unique_lock lock2{mtx2, std::defer_lock};
                     std::lock(lock1, lock2);
+                    std::cout << "thread " << name << " lock" << std::endl;
 
                     std::this_thread::sleep_for(std::chrono::milliseconds(lock_ms));
+                    std::cout << "thread " << name << " unlock" << std::endl;
                 }
-                std::cout << "thread " << name << " unlock" << std::endl;
                 std::this_thread::sleep_for(std::chrono::milliseconds(unlock_ms));
             }
             std::cout << "Stop thread " << name << std::endl
@@ -251,8 +252,8 @@ namespace mutex_test {
         bool terminate = false;
         std::mutex mtx1;
         std::mutex mtx2;
-        std::thread th1 = std::thread(th_fn, "1", std::ref(mtx1), 100, 100, 100);
-        std::thread th2 = std::thread(th_fn, "2", std::ref(mtx2), 100, 100, 100);
+        std::thread th1 = std::thread(th_fn, "1", std::ref(mtx1), 20, 100, 100);
+        std::thread th2 = std::thread(th_fn, "2", std::ref(mtx2), 20, 100, 100);
         std::thread th3 = std::thread(th_fn_multiple_lock, " ------------ 3", std::ref(mtx1), std::ref(mtx2), 2000, 2000, std::ref(terminate));
 
         th1.join();

@@ -3,6 +3,7 @@
 #include <functional>
 
 #include "mutex_test.hpp"
+#include "smartpointer_test.hpp"
 
 void f() {
     std::cout << "f() NULL" << std::endl;
@@ -30,5 +31,6 @@ int test_template_var_arg() {
 
 int main() {
     mutex_test::test();
+    smartpointer_test::test();
     return 0;
 }

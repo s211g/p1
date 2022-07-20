@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 namespace mutex_test {
 
     void test_mutex();
@@ -9,7 +11,7 @@ namespace mutex_test {
     void test_multiple_lock();
 
     inline void test() {
-        std::cout << "mutex_test()" << std::endl;
+        std::cout << "mutex tests" << std::endl;
         //test_mutex();
         //test_recursive_mutex();
         //test_timed_mutex();

@@ -3,7 +3,8 @@ project(xxx VERSION 0.1.0)
 
 include_directories (
     ${CMAKE_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/mutex
+    ${CMAKE_SOURCE_DIR}/Mutex
+    ${CMAKE_SOURCE_DIR}/SmartPointer
     )
 
 include(CTest)
@@ -11,7 +12,8 @@ enable_testing()
 
 set(src 
     main.cpp
-    ${CMAKE_SOURCE_DIR}/mutex/mutex_test.cpp
+    ${CMAKE_SOURCE_DIR}/Mutex/mutex_test.cpp
+    ${CMAKE_SOURCE_DIR}/SmartPointer/smartpointer_test.cpp
 )
 
 add_executable(xxx ${src})
