@@ -5,6 +5,7 @@
 #include "mutex_test.hpp"
 #include "smartpointer_test.hpp"
 #include "scopeguard_test.hpp"
+#include "thread_test.hpp"
 
 void f() {
     std::cout << "f() NULL" << std::endl;
@@ -33,7 +34,8 @@ int test_template_var_arg() {
 int main() {
     //mutex_test::test();
     //smartpointer_test::test();
-    scopeguard_test::test();
+    //scopeguard_test::test();
+    thread_test::test();
 
     return 0;
 }
