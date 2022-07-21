@@ -17,8 +17,6 @@ namespace smartpointer_test {
             std::cout << "~A(" << i << ")" << std::endl;
         }
         void f() { std::cout << "f = " << i << std::endl; }
-
-    private:
         int i;
     };
 
@@ -92,5 +90,52 @@ namespace smartpointer_test {
             auto s3 = w0.lock();
             std::cout << "s3 = " << (s3 ? s3.get() : nullptr) << std::endl;
         }
+    }
+
+
+    class StorageA {
+    public:
+        StorageA() :
+            m_counter(0){};
+        ~StorageA() = default;
+
+        std::unique_ptr<A, StorageA&> New() {
+            if (m_va.empty()) {
+                std::cout << "A new a.i = " << m_counter << std::endl;
+                return std::unique_ptr<A, StorageA&>(new A(m_counter++), *this);
+            }
+
+            A* a = m_va.back();
+            m_va.pop_back();
+            std::cout << "A new from vector a.i = " << a->i << " m_va.size = " << m_va.size() << std::endl;
+            return std::unique_ptr<A, StorageA&>(a, *this);
+        }
+
+        void operator()(A* a) {
+            m_va.push_back(a);
+            std::cout << "A delete a.i = " << a->i << " m_va.size = " << m_va.size() << std::endl;
+        }
+
+    private:
+        uint32_t m_counter;
+        std::vector<A*> m_va;
+    };
+
+    void test_deleter() {
+        std::cout << "test deleter" << std::endl;
+        StorageA sa;
+
+        auto ua0 = sa.New();
+        auto ua1 = sa.New();
+        auto ua2 = sa.New();
+
+        ua0.reset();
+        ua1.reset();
+
+        auto ua3 = sa.New();
+        auto ua4 = sa.New();
+        auto ua5 = sa.New();
+
+        std::cout << "----------------" << std::endl;
     }
 }

@@ -5,6 +5,7 @@ include_directories (
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/Mutex
     ${CMAKE_SOURCE_DIR}/SmartPointer
+    ${CMAKE_SOURCE_DIR}/ScopeGuard
     )
 
 include(CTest)
@@ -14,6 +15,7 @@ set(src
     main.cpp
     ${CMAKE_SOURCE_DIR}/Mutex/mutex_test.cpp
     ${CMAKE_SOURCE_DIR}/SmartPointer/smartpointer_test.cpp
+    ${CMAKE_SOURCE_DIR}/ScopeGuard/scopeguard_test.cpp
 )
 
 add_executable(xxx ${src})
