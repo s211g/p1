@@ -6,7 +6,8 @@
 	],
 	"settings": {
 		"files.associations": {
-			"mutex": "cpp"
+			"mutex": "cpp",
+			"functional": "cpp"
 		}
 	}
 }
