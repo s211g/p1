@@ -7,6 +7,7 @@ include_directories (
     ${CMAKE_SOURCE_DIR}/SmartPointer
     ${CMAKE_SOURCE_DIR}/ScopeGuard
     ${CMAKE_SOURCE_DIR}/Thread    
+    ${CMAKE_SOURCE_DIR}/VariableArgumentsTemplate
     )
 
 include(CTest)
@@ -19,6 +20,7 @@ set(src
     ${CMAKE_SOURCE_DIR}/ScopeGuard/scopeguard_test.cpp
     ${CMAKE_SOURCE_DIR}/Thread/thread_test.cpp
     ${CMAKE_SOURCE_DIR}/Thread/ThreadsPool.cpp
+    ${CMAKE_SOURCE_DIR}/VariableArgumentsTemplate/vatemplate_test.cpp
     )
 
 add_executable(xxx ${src})

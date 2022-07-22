@@ -9,6 +9,11 @@
 #include "ThreadsPool.hpp"
 
 namespace thread_test {
+    void test1() {
+        int const ht = std::thread::hardware_concurrency();
+        std::cout << "hardware_concurrency = " << ht << std::endl;
+    }
+
     void test_thread_pool() {
         std::cout << "test thread pool" << std::endl;
 
