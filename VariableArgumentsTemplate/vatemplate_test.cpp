@@ -52,4 +52,102 @@ namespace vatemplate_test {
         std::cout << "s: " << s2 << " int: " << i2 << " long: " << l2 << std::endl
                   << std::endl;
     }
+
+    void test_overload_set() {
+        typedef int intt;
+        std::cout << "test overload set" << std::endl;
+        auto os = overload(
+
+            [](int* i) { std::cout << "int* " << *i << std::endl; },
+            [](long* i) { std::cout << "long* " << *i << std::endl; },
+            [](long long* i) { std::cout << "long long* " << *i << std::endl; },
+            [](float* i) { std::cout << "float* " << *i << std::endl; },
+            [](double* i) { std::cout << "double* " << *i << std::endl; },
+            //[](intt* i) { std::cout << "intt* " << *i << std::endl; },
+
+            [](double i) { std::cout << "double " << i << std::endl; },
+            [](float i) { std::cout << "float " << i << std::endl; },
+            //[](intt i) { std::cout << "intt " << i << std::endl; },
+            [](int i) { std::cout << "int " << i << std::endl; },
+            [](long i) { std::cout << "long " << i << std::endl; },
+            [](long long i) { std::cout << "long long " << i << std::endl; }
+
+
+        );
+
+        os(10);
+        os((long long)11);
+
+        float f      = 1.2;
+        double d     = 2.3;
+        int i        = 11;
+        long l       = 12;
+        long long ll = 22;
+        intt ii      = 33;
+
+        std::cout << std::endl;
+        os(f);
+        os(d);
+        os(i);
+        os(ii);
+        os(l);
+        os(ll);
+
+        std::cout << std::endl;
+        os(&f);
+        os(&d);
+        os(&i);
+        os(&ii);
+        os(&l);
+        os(&ll);
+    }
+
+    void test_overload_set17() {
+        typedef int intt;
+        std::cout << "test overload set17" << std::endl;
+        auto os = overload17(
+
+            [](int* i) { std::cout << "int* " << *i << std::endl; },
+            [](long* i) { std::cout << "long* " << *i << std::endl; },
+            [](long long* i) { std::cout << "long long* " << *i << std::endl; },
+            [](float* i) { std::cout << "float* " << *i << std::endl; },
+            [](double* i) { std::cout << "double* " << *i << std::endl; },
+            //[](intt* i) { std::cout << "intt* " << *i << std::endl; },
+
+            [](double i) { std::cout << "double " << i << std::endl; },
+            [](float i) { std::cout << "float " << i << std::endl; },
+            //[](intt i) { std::cout << "intt " << i << std::endl; },
+            [](int i) { std::cout << "int " << i << std::endl; },
+            [](long i) { std::cout << "long " << i << std::endl; },
+            [](long long i) { std::cout << "long long " << i << std::endl; }
+
+
+        );
+
+        os(10);
+        os((long long)11);
+
+        float f      = 1.2;
+        double d     = 2.3;
+        int i        = 3;
+        intt ii      = 4;
+        long l       = 5;
+        long long ll = 6;
+
+        std::cout << std::endl;
+        os(f);
+        os(d);
+        os(i);
+        os(ii);
+        os(l);
+        os(ll);
+
+        std::cout << std::endl;
+        os(&f);
+        os(&d);
+        os(&i);
+        os(&ii);
+        os(&l);
+        os(&ll);
+    }
 }
