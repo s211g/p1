@@ -72,7 +72,6 @@ namespace vatemplate_test {
             [](long i) { std::cout << "long " << i << std::endl; },
             [](long long i) { std::cout << "long long " << i << std::endl; }
 
-
         );
 
         os(10);
@@ -150,4 +149,98 @@ namespace vatemplate_test {
         os(&l);
         os(&ll);
     }
+
+    void test_forward() {
+        std::cout << "test forward" << std::endl;
+
+        int i = 0;
+        A a(i);
+        A& ra        = a;
+        const A& cra = a;
+
+        std::cout << "A(forward) ----------------------" << std::endl;
+
+        std::cout << "1" << std::endl;
+        A a0(std::forward<A>(std::move(a)));
+        std::cout << "2" << std::endl;
+        A a00(std::forward<A>(a));
+        std::cout << "3" << std::endl;
+        A a000(std::forward<A>(ra));
+
+        std::cout << "A() = forward ----------------------" << std::endl;
+
+        std::cout << "1" << std::endl;
+        A a21 = std::forward<A>(a);
+        std::cout << "2" << std::endl;
+        A a22 = std::forward<A>(ra);
+        std::cout << "3" << std::endl;
+        A a23 = std::forward<A>(std::move(a));
+        std::cout << "4" << std::endl;
+
+        std::cout << "A(...) ----------------------" << std::endl;
+
+        std::cout << "1" << std::endl;
+        A a1(a);
+        std::cout << "2" << std::endl;
+        A a2(ra);
+        std::cout << "3" << std::endl;
+        A a3(std::move(a));
+        std::cout << "4" << std::endl;
+        A a4 = a;
+        std::cout << "5" << std::endl;
+        A a5 = std::move(a);
+
+
+        std::cout << "f(...) ----------------------" << std::endl;
+
+        std::cout << "1" << std::endl;
+        f(a);
+        std::cout << "2" << std::endl;
+        f(ra);
+        std::cout << "3" << std::endl;
+        f(A());
+        std::cout << "4" << std::endl;
+        f(std::move(a));
+
+        std::cout << "f2(...) ----------------------" << std::endl;
+
+        std::cout << "1" << std::endl;
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! call f2< A& >(A&)
+        a.print();
+        f2(a);
+        std::cout << "2" << std::endl;
+        f2(ra);
+        std::cout << "3" << std::endl;
+        f2(cra);
+        std::cout << "4" << std::endl;
+        f2(A());
+        std::cout << "5" << std::endl;
+        f2(std::move(a));
+        std::cout << "6" << std::endl;
+        auto f3 = [](A& a) {
+            f2(a);
+        };
+        f3(a);
+
+        std::cout << "f2(int) ----------------------" << std::endl;
+        std::cout << "1" << std::endl;
+        f4(i);
+        std::cout << "2" << std::endl;
+        f4(std::move(i));
+        std::cout << "3" << std::endl;
+        f4(a);
+        std::cout << "4" << std::endl;
+        f4(cra);
+        std::cout << "5" << std::endl;
+        f4(std::move(a));
+
+        std::cout << "less ----------------------" << std::endl;
+        int v1 = 11;
+        int v2 = 12;
+        std::cout << ">" << less(v1, v2) << std::endl;
+        std::cout << ">" << less(std::move(v1), std::move(v2)) << std::endl;
+        std::cout << ">" << less3(v1, v2) << std::endl;
+        std::cout << ">" << less3(std::move(v1), std::move(v2)) << std::endl;
+    }
+
 }

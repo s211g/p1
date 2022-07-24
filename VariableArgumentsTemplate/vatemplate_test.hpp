@@ -121,6 +121,87 @@ namespace vatemplate_test {
         return overload_set17<F...>(std::forward<F>(f)...);
     }
 
+    void test_forward();
+
+    class A {
+    public:
+        int i;
+
+        /*
+        A(int i_) :
+            i(i_) {
+            std::cout << "A(int i)" << std::endl;
+        }
+*/
+        A(int& i_) :
+            i(i_) {
+            std::cout << "A(int& i)" << std::endl;
+        }
+
+        A(const int& i_) :
+            i(i_) {
+            std::cout << "A(const int& i)" << std::endl;
+        }
+
+        A(int&& i_) :
+            i(i_) {
+            std::cout << "A(int&& i)" << std::endl;
+        }
+
+        A() {
+            std::cout << "A()" << std::endl;
+        }
+
+        ~A() = default;
+
+        A(const A& t) {
+            std::cout << "A(const T& t)" << std::endl;
+        }
+
+        A(A& t) {
+            std::cout << "A(T& t)" << std::endl;
+        }
+
+        A(A&& t) {
+            std::cout << "A(T&& t)" << std::endl;
+        }
+
+        void print() const {
+            std::cout << "this[" << this << "] i = " << i << std::endl;
+        }
+    };
+
+    template <typename T>
+    void f(T&& t) {
+        T t1 = std::forward<T>(t);
+        t1.print();
+    }
+
+    template <typename T>
+    void f2(T&& t) {
+        T t1(std::forward<T>(t));
+        t1.print();
+    }
+
+    template <typename T>
+    void f4(T&& t) {
+        A a(std::forward<T>(t));
+    }
+
+    template <typename T>
+    bool less(T&& t1, T&& t2) {
+        return t1 < t2;
+    }
+
+    inline bool less2(int&& t1, int&& t2) {
+        return t1 < t2;
+    }
+
+    template <typename T>
+    bool less3(T&& t1, T&& t2) {
+        return t1 < t2;
+    }
+
     inline void
     test() {
         std::cout << "variable arguments of template tests" << std::endl;
@@ -130,6 +211,7 @@ namespace vatemplate_test {
         //test_tgroup();
         //test_overload_set();
         //test_overload_set();
-        test_overload_set17();
+        //test_overload_set17();
+        test_forward();
     }
 }
