@@ -8,6 +8,7 @@ include_directories (
     ${CMAKE_SOURCE_DIR}/ScopeGuard
     ${CMAKE_SOURCE_DIR}/Thread    
     ${CMAKE_SOURCE_DIR}/VariableArgumentsTemplate
+    ${CMAKE_SOURCE_DIR}/TypeDeclaration
     )
 
 include(CTest)
@@ -21,7 +22,9 @@ set(src
     ${CMAKE_SOURCE_DIR}/Thread/thread_test.cpp
     ${CMAKE_SOURCE_DIR}/Thread/ThreadsPool.cpp
     ${CMAKE_SOURCE_DIR}/VariableArgumentsTemplate/vatemplate_test.cpp
+    ${CMAKE_SOURCE_DIR}/TypeDeclaration/typedeclaration_test.cpp
     )
+
 
 add_executable(xxx ${src})
 

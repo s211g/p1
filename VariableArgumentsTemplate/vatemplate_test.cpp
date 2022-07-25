@@ -20,6 +20,21 @@ namespace vatemplate_test {
         std::cout << "= " << s << std::endl;
     }
 
+    void test_sum14_constexpr() {
+        std::cout << "test sum c++14  constexpr" << std::endl;
+
+        auto s = sum14_constexpr<1, 3, 5>;
+        std::cout << "= " << s << std::endl;
+
+        std::cout << "sum14_constexpr_sizeof<int, char> = " << sum14_constexpr_sizeof<int, char> << std::endl;
+    }
+
+    void test_print() {
+        std::cout << "test print" << std::endl;
+        print(std::cout, "1", "2");
+        print("2", "3");
+    }
+
     void test_tgroup() {
         std::cout << "test types group" << std::endl;
 
@@ -175,7 +190,11 @@ namespace vatemplate_test {
         A a22 = std::forward<A>(ra);
         std::cout << "3" << std::endl;
         A a23 = std::forward<A>(std::move(a));
-        std::cout << "4" << std::endl;
+
+        std::cout << "a = forward ----------------------" << std::endl;
+
+        std::cout << "1" << std::endl;
+        a23 = std::forward<A>(std::move(a));
 
         std::cout << "A(...) ----------------------" << std::endl;
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <ostream>
 
 namespace vatemplate_test {
 
@@ -23,6 +24,35 @@ namespace vatemplate_test {
     auto sum(const T1& x1, const T&... x) {
         std::cout << "sum(const T1& x1, const T&... x) x1 = " << x1 << std::endl;
         return x1 + sum(x...);
+    }
+
+    void test_sum14_constexpr();
+
+    template <size_t...>
+    constexpr size_t sum14_constexpr = 0;
+
+    template <size_t first, size_t... other>
+    constexpr size_t sum14_constexpr<first, other...> = first + sum14_constexpr<other...>;
+
+    template <typename... types>
+    constexpr size_t sum14_constexpr_sizeof = sum14_constexpr<sizeof(types)...>;
+
+    void test_print();
+
+    inline void print() { std::cout << "print() " << std::endl; }                          // Нечего печатать.
+    inline void print(std::ostream&) { std::cout << "print(std::ostream&)" << std::endl; } // Нечего печатать.
+
+    template <class First, class... Other>
+    void print(std::ostream& os,
+               const First& first, const Other&... other) {
+        os << first;
+        print(os, other...);
+    }
+
+    template <class First, class... Other>
+    void print(const First& first, const Other&... other) {
+        std::cout << first;
+        print(other...);
     }
 
     void test_tgroup();
@@ -166,6 +196,16 @@ namespace vatemplate_test {
             std::cout << "A(T&& t)" << std::endl;
         }
 
+        A& operator=(A& a) {
+            std::cout << "A::operator(T& t)" << std::endl;
+            return *this;
+        }
+
+        A& operator=(const A& a) {
+            std::cout << "A::operator(T& t)" << std::endl;
+            return *this;
+        }
+
         void print() const {
             std::cout << "this[" << this << "] i = " << i << std::endl;
         }
@@ -208,10 +248,12 @@ namespace vatemplate_test {
 
         //test_sum17();
         //test_sum14();
+        //test_sum14_constexpr();
+        test_print();
         //test_tgroup();
         //test_overload_set();
         //test_overload_set();
         //test_overload_set17();
-        test_forward();
+        //test_forward();
     }
 }

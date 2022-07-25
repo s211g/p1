@@ -7,6 +7,7 @@
 #include "scopeguard_test.hpp"
 #include "thread_test.hpp"
 #include "vatemplate_test.hpp"
+#include "typedeclaration_test.hpp"
 
 void f() {
     std::cout << "f() NULL" << std::endl;
@@ -38,6 +39,7 @@ int main() {
     //scopeguard_test::test();
     //thread_test::test();
     vatemplate_test::test();
+    //typedeclaration_test::test();
 
     return 0;
 }
