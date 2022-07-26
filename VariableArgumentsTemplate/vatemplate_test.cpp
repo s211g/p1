@@ -12,6 +12,7 @@ namespace vatemplate_test {
     void test_sum17() {
         std::cout << "test sum c++17" << std::endl;
         std::cout << "= " << sum17(1, 3, 5) << std::endl;
+        std::cout << "sum_pow(1, 3) = " << sum_pow(1, 3) << std::endl;
     }
 
     void test_sum14() {
@@ -31,6 +32,10 @@ namespace vatemplate_test {
 
     void test_print() {
         std::cout << "test print" << std::endl;
+
+        std::cout << "print_array(1, 2, 3) :" << std::endl;
+        print_array(1, 2, 3);
+
         print(std::cout, "1", "2");
         print("2", "3");
     }
@@ -260,6 +265,38 @@ namespace vatemplate_test {
         std::cout << ">" << less(std::move(v1), std::move(v2)) << std::endl;
         std::cout << ">" << less3(v1, v2) << std::endl;
         std::cout << ">" << less3(std::move(v1), std::move(v2)) << std::endl;
+    }
+
+
+    void test_count_types() {
+        std::cout << "test count types" << std::endl;
+
+        int i  = 0;
+        char l = 0;
+        //print_array_sizes(i, l, l, i);
+
+        std::cout << "count_types = " << count_types(i, l, l, l, i, i, l, i, i, i) << std::endl;
+        std::cout << "count_types = " << count_types(int(1), int(2), double(3), int(4), double(5)) << std::endl;
+
+        std::cout << "---------------" << std::endl;
+        std::cout << "count_types = " << count_types(int(1), double(2), int(3), int(4), long(5), int(6)) << std::endl;
+
+        std::cout << "---------------" << std::endl;
+        std::cout << "count_types = " << count_types(int(1), int(2), double(3), int(4), long(5), int(6)) << std::endl;
+
+
+        std::cout << "---------------" << std::endl;
+        std::cout << "t_count = " << t_count<int, double, int> << std::endl;
+
+        std::cout << "---------------" << std::endl;
+        std::cout << "t_count = " << t_count<int, int, double> << std::endl;
+
+
+        std::cout << "---------------" << std::endl;
+        std::cout << "CT = " << CT<int, double, int, int, double, int>().value << std::endl;
+
+        std::cout << "---------------" << std::endl;
+        std::cout << "CT = " << CT<int, int, double, int, double, int>().value << std::endl;
     }
 
 }

@@ -12,6 +12,11 @@ namespace vatemplate_test {
         return (x + ...);
     }
 
+    template <typename... T>
+    auto sum_pow(const T&... x) {
+        return ((x * x) + ...);
+    }
+
     void test_sum14();
 
     template <typename T1>
@@ -53,6 +58,14 @@ namespace vatemplate_test {
     void print(const First& first, const Other&... other) {
         std::cout << first;
         print(other...);
+    }
+
+    template <class... Params>
+    void print_array(const Params&... params) {
+        std::string param[]{std::to_string(params)...};
+        for (auto& v : param)
+            std::cout << v << ",";
+        std::cout << std::endl;
     }
 
     void test_tgroup();
@@ -242,18 +255,110 @@ namespace vatemplate_test {
         return t1 < t2;
     }
 
+
+    void test_count_types();
+
+    template <typename... T>
+    auto print_array_sizes(const T&... x) {
+        std::string s = ((std::to_string(sizeof(x)) + std::string(",")) + ...);
+        if (!s.empty())
+            s.resize(s.length() - 1);
+        std::cout << " sizes: " << s << std::endl;
+    }
+
+    template <class... Types>
+    constexpr size_t t_count = 0;
+
+    template <class T, class... Types>
+    constexpr size_t t_count<T, T, Types...> = 1 + t_count<T, Types...>;
+
+    template <class T, class X, class... Types>
+    constexpr size_t t_count<T, X, Types...> = t_count<T, Types...>;
+
+    template <typename... T>
+    struct CT;
+
+
+    template <typename T>
+    struct CT<T> {
+        int value;
+        CT() {
+            value = 0;
+        }
+    };
+
+    template <typename T, typename... Other>
+    struct CT<T, T, Other...> {
+        int value;
+        CT() {
+            value = 1 + CT<T, Other...>().value;
+        }
+    };
+
+    template <typename T, typename X, typename... Other>
+    struct CT<T, X, Other...> {
+        int value;
+        CT() {
+            value = CT<T, Other...>().value;
+        }
+    };
+
+
+    template <class... Other>
+    int count_types(const Other&... t) {
+        std::cout << "count_types(const Other&... t)" << std::endl;
+        return 0;
+    }
+
+    template <class T, class... Other>
+    int count_types(const T& t, const T& t1, const Other&... types);
+    template <class T, class X, class... Other>
+    int count_types(const T& t, const X& t1, const Other&... types);
+
+
+    template <class T, class... Other>
+    int count_types(const T& t, const T& t1, const Other&... types) {
+        std::cout << "count_types(T& t, T& t1, Other&... types) return "
+                  << "t = " << t << " t1 = " << t1 << std::endl;
+        print_array_sizes(t, t1, types...);
+
+        int ret = 1 + count_types(t, types...);
+
+        //    std::cout << "count_types(T& t, T& t1, Other&... types) return " << ret << std::endl;
+        //    std::cout << "t = " << t << " t1 = " << t1 << std::endl;
+        //    std::cout << "sizeof(t) = " << sizeof(t) << " sizeof(t1) = " << sizeof(t1) << std::endl;
+        return ret;
+    }
+
+    template <class T, class X, class... Other>
+    int count_types(const T& t, const X& t1, const Other&... types) {
+        std::cout << "count_types(T& t, X& t1, Other&... types) return "
+                  << "t = " << t << " t1 = " << t1 << std::endl;
+        print_array_sizes(t, t1, types...);
+
+        int ret = count_types(t, types...);
+
+        //std::cout << "count_types(T& t, X& t1, Other&... types) return " << ret << std::endl;
+        //std::cout << "t = " << t << " t1 = " << t1 << std::endl;
+        //std::cout << "sizeof(t) = " << sizeof(t) << " sizeof(t1) = " << sizeof(t1) << std::endl;
+        return ret;
+    }
+
+
+
     inline void
     test() {
         std::cout << "variable arguments of template tests" << std::endl;
 
-        //test_sum17();
+        // test_sum17();
         //test_sum14();
         //test_sum14_constexpr();
-        test_print();
+        //test_print();
         //test_tgroup();
         //test_overload_set();
         //test_overload_set();
         //test_overload_set17();
         //test_forward();
+        test_count_types();
     }
 }
