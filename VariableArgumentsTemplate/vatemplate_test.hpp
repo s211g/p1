@@ -266,6 +266,9 @@ namespace vatemplate_test {
         std::cout << " sizes: " << s << std::endl;
     }
 
+    //    template <class... Types>
+    //    constexpr size_t t_count = 0;
+
     template <class... Types>
     constexpr size_t t_count = 0;
 
@@ -344,6 +347,26 @@ namespace vatemplate_test {
         return ret;
     }
 
+    void test_type_by_index();
+
+
+    template <class... Types>
+    struct Type_list {
+    };
+
+    template <size_t i, class L>
+    struct t_at {};
+
+    template <size_t i, class T, class... Tail>
+    struct t_at<i, Type_list<T, Tail...>> {
+        using type =
+            typename t_at<i - 1, Type_list<Tail...>>::type;
+    };
+
+    template <class T, class... Tail>
+    struct t_at<0, Type_list<T, Tail...>> {
+        using type = T;
+    };
 
 
     inline void
@@ -359,6 +382,7 @@ namespace vatemplate_test {
         //test_overload_set();
         //test_overload_set17();
         //test_forward();
-        test_count_types();
+        //test_count_types();
+        test_type_by_index();
     }
 }

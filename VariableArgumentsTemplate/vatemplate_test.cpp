@@ -299,4 +299,18 @@ namespace vatemplate_test {
         std::cout << "CT = " << CT<int, int, double, int, double, int>().value << std::endl;
     }
 
+    void test_type_by_index() {
+        std::cout << "test type by index" << std::endl;
+
+        std::cout << "0>" << sizeof(t_at<0, Type_list<bool, int, double>>::type) << std::endl;
+        std::cout << "1>" << sizeof(t_at<1, Type_list<bool, int, double>>::type) << std::endl;
+        std::cout << "2>" << sizeof(t_at<2, Type_list<bool, int, double>>::type) << std::endl;
+
+        //template <size_t i, class L>
+        //using t_at_t = typename t_at<i, L>::type;
+        // Теперь, например,
+        //   t_at_t<2, Type_list<bool, char, int, float>>
+        // равно int.
+    }
+
 }
