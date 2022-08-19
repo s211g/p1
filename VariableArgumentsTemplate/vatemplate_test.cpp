@@ -313,4 +313,24 @@ namespace vatemplate_test {
         // равно int.
     }
 
+    void test_fold_expressions() {
+        std::cout << "test_fold_expressions" << std::endl;
+
+        //(pack op ...) 	Унарная правоассоциативная свертка
+        std::cout << "sum_un_r_fold(1,2,3) = " << sum_un_r_fold(std::to_string(1), std::to_string(2), std::to_string(3)) << std::endl;
+        std::cout << "print_un_r_fold(1,2,3) = ";
+        print_un_r_fold(1, 2, 3);
+        std::cout << std::endl;
+
+        //(… op pack) 	Унарная левоассоциативная свертка
+        std::cout << "sum_un_l_fold(1,2,3) = " << sum_un_l_fold(std::to_string(1), std::to_string(2), std::to_string(3)) << std::endl;
+
+        //(pack op… op init) 	Бинарная правоассоциативная свертка
+        std::cout << "sum_bin_r_fold_17(f,1,2,3) = " << sum_bin_r_fold_17(std::string("f"), std::to_string(1), std::to_string(2), std::to_string(3)) << std::endl;
+        std::cout << "sum_bin_r_fold_14(f,1,2,3) = " << sum_bin_r_fold_14(std::string("f"), std::to_string(1), std::to_string(2), std::to_string(3)) << std::endl;
+
+        //(init op… op pack) 	Бинарная левоассоциативная свертка
+        std::cout << "sum_bin_l_fold_17(f,1,2,3) = " << sum_bin_l_fold_17(std::string("f"), std::to_string(1), std::to_string(2), std::to_string(3)) << std::endl;
+    }
+
 }

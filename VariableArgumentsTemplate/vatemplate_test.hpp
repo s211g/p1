@@ -369,6 +369,51 @@ namespace vatemplate_test {
     };
 
 
+    void test_fold_expressions();
+    //(pack op ...) 	Унарная правоассоциативная свертка
+    template <typename... Args>
+    auto sum_un_r_fold(Args... args) {
+        return (("a" + args + "b") + ...);
+        //return args + ...);
+    }
+
+    template <typename... Args>
+    auto print_un_r_fold(Args... args) {
+        ((std::cout << args), ...);
+    }
+
+    //(… op pack) 	Унарная левоассоциативная свертка
+    template <typename... Args>
+    auto sum_un_l_fold(Args... args) {
+        return (... + args);
+    }
+
+    //(pack op… op init) 	Бинарная правоассоциативная свертка
+    // sum_bin_r_fold_17(f,1,2,3) = 1 + (2 + (3 + f)) = 123f
+    template <typename Arg, typename... Args>
+    auto sum_bin_r_fold_17(Arg first, Args... args) {
+        return (args + ... + first);
+    }
+
+    template <typename Arg>
+    auto sum_bin_r_fold_14(Arg arg) {
+        return arg;
+    }
+
+    // f + ( 1 + (2 + (3)))
+    template <typename... Args, typename Arg>
+    auto sum_bin_r_fold_14(Arg init, Args... rest) {
+        return init + sum_bin_r_fold_14(rest...);
+    }
+
+    //(init op… op pack) 	Бинарная левоассоциативная свертка
+    // sum_bin_r_fold_17(f,1,2,3) = ((f + 1) + 2) + 3 = f123
+    template <typename Arg, typename... Args>
+    auto sum_bin_l_fold_17(Arg first, Args... args) {
+        return (first + ... + args);
+    }
+
+
     inline void
     test() {
         std::cout << "variable arguments of template tests" << std::endl;
@@ -383,6 +428,7 @@ namespace vatemplate_test {
         //test_overload_set17();
         //test_forward();
         //test_count_types();
-        test_type_by_index();
+        //test_type_by_index();
+        test_fold_expressions();
     }
 }
