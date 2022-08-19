@@ -370,6 +370,16 @@ namespace vatemplate_test {
 
 
     void test_fold_expressions();
+
+    //template <class... Types>
+    // Узнать размер пакета можно с помощью sizeof…(имя пакета) - tl<int, char, bool>::size  = 3
+    // sizeof(Types)... раскрывается в sizeof(int), sizeof(char), sizeof(bool)
+
+    template <class... Types>
+    struct tl {
+        static constexpr auto size = sizeof...(Types);
+    };
+
     //(pack op ...) 	Унарная правоассоциативная свертка
     template <typename... Args>
     auto sum_un_r_fold(Args... args) {
@@ -378,8 +388,13 @@ namespace vatemplate_test {
     }
 
     template <typename... Args>
-    auto print_un_r_fold(Args... args) {
+    void print_un_r_fold(Args... args) {
         ((std::cout << args), ...);
+    }
+
+    template <typename... Args>
+    void print_sizeof_args(Args... args) {
+        print_un_r_fold(sizeof(args)...);
     }
 
     //(… op pack) 	Унарная левоассоциативная свертка

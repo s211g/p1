@@ -316,6 +316,14 @@ namespace vatemplate_test {
     void test_fold_expressions() {
         std::cout << "test_fold_expressions" << std::endl;
 
+
+        std::cout << "tl<int, char, bool>::size = " << tl<int, char, bool>::size << std::endl;
+        int i  = 0;
+        bool b = false;
+        std::cout << "print_sizeof_args(i, b) : ";
+        print_sizeof_args(i, b);
+        std::cout << std::endl;
+
         //(pack op ...) 	Унарная правоассоциативная свертка
         std::cout << "sum_un_r_fold(1,2,3) = " << sum_un_r_fold(std::to_string(1), std::to_string(2), std::to_string(3)) << std::endl;
         std::cout << "print_un_r_fold(1,2,3) = ";
