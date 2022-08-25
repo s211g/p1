@@ -17,7 +17,8 @@ int main() {
     //scopeguard_test::test();
     //thread_test::test();
     vatemplate_test::test();
-    //typedeclaration_test::test();
+    
+        //typedeclaration_test::test();
 
     return 0;
 }
