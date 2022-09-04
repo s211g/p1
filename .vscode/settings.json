@@ -45,5 +45,8 @@
     "streambuf": "cpp",
     "typeinfo": "cpp"
   },
-  "cmake.configureOnOpen": false
+  "editor.formatOnSave": true,
+  "cmake.configureOnOpen": false,
+  "clang-format.executable": "c:\\Program Files\\LLVM\\bin\\clang-format.exe",
+  "C_Cpp.clang_format_path": "C:\\Program Files\\LLVM\\bin\\clang-format.exe"
 }

@@ -25,7 +25,7 @@
                          "ignoreFailures": true
                     }
                ],
-               "preLaunchTask": "C/C++: cpp.exe сборка"
+               "preLaunchTask": "xxx"
           },
           {
                "name": "C/C++: clang-cpp.exe сборка и отладка активного файла",

@@ -1,7 +1,9 @@
 #pragma once
 
+#include <string>
 #include <iostream>
 #include <ostream>
+
 
 namespace vatemplate_test {
 
@@ -175,7 +177,8 @@ namespace vatemplate_test {
             i(i_) {
             std::cout << "A(int i)" << std::endl;
         }
-*/
+        */
+
         A(int& i_) :
             i(i_) {
             std::cout << "A(int& i)" << std::endl;

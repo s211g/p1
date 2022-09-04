@@ -77,7 +77,7 @@ namespace vatemplate_test {
         typedef int intt;
         std::cout << "test overload set" << std::endl;
         auto os = overload(
-
+            /*
             [](int* i) { std::cout << "int* " << *i << std::endl; },
             [](long* i) { std::cout << "long* " << *i << std::endl; },
             [](long long* i) { std::cout << "long long* " << *i << std::endl; },
@@ -88,14 +88,17 @@ namespace vatemplate_test {
             [](double i) { std::cout << "double " << i << std::endl; },
             [](float i) { std::cout << "float " << i << std::endl; },
             //[](intt i) { std::cout << "intt " << i << std::endl; },
+        */
             [](int i) { std::cout << "int " << i << std::endl; },
-            [](long i) { std::cout << "long " << i << std::endl; },
-            [](long long i) { std::cout << "long long " << i << std::endl; }
+            //            [](long i) { std::cout << "long " << i << std::endl; },
+            [](long long i) {
+                std::cout << "long long " << i << std::endl;
+            }
 
         );
 
-        os(10);
-        os((long long)11);
+        //        os(10);
+        //        os((long long)11);
 
         float f      = 1.2;
         double d     = 2.3;
@@ -103,22 +106,26 @@ namespace vatemplate_test {
         long l       = 12;
         long long ll = 22;
         intt ii      = 33;
-
+        /*
         std::cout << std::endl;
         os(f);
         os(d);
+        */
         os(i);
-        os(ii);
+        //        os(ii);
         os(l);
         os(ll);
 
+        /*
         std::cout << std::endl;
         os(&f);
         os(&d);
+
         os(&i);
-        os(&ii);
+        //        os(&ii);
         os(&l);
-        os(&ll);
+        */
+        //       os(&ll);
     }
 
     void test_overload_set17() {
@@ -139,7 +146,6 @@ namespace vatemplate_test {
             [](int i) { std::cout << "int " << i << std::endl; },
             [](long i) { std::cout << "long " << i << std::endl; },
             [](long long i) { std::cout << "long long " << i << std::endl; }
-
 
         );
 
@@ -340,5 +346,4 @@ namespace vatemplate_test {
         //(init op… op pack) 	Бинарная левоассоциативная свертка
         std::cout << "sum_bin_l_fold_17(f,1,2,3) = " << sum_bin_l_fold_17(std::string("f"), std::to_string(1), std::to_string(2), std::to_string(3)) << std::endl;
     }
-
 }

@@ -1,0 +1,37 @@
+c:\Users\s2115\.vscode\extensions\
+
+
+---------- git -----------------
+Git-2.35.1.2-64-bit.exe
+plugin: 
+Git Graph
+Git History
+Git History Diff
+
+---------- clang ---------------
+LLVM-12.0.0-6923b0a7-win64.exe
+plugin: Clang-Format
+settings: Editor: Format On Save
+keys: Shift+Alt+F
+
+---------- gcc ---------------
+msys2-x86_64-20220319.exe
+in window:
+pacman -S --needed base-devel mingw-w64-x86_64-toolchain
+install: gcc,gdb,make
+add path c:\msys64\mingw64\bin\
+plugin: C/C++ IntelliSense, debugging, and code browsing.
+
+---------- cmake ------------
+cmake-3.23.0-windows-x86_64.msi
+plugin: 
+C/C++ IntelliSense, debugging, and code browsing.
+CMake Tools 
+
+
+c:\msys64\mingw64\bin\
+
+
+
+
+

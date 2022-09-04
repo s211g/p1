@@ -14,6 +14,8 @@ include_directories (
 include(CTest)
 enable_testing()
 
+set (CMAKE_CXX_STANDARD 20)
+
 set(src 
     main.cpp
     ${CMAKE_SOURCE_DIR}/Mutex/mutex_test.cpp
