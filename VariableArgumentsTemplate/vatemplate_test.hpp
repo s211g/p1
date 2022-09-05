@@ -444,9 +444,9 @@ namespace vatemplate_test {
         //test_overload_set();
         //test_overload_set();
         //test_overload_set17();
-        //test_forward();
+        test_forward();
         //test_count_types();
         //test_type_by_index();
-        test_fold_expressions();
+        //test_fold_expressions();
     }
 }

@@ -8,14 +8,16 @@
 #include "thread_test.hpp"
 #include "vatemplate_test.hpp"
 #include "typedeclaration_test.hpp"
+#include "initdata_test.hpp"
 
 int main() {
     //mutex_test::test();
     //smartpointer_test::test();
     //scopeguard_test::test();
     //thread_test::test();
-    vatemplate_test::test();
+    //vatemplate_test::test();
     //typedeclaration_test::test();
+    initdata_test::test();
 
     return 0;
 }

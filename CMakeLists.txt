@@ -9,6 +9,7 @@ include_directories (
     ${CMAKE_SOURCE_DIR}/Thread    
     ${CMAKE_SOURCE_DIR}/VariableArgumentsTemplate
     ${CMAKE_SOURCE_DIR}/TypeDeclaration
+    ${CMAKE_SOURCE_DIR}/Other
     )
 
 include(CTest)
@@ -16,17 +17,18 @@ enable_testing()
 
 set (CMAKE_CXX_STANDARD 20)
 
-set(src 
+file(GLOB src 
     main.cpp
-    ${CMAKE_SOURCE_DIR}/Mutex/mutex_test.cpp
-    ${CMAKE_SOURCE_DIR}/SmartPointer/smartpointer_test.cpp
-    ${CMAKE_SOURCE_DIR}/ScopeGuard/scopeguard_test.cpp
-    ${CMAKE_SOURCE_DIR}/Thread/thread_test.cpp
-    ${CMAKE_SOURCE_DIR}/Thread/ThreadsPool.cpp
-    ${CMAKE_SOURCE_DIR}/VariableArgumentsTemplate/vatemplate_test.cpp
-    ${CMAKE_SOURCE_DIR}/TypeDeclaration/typedeclaration_test.cpp
+    ${CMAKE_SOURCE_DIR}/Mutex/*.cpp
+    ${CMAKE_SOURCE_DIR}/SmartPointer/*.cpp
+    ${CMAKE_SOURCE_DIR}/ScopeGuard/*.cpp
+    ${CMAKE_SOURCE_DIR}/Thread/*.cpp
+    ${CMAKE_SOURCE_DIR}/VariableArgumentsTemplate/*.cpp
+    ${CMAKE_SOURCE_DIR}/TypeDeclaration/*.cpp
+    ${CMAKE_SOURCE_DIR}/Other/*.cpp
     )
 
+set(src ${src})
 
 add_executable(xxx ${src})
 

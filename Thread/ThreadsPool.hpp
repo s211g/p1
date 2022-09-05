@@ -58,7 +58,7 @@ namespace ThreadsPool {
         void schedule_work(work);
 
     private:
-        void perform_work(int thIdx);
+        void perform_work(size_t thIdx);
         notifyQueue<std::future<void>> work_queue;
         std::vector<std::thread> m_threads;
         const std::atomic_bool& shutdown;

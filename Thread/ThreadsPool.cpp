@@ -11,8 +11,11 @@ namespace ThreadsPool {
     }
 
     void ThreadsPool::start(uint32_t threadsCount) {
-        while (threadsCount--)
-            m_threads.push_back(std::thread(&ThreadsPool::perform_work, this, m_threads.size()));
+        while (threadsCount--) {
+            std::thread th = std::thread(&ThreadsPool::perform_work, this, m_threads.size());
+            m_threads.push_back(std::move(th));
+            //m_threads.push_back(std::thread(&ThreadsPool::perform_work, this, m_threads.size()));
+        }
     }
 
     void ThreadsPool::wait() {
@@ -30,7 +33,7 @@ namespace ThreadsPool {
         work_queue.push(std::async(std::launch::deferred, task));
     }
 
-    void ThreadsPool::perform_work(int thIdx) {
+    void ThreadsPool::perform_work(size_t thIdx) {
         std::string name = "Thread_" + std::to_string(thIdx);
         std::cout << name << " ThreadsPool::perform_work() started" << std::endl;
 

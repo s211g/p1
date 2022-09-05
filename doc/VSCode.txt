@@ -1,5 +1,4 @@
-c:\Users\s2115\.vscode\extensions\
-
+delete old extensions c:\Users\s2115\.vscode\extensions\
 
 ---------- git -----------------
 Git-2.35.1.2-64-bit.exe

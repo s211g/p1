@@ -227,19 +227,24 @@ namespace mutex_test {
             while (!terminate) {
                 std::cout << "thread " << name << " try lock ..." << std::endl;
                 {
+                    // !!!
+                    // lock the mutex in the same order in all threads or use lock(mtx1, mtx2)
+
                     // equivalent approach 1:
                     // std::lock(mtx1, mtx2);
                     // std::adopt_lock - calling thread already has ownership of the mutex
                     //std::lock_guard lock1(mtx1, std::adopt_lock);
                     //std::lock_guard lock2(mtx2, std::adopt_lock);
+                    // equivalent approach 1:
 
                     // equivalent approach 2:
                     // defer_lock -	do not acquire ownership of the mutex
                     std::unique_lock lock1{mtx1, std::defer_lock};
                     std::unique_lock lock2{mtx2, std::defer_lock};
                     std::lock(lock1, lock2);
-                    std::cout << "thread " << name << " lock" << std::endl;
+                    // equivalent approach 2:
 
+                    std::cout << "thread " << name << " lock" << std::endl;
                     std::this_thread::sleep_for(std::chrono::milliseconds(lock_ms));
                     std::cout << "thread " << name << " unlock" << std::endl;
                 }
