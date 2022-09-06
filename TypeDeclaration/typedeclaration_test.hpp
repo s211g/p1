@@ -10,8 +10,11 @@ namespace typedeclaration_test {
         std::cout << "swap_arra()" << std::endl;
     }
 
+    void test_ptr_to_fn();
+
     inline void test() {
         std::cout << "typedeclaration tests" << std::endl;
         test_array();
+        test_ptr_to_fn();
     }
 }

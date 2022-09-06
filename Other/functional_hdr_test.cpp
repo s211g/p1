@@ -77,6 +77,14 @@ namespace functional_hdr_test {
         f7();
         std::function<void(int)> f8 = af;
         f8(1);
+
+        // recursive
+        std::function<int(int)> factorial = [&](int n) { return (n < 2) ? 1 : n * factorial(n - 1); };
+        std::cout << "factorial(3)= " << factorial(3) << std::endl;
+        // old variant
+        std::function<int(int)> factorial_old;
+        factorial_old = [&factorial_old](int n) { return (n < 2) ? 1 : n * factorial_old(n - 1); };
+        std::cout << "factorial_old(3)= " << factorial_old(3) << std::endl;
     }
 
 }

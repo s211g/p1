@@ -16,4 +16,9 @@ namespace typedeclaration_test {
         swap_array(a1, a2);
     }
 
+    void test_ptr_to_fn() {
+        // ptr to fn
+
+        // ptr to class member fn
+    }
 }
