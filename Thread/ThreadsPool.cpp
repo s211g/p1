@@ -12,9 +12,7 @@ namespace ThreadsPool {
 
     void ThreadsPool::start(uint32_t threadsCount) {
         while (threadsCount--) {
-            std::thread th = std::thread(&ThreadsPool::perform_work, this, m_threads.size());
-            m_threads.push_back(std::move(th));
-            //m_threads.push_back(std::thread(&ThreadsPool::perform_work, this, m_threads.size()));
+            m_threads.push_back(std::thread(&ThreadsPool::perform_work, this, m_threads.size()));
         }
     }
 

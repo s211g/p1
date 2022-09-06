@@ -19,7 +19,7 @@ int main() {
     //vatemplate_test::test();
     //typedeclaration_test::test();
     //initdata_test::test();
-    functional_hdr_test::test();
+    //functional_hdr_test::test();
 
     return 0;
 }
