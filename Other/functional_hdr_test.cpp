@@ -137,5 +137,37 @@ namespace functional_hdr_test {
         f3(a, 1, 2);
     }
 
+    void test_hash() {
+        std::cout << "test std::hash " << std::endl;
+
+        std::size_t str_hash1 = std::hash<std::string>{}("111111");
+        std::cout << "hash1: " << str_hash1 << std::endl;
+        std::size_t str_hash2 = std::hash<std::string>{}("111112");
+        std::cout << "hash2: " << str_hash2 << std::endl;
+        std::size_t str_hash3 = std::hash<std::string>{}("211111");
+        std::cout << "hash3: " << str_hash3 << std::endl;
+    }
+
+    void test_invoke() {
+        std::cout << "test std::invoke " << std::endl;
+
+        std::invoke(f_function, 1);
+
+        // invoke a member function
+        A_function a(0);
+        auto f = &A_function::add;
+        std::invoke(f, a, 1);
+        //std::invoke(&A_function::add, a, 1);
+
+        // invoke (access) a data member
+        std::cout << "a.i = " << std::invoke(&A_function::i, a) << '\n';
+
+        // invoke object::operator()()
+        std::invoke(a);
+
+        // invoke object::operator()(1)
+        std::invoke(a, 1);
+    }
+
 
 }
