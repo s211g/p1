@@ -25,6 +25,8 @@ namespace typedeclaration_test {
 
     class A {
     public:
+        A() { std::cout << "A::A()" << std::endl; }
+        A(int i) { std::cout << "A::A(int)" << std::endl; }
         int fn(int i) {
             std::cout << "A::fn(" << i << ")" << std::endl;
             return 0;
@@ -58,4 +60,23 @@ namespace typedeclaration_test {
         (a.*p_A_fn)(1);
         (a.*p_A_fn)(1);
     }
+
+    A a();
+    A a(int);
+
+    void test_declaration_fn() {
+        std::cout << "test declaration fn" << std::endl;
+        a();
+        a(1);
+    }
+
+    A a() {
+        std::cout << "call A a()" << std::endl;
+        return A{};
+    }
+    A a(int) {
+        std::cout << "call A a(int)" << std::endl;
+        return A{};
+    }
+
 }

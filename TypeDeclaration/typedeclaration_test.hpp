@@ -11,10 +11,12 @@ namespace typedeclaration_test {
     }
 
     void test_ptr_to_fn();
+    void test_declaration_fn();
 
     inline void test() {
         std::cout << "typedeclaration tests" << std::endl;
         test_array();
         test_ptr_to_fn();
+        test_declaration_fn();
     }
 }
