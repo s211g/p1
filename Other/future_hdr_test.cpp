@@ -1,6 +1,7 @@
 #include "functional_hdr_test.hpp"
 #include <future>
 #include <string>
+#include <vector>
 
 namespace future_hdr_test {
 
@@ -25,6 +26,10 @@ namespace future_hdr_test {
             i(i_) { std::cout << "A::A(int)" << std::endl; }
         void operator()() const { std::cout << "A::operator()() i = " << i << std::endl; }
         void operator()(int i_) const { std::cout << "A::operator()(int i_ ) i_ = " << i_ << ", i = " << i << std::endl; }
+        int operator()(double d) const {
+            std::cout << "int A::operator()(double d) d = " << d << std::endl;
+            return d * 10;
+        }
         void fn() { std::cout << "A::fn()" << std::endl; }
         void fn(int i_) {
             std::cout << "A::fn(int) i = " << i_ << std::endl;
@@ -90,5 +95,70 @@ namespace future_hdr_test {
         }
 
         std::this_thread::sleep_for(std::chrono::seconds(2));
+    }
+
+    std::string packaged_task1(int i) {
+        std::cout << "packaged_task1(" << i << ")" << std::endl;
+        return std::to_string(i);
+    }
+
+    class C {
+    public:
+        int operator()(double d) {
+            std::cout << "int C::operator()(double d) d = " << d << std::endl;
+            return d * 10;
+        }
+    };
+
+    void test_packaged_task() {
+        std::cout << "test std::packaged_task" << std::endl;
+
+        // async либо запускает тред !!!СРАЗУЖЕ (может быть неконтролируемое количество)
+        // либо в возвращенной future (если использовать флаг deferred) не запуская потока и результат вычисляется при future.get() в томже потоке
+        // а packaged_task никаких тредов не создает он создает два объекта future и task, future пользует один поток чтобы ждать результат а task() дергается в другом потоке
+        // пул сформированных задач task можно впаралель выпонять определенным количеством тредов что не приведет к неконтролируемому росту паралельно выполняющихся задач
+        // по сравнению c async
+
+
+        std::cout << "\ntest 1" << std::endl;
+        std::packaged_task<std::string(int)> task1(packaged_task1);
+        task1(1);
+
+        std::cout << "\ntest 2" << std::endl;
+        A a;
+        std::packaged_task<int(double)> task2(std::ref(a)); // без ref() делаются копии
+        auto f2  = task2.get_future();
+        double d = 2.2;
+        task2(d);
+        std::cout << "return value = " << f2.get() << std::endl;
+
+        std::cout << "\ntest 3" << std::endl;
+        auto fn = [](int thread_id, int timeout) -> int {
+            std::cout << "thread " << thread_id << "start" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(timeout));
+            std::cout << "thread " << thread_id << "end" << std::endl;
+            return thread_id;
+        };
+
+        int count = 5;
+        std::vector<std::packaged_task<int(void)>> tasks;
+        std::vector<std::future<int>> futures;
+
+        while (count--) {
+            std::packaged_task<int(void)> task(std::bind(fn, count, count));
+            futures.push_back(std::move(task.get_future()));
+            tasks.push_back(std::move(task));
+        }
+
+        std::vector<std::future<void>> afutures;
+        for (auto& f : futures) {
+            afutures.push_back(
+                std::async([](std::future<int>&& f) { 
+                int thread_id = f.get(); 
+                std::cout << "detected thread id: " << thread_id << " finished" <<std::endl; }, std::move(f)));
+        }
+        for (auto& task : tasks) {
+            afutures.push_back(std::async(std::move(task)));
+        }
     }
 }
