@@ -10,6 +10,7 @@
 #include "typedeclaration_test.hpp"
 #include "initdata_test.hpp"
 #include "functional_hdr_test.hpp"
+#include "future_hdr_test.hpp"
 
 int main() {
     //mutex_test::test();
@@ -20,6 +21,7 @@ int main() {
     //typedeclaration_test::test();
     //initdata_test::test();
     //functional_hdr_test::test();
+    future_hdr_test::test();
 
     return 0;
 }
