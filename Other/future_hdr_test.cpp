@@ -215,4 +215,30 @@ namespace future_hdr_test {
             }
         }
     }
+
+    void test_shared_future() {
+        std::cout << "test std::shared_future" << std::endl;
+
+        std::cout << "\ntest 1" << std::endl;
+        std::promise<std::string> p1;
+        // v1
+        //std::shared_future<std::string> sf1(p1.get_future());
+        // v2
+        //std::future<std::string> f1 = p1.get_future();
+        //std::shared_future<std::string> sf1(std::move(f1));
+        // v3
+        std::shared_future<std::string> sf1 = p1.get_future().share();
+
+        std::shared_future<std::string> sf2 = sf1;
+        { // thread 1
+            p1.set_value("Hi");
+        }
+        { // thread 2
+            std::cout << "sf1 return value: " << sf1.get() << std::endl;
+        }
+        { // thread 3
+            std::cout << "sf2 return value: " << sf2.get() << std::endl;
+        }
+    }
+
 }
