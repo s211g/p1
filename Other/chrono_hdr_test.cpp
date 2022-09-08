@@ -75,10 +75,9 @@ yotta 	std::ratio<1000000000000000000000000, 1>, if std::intmax_t can represent 
         std::cout << "sec.count() : " << sec.count() << std::endl;
         std::cout << "time(NULL)  : " << time(nullptr) << std::endl;
         // to time_t
-        time_t now_t = std::chrono::system_clock::to_time_t(now);
+        time_t now_t = std::chrono::system_clock::to_time_t(now + std::chrono::years(1));
         // from time_t
-        //using std::chrono_literals::y;
-        auto now2 = std::chrono::system_clock::from_time_t(now_t + 3600); // +1h
+        auto now2 = std::chrono::system_clock::from_time_t(now_t); // +1h
         std::cout << "now2 : " << now2 << std::endl;
     }
 }
