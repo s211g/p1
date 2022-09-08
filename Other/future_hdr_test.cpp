@@ -177,4 +177,42 @@ namespace future_hdr_test {
             afutures.push_back(std::async(std::move(task)));
         }
     }
+
+    void test_promise() {
+        std::cout << "test std::promise" << std::endl;
+
+        std::cout << "\ntest 1" << std::endl;
+        std::promise<std::string> p1;
+        std::future<std::string> f1 = p1.get_future();
+        { // thread 1
+            p1.set_value("Hi");
+        }
+        { // thread 2
+            std::cout << "return value: " << f1.get() << std::endl;
+        }
+
+        std::cout << "\ntest 2" << std::endl;
+        std::promise<std::string> p2;
+        std::future<std::string> f2 = p2.get_future();
+        { // thread 1
+            try {
+                throw std::exception("Division by zero!");
+            }
+            catch (...) {
+                p2.set_exception(std::current_exception());
+            }
+        }
+        { // thread 2
+            try {
+                auto value = f2.get();
+                std::cout << "return value: " << value << std::endl;
+            }
+            catch (std::exception& ex) {
+                std::cout << "Exception" << ex.what() << std::endl;
+            }
+            catch (...) {
+                std::cout << "Unknown exception" << std::endl;
+            }
+        }
+    }
 }
