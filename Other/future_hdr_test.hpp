@@ -10,7 +10,7 @@ namespace future_hdr_test {
     inline void test() {
         std::cout << "future header tests" << std::endl;
 
-        //test_async();
-        test_packaged_task();
+        test_async();
+        //test_packaged_task();
     }
 }

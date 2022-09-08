@@ -94,6 +94,23 @@ namespace future_hdr_test {
             std::cout << "Wait timeout" << std::endl;
         }
 
+        std::cout << "\ntest 7" << std::endl;
+        // async залипает в той же области где разрушается future, если запускать в цикле то пока предидущий
+        // тред не завершится следующий async не запустится
+        // даже если вызвать future.wait_for(0) залипаем в области видимости пока тред текущего async не завершиться
+        // тоесть удаление(детач от треда async) future от треда пока тот не завершиться невозможен
+        auto fn7 = [](int thread_id, int timeout) -> int {
+            std::cout << "thread " << thread_id << "start" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(timeout));
+            std::cout << "thread " << thread_id << "end" << std::endl;
+            return thread_id;
+        };
+
+        int count = 3;
+        while (count--) {
+            auto f = std::async(fn7, count, 2);
+            f.wait_for(std::chrono::microseconds(0));
+        }
         std::this_thread::sleep_for(std::chrono::seconds(2));
     }
 
@@ -118,7 +135,6 @@ namespace future_hdr_test {
         // а packaged_task никаких тредов не создает он создает два объекта future и task, future пользует один поток чтобы ждать результат а task() дергается в другом потоке
         // пул сформированных задач task можно впаралель выпонять определенным количеством тредов что не приведет к неконтролируемому росту паралельно выполняющихся задач
         // по сравнению c async
-
 
         std::cout << "\ntest 1" << std::endl;
         std::packaged_task<std::string(int)> task1(packaged_task1);
