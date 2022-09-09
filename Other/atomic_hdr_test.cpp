@@ -40,4 +40,23 @@ namespace atomic_hdr_test {
         std::cout << "current : " << ab << ", expected : " << expected << ", set new: " << new_value
                   << ", success : " << ab.compare_exchange_weak(expected, new_value) << ", result value: " << ab << std::endl;
     }
+
+    void test_ptr() {
+        std::cout << "test std::atomic<T*> " << std::endl;
+
+        std::cout << "\ntest 1" << std::endl;
+        int i[] = {0, 1, 2, 3, 4, 5};
+        std::atomic<int*> api(i);
+        std::cout << "*api : " << *api << std::endl;
+
+        // fetch_..() return old value
+        std::cout << "*api.fetch_add(1) : " << *api.fetch_add(1) << ", *api : " << *api << std::endl;
+        std::cout << "*api.fetch_sub(1) : " << *api.fetch_sub(1) << ", *api : " << *api << std::endl;
+        // standard behaviour
+        std::cout << "*++api : " << *++api << ", *api : " << *api << std::endl;
+        std::cout << "*api++ : " << *api++ << ", *api : " << *api << std::endl;
+        // += -= &= |= ^=  return new value
+        std::cout << "*api+=1 : " << *(api += 1) << ", *api : " << *api << std::endl;
+        std::cout << "*api-=1 : " << *(api -= 1) << ", *api : " << *api << std::endl;
+    }
 }
