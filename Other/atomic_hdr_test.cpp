@@ -45,6 +45,9 @@ namespace atomic_hdr_test {
         std::cout << "test std::atomic<T*> " << std::endl;
 
         std::cout << "\ntest 1" << std::endl;
+        std::atomic<int*> api0;
+        std::cout << "api0 : " << api0.load() << std::endl;
+
         int i[] = {0, 1, 2, 3, 4, 5};
         std::atomic<int*> api(i);
         std::cout << "*api : " << *api << std::endl;
