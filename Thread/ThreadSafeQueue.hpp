@@ -23,7 +23,16 @@ namespace ThreadSafeQueue {
             m_cv.notify_one();
         }
 
-        bool pop(T& value, uint32_t timeout_ms = std::numeric_limits<uint32_t>::max()) {
+        bool pop(T& value) {
+            std::lock_guard lock(m_mtx);
+            if (m_queue.empty())
+                return false;
+            value = std::move(m_queue.front());
+            m_queue.pop();
+            return true;
+        }
+
+        bool pop(T& value, uint32_t timeout_ms) {
             std::unique_lock lock(m_mtx);
             if (m_cv.wait_for(lock, std::chrono::milliseconds(timeout_ms), [this] { return !m_queue.empty(); })) {
                 value = std::move(m_queue.front());
@@ -38,5 +47,4 @@ namespace ThreadSafeQueue {
             return m_queue.empty();
         }
     };
-
 }

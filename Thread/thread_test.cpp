@@ -57,13 +57,27 @@ namespace thread_test {
             int count = 0;
             while (!terminate) {
                 int value;
-                if (q.pop(value, wait_ms)) {
-                    std::cout << th_name << " read : " << value << std::endl;
-                    ++count;
+
+
+                if (wait_ms) {
+                    if (q.pop(value, wait_ms)) {
+                        std::cout << th_name << " read : " << value << std::endl;
+                        ++count;
+                    }
                 }
+                else {
+                    if (q.pop(value)) {
+                        std::cout << th_name << "----------- read : " << value << std::endl;
+                        ++count;
+                    }
+                }
+
                 if (q.empty()) {
                     std::cout << th_name << " queue is empty" << std::endl;
-                    std::this_thread::sleep_for(std::chrono::milliseconds(wait_ms));
+                    if (wait_ms)
+                        std::this_thread::sleep_for(std::chrono::milliseconds(wait_ms));
+                    else
+                        std::this_thread::sleep_for(std::chrono::milliseconds(10));
                 }
             }
             std::cout << th_name << "... stop, count = " << count << std::endl;
@@ -77,7 +91,7 @@ namespace thread_test {
         auto r1                    = std::async(th_read, std::ref(q), "read1", 10, std::ref(terminate));
         auto r2                    = std::async(th_read, std::ref(q), "read2", 10, std::ref(terminate));
         auto r3                    = std::async(th_read, std::ref(q), "read3", 10, std::ref(terminate));
-        auto r4                    = std::async(th_read, std::ref(q), "read4", 10, std::ref(terminate));
+        auto r4                    = std::async(th_read, std::ref(q), "read4", 0, std::ref(terminate));
 
         int populate_total = 0;
         int read_total     = 0;
