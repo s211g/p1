@@ -127,5 +127,94 @@ namespace atomic_hdr_test {
             std::atomic<bool> _locked;
         };
         */
+
+        std::atomic<bool> x{false};
+        std::atomic<bool> y{false};
+
+        // thread1
+        {
+            x.store(true, std::memory_order_relaxed);
+            y.store(true, std::memory_order_release);
+        }
+        // thread2
+        {
+            while (!y.load(std::memory_order_acquire)) {};
+            bool x_ = x.load(std::memory_order_relaxed);
+            assert(x_); // x == true, тк устанавливается в другом потоке до y
+            std::cout << "x = " << x_ << std::endl;
+        }
+
+        std::cout << "\ntest 5" << std::endl;
+        // std::memory_order_acq_rel одновременно синхронизирует с предидущим a.store(1, memory_order_release)
+        //  и следующим a.load(memory_order_acquire)
+
+        std::atomic<int> x5{0};
+        // thread1
+        {
+            x5.store(1, std::memory_order_release);
+        }
+        // thread2
+        {
+            int expected = 1;
+            while (!x5.compare_exchange_strong(expected, 2, std::memory_order_acq_rel))
+                ;
+        }
+        // thread3
+        {
+            while (x5.load(std::memory_order_acquire) < 2)
+                ;
+            std::cout << "x5 = " << x5.load() << std::endl;
+        }
+
+        std::cout << "\ntest 6" << std::endl;
+        // модификация атомарной переменной c a.store(new_value, memory_order_release) сразуже будет видна в другом потоке
+        // value = a.load(memory_order_consume)
+        // !!! все модификации памяти в потоке до .store() не гарантируются что будут видны в другом потоке после .load()
+        struct X6 {
+            int x;
+            std::string s;
+        };
+
+        std::atomic<bool> y6{false};
+        std::atomic<X6*> x6;
+
+        // thread1
+        {
+            X6* px6 = new X6;
+            px6->s  = "aaa";
+            px6->x  = 123;
+
+            y6.store(true, std::memory_order_relaxed);
+            x6.store(px6, std::memory_order_release);
+        }
+        // thread2
+        {
+            while (!x6.load(std::memory_order_consume)) {};
+            // есть гарантия что команды зависящие от px6(px6->s = "aaa"; px6->x = 123;) выполнились и видны в этом треде
+            std::cout << "y6 = " << y6.load(std::memory_order_relaxed) << std::endl; // нет гарантии что будет = 1, хотя команда выполнилась в предидущем потоке до x6.store(release)
+        }
+
+
+        std::cout << "\ntest 7" << std::endl;
+        // все операции с атомиками до std::atomic_thread_fence(release) в одном потоке(!!! после ее пересечения)
+        // видны после std::atomic_thread_fence(acquire) в другом потоке
+        std::atomic<bool> x7{false};
+        std::atomic<bool> y7{false};
+
+        // thread1
+        {
+            x7.store(true, std::memory_order_relaxed);
+            std::atomic_thread_fence(std::memory_order_release);
+            y7.store(true, std::memory_order_relaxed);
+        }
+        // thread2
+        {
+            while (!y7.load(std::memory_order_acquire)) {}; // выход из цикла - признак того что в первом потоке пересекли стену atomic_thread_fence(release)
+            std::atomic_thread_fence(std::memory_order_acquire);
+            bool x7_ = x7.load(std::memory_order_relaxed);
+            assert(x7_); // x7 == true, тк устанавливается в другом потоке до std::atomic_thread_fence(release)
+            std::cout << "x7 = " << x7_ << std::endl;
+        }
     }
+
 }
