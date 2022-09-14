@@ -1,9 +1,4 @@
 #include <iostream>
-#include <mutex>
-#include <shared_mutex>
-#include <thread>
-#include <functional>
-#include <memory>
 
 #include "thread_test.hpp"
 #include "ThreadsPool.hpp"
