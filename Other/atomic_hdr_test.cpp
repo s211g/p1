@@ -34,8 +34,11 @@ namespace atomic_hdr_test {
                   << ", success : " << ab.compare_exchange_strong(expected, new_value) << ", result value: " << ab << std::endl;
 
         std::cout << "\ntest 3" << std::endl;
-        // compare_exchange_weak() - replace operation may fail
-        // to set a new value to 100%, the operation is called in a loop
+        // compare_exchange_weak(expected, new_value) - replace operation may fail
+        // to set a new value to 100%, the operation is called in a loop,
+        // причем expected надо снова возвращать в предидущее значение которое нам надопередать в функцию
+        // expected 	- 	reference to the value expected to be found in the atomic object. Gets stored with the actual value of *this if the comparison fails.
+        //                  !!! при неудачном вызове expected(ссылка) заполнятется текущим значением
         expected  = true;
         new_value = false;
         std::cout << "current : " << ab << ", expected : " << expected << ", set new: " << new_value
@@ -114,8 +117,9 @@ namespace atomic_hdr_test {
         public:
             void lock() {
                 bool expected = false;
-                while (!_locked.compare_exchange_weak(expected, true, std::memory_order_acquire)) {
-                    expected = false;
+                bool expected_ = expected;
+                    while (!_locked.compare_exchange_weak(expected_, true, std::memory_order_acquire)) {
+                    expected_ = expected; // need reload 
                 }
             }
 
