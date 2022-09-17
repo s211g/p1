@@ -203,7 +203,7 @@ namespace thread_test {
             int i     = 0;
             int count = 0;
             while (!terminate) {
-                auto value = q.pop();
+                auto value = q.popS();
                 if (value) {
                     std::cout
                         << th_name << "----------- read : " << value->i << std::endl;

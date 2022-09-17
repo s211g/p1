@@ -1,8 +1,6 @@
 #pragma once
 
-#include <atomic>
 #include <queue>
-#include <thread>
 #include <mutex>
 #include <condition_variable>
 
@@ -80,8 +78,7 @@ namespace ThreadSafeQueue {
         }
 
     public:
-        void push(T& data) {
-            std::shared_ptr<T> new_data = std::make_shared<T>(data);
+        void pushS(std::shared_ptr<T>& new_data) {
             std::unique_ptr<node> new_node(new node);
             {
                 std::lock_guard<std::mutex> lock(tail_mutex);
@@ -93,7 +90,12 @@ namespace ThreadSafeQueue {
             data_cond.notify_one(); // проверить сколько тредов проснуца если вызвать несколько раз подряд потом ткнуца на вычитывание
         }
 
-        std::shared_ptr<T> pop(uint32_t timeout_ms) {
+        void push(T& data) {
+            std::shared_ptr<T> new_data = std::make_shared<T>(data);
+            pushS(new_data);
+        }
+
+        std::shared_ptr<T> popS(uint32_t timeout_ms) {
             std::unique_lock<std::mutex> lock(head_mutex);
             if (!timeout_ms) {
                 if (head.get() == get_tail())
@@ -107,12 +109,13 @@ namespace ThreadSafeQueue {
             return std::unique_ptr<T>();
         }
 
-        bool pop(T& data, uint32_t timeout_ms) {
+        bool pop(T& data, uint32_t timeout_ms = 0) {
             std::unique_lock<std::mutex> lock(head_mutex);
 
             if (!timeout_ms) {
                 if (head.get() == get_tail())
                     return false;
+
                 data = std::move(*pop_head()->data);
                 return true;
             }

@@ -59,7 +59,7 @@ namespace ThreadSafeStack {
                 ;
         }
 
-        std::shared_ptr<T> pop() {
+        std::shared_ptr<T> popS() {
             node* old_head = head.load();
             while (old_head && !head.compare_exchange_weak(old_head, old_head->next))
                 ;
