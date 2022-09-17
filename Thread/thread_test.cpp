@@ -4,6 +4,7 @@
 #include "ThreadsPool.hpp"
 #include "ThreadSafeQueue.hpp"
 #include "ThreadSafeStack.hpp"
+#include "ThreadSafeLTable.hpp"
 
 namespace thread_test {
     void test1() {
@@ -243,6 +244,11 @@ namespace thread_test {
         read_total += r3.get();
         read_total += r4.get();
         std::cout << "LockFreeStackS populate_total = " << populate_total << " read_total = " << read_total << std::endl;
+    }
+
+    void test_ThreadSafeLTable() {
+        std::cout << "\ntest ThreadSafeLTable::ThreadSafeLTable" << std::endl;
+        ThreadSafeLTable::ThreadSafeLTable<std::string, int> t1;
     }
 
 }
