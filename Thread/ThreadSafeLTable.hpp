@@ -4,6 +4,7 @@
 #include <list>
 #include <vector>
 #include <utility>
+#include <algorithm>
 
 namespace ThreadSafeLTable {
 
@@ -14,19 +15,27 @@ namespace ThreadSafeLTable {
             typedef std::pair<Key, Value> bucket_value;
             typedef std::list<bucket_value> bucket_data;
             typedef typename bucket_data::iterator bucket_iterator;
+            typedef typename bucket_data::const_iterator bucket_iterator_const;
 
             bucket_data data;
             mutable std::shared_mutex mutex;
 
-            bucket_iterator find_entry_for(Key const& key) const {
+            bucket_iterator_const find_entry_for(Key const& key) const {
                 return std::find_if(data.begin(), data.end(), [&](bucket_value const& item) {
                     return item.first == key;
                 });
             }
 
+            bucket_iterator find_entry_for(Key const& key) {
+                return std::find_if(data.begin(), data.end(), [&](bucket_value const& item) {
+                    return item.first == key;
+                });
+            }
+
+        public:
             bool getValue(Key const& key, Value& value) const {
                 std::shared_lock lock(mutex);
-                bucket_iterator const found_entry = find_entry_for(key);
+                bucket_iterator_const found_entry = find_entry_for(key);
                 if (found_entry == data.end())
                     return false;
                 value = found_entry->second;
@@ -35,8 +44,7 @@ namespace ThreadSafeLTable {
 
             bool addValue(Key const& key, Value const& value) {
                 std::lock_guard lock(mutex);
-                //bucket_iterator const found_entry = find_entry_for(key);
-                const bucket_iterator found_entry = find_entry_for(key);
+                bucket_iterator found_entry = find_entry_for(key);
                 if (found_entry == data.end()) {
                     data.push_back(bucket_value(key, value));
                     return true;
@@ -77,7 +85,7 @@ namespace ThreadSafeLTable {
             return get_bucklet(key).getValue(key, value);
         }
 
-        bool getValue(Key const& key, Value const& value) const {
+        bool addValue(Key const& key, Value const& value) const {
             return get_bucklet(key).addValue(key, value);
         }
 

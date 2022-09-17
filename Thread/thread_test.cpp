@@ -1,4 +1,6 @@
 #include <iostream>
+#include <string>
+#include <cassert>
 
 #include "thread_test.hpp"
 #include "ThreadsPool.hpp"
@@ -248,7 +250,71 @@ namespace thread_test {
 
     void test_ThreadSafeLTable() {
         std::cout << "\ntest ThreadSafeLTable::ThreadSafeLTable" << std::endl;
-        ThreadSafeLTable::ThreadSafeLTable<std::string, int> t1;
-    }
 
+        typedef ThreadSafeLTable::ThreadSafeLTable<std::string, int> table_t;
+        table_t t;
+        auto th_populate = [](table_t& t, std::string th_name, int start, int count, int interval_ms) {
+            std::cout << th_name << " ... start" << std::endl;
+            int add_count = 0;
+            int i         = 0;
+            while (i < count) {
+                int value       = i++ + start;
+                std::string key = std::to_string(value);
+                if (t.addValue(key, value))
+                    ++add_count;
+                std::this_thread::sleep_for(std::chrono::milliseconds(interval_ms));
+            }
+            std::cout << th_name << " ... stop" << std::endl;
+            return add_count;
+        };
+
+        auto th_read = [](table_t& t, std::string th_name, int count, uint32_t wait_ms, std::atomic_bool& terminate) {
+            std::cout << th_name << "... start" << std::endl;
+            int read_count = 0;
+            int i          = 0;
+            //            while (i < count) {
+            //                int value       = i++;
+            while (count) {
+                int value       = --count;
+                std::string key = std::to_string(value);
+                int value_      = 0;
+                if (t.getValue(key, value_)) {
+                    ++read_count;
+                    assert(value == value_);
+                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(wait_ms));
+            }
+            std::cout << th_name << " ... stop" << std::endl;
+            return read_count;
+        };
+
+
+        std::atomic_bool terminate = false;
+        int iter_count             = 100000;
+        auto p1                    = std::async(th_populate, std::ref(t), "populate1", 0, iter_count, 0);
+        auto p2                    = std::async(th_populate, std::ref(t), "populate2", 1000, iter_count, 0);
+        auto r1                    = std::async(th_read, std::ref(t), "read1", iter_count + 1000, 0, std::ref(terminate));
+        auto r2                    = std::async(th_read, std::ref(t), "read2", iter_count + 1000, 0, std::ref(terminate));
+        auto r3                    = std::async(th_read, std::ref(t), "read3", iter_count + 1000, 0, std::ref(terminate));
+        auto r4                    = std::async(th_read, std::ref(t), "read4", iter_count + 1000, 0, std::ref(terminate));
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+        int a1 = p1.get();
+        int a2 = p2.get();
+        std::cout << "LockFreeStackS populate p1 = " << a1 << std::endl;
+        std::cout << "LockFreeStackS populate p2 = " << a2 << std::endl;
+        std::cout << "LockFreeStackS populate total = " << a1 + a2 << std::endl;
+
+        std::cout << "LockFreeStackS read r1 = " << r1.get() << std::endl;
+        std::cout << "LockFreeStackS read r2 = " << r2.get() << std::endl;
+        std::cout << "LockFreeStackS read r3 = " << r3.get() << std::endl;
+        std::cout << "LockFreeStackS read r4 = " << r4.get() << std::endl;
+
+        auto r5 = std::async(th_read, std::ref(t), "read5", iter_count + 1000, 0, std::ref(terminate));
+        auto r6 = std::async(th_read, std::ref(t), "read6", iter_count + 1000, 0, std::ref(terminate));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::cout << "LockFreeStackS read r5 = " << r5.get() << std::endl;
+        std::cout << "LockFreeStackS read r6 = " << r6.get() << std::endl;
+    }
 }
