@@ -252,7 +252,10 @@ namespace thread_test {
         std::cout << "\ntest ThreadSafeLTable::ThreadSafeLTable" << std::endl;
 
         typedef ThreadSafeLTable::ThreadSafeLTable<std::string, int> table_t;
-        table_t t;
+        //table_t t;
+        table_t t(1000000);
+        int iter_count = 1000000;
+
         auto th_populate = [](table_t& t, std::string th_name, int start, int count, int interval_ms) {
             std::cout << th_name << " ... start" << std::endl;
             int add_count = 0;
@@ -290,7 +293,6 @@ namespace thread_test {
 
 
         std::atomic_bool terminate = false;
-        int iter_count             = 100000;
         auto p1                    = std::async(th_populate, std::ref(t), "populate1", 0, iter_count, 0);
         auto p2                    = std::async(th_populate, std::ref(t), "populate2", 1000, iter_count, 0);
         auto r1                    = std::async(th_read, std::ref(t), "read1", iter_count + 1000, 0, std::ref(terminate));
@@ -313,8 +315,9 @@ namespace thread_test {
 
         auto r5 = std::async(th_read, std::ref(t), "read5", iter_count + 1000, 0, std::ref(terminate));
         auto r6 = std::async(th_read, std::ref(t), "read6", iter_count + 1000, 0, std::ref(terminate));
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        std::cout << "LockFreeStackS read r5 = " << r5.get() << std::endl;
-        std::cout << "LockFreeStackS read r6 = " << r6.get() << std::endl;
+        int rr5 = r5.get();
+        int rr6 = r6.get();
+        std::cout << "LockFreeStackS read r5 = " << rr5 << std::endl;
+        std::cout << "LockFreeStackS read r6 = " << rr6 << std::endl;
     }
 }
