@@ -36,16 +36,20 @@ namespace thread_test {
     }
 
     void test_thread_safe_queue() {
-        std::cout << "\ntest thread safe queue" << std::endl;
+        //std::cout << "\ntest ThreadSafeQueue::ThreadSafeQueue" << std::endl;
+        //typedef ThreadSafeQueue::ThreadSafeQueue<int> qInt_t;
 
-        typedef ThreadSafeQueue::ThreadSafeQueue1<int> qInt_t;
+        std::cout << "\ntest ThreadSafeQueue::ThreadSafeQueueS" << std::endl;
+        typedef ThreadSafeQueue::ThreadSafeQueueS<int> qInt_t;
+
         qInt_t q;
 
         auto th_populate = [](qInt_t& q, std::string th_name, int start, int count, int interval_ms) {
             std::cout << th_name << " ... start" << std::endl;
             int i = 0;
             while (i < count) {
-                q.push(start + i++);
+                int value = start + i++;
+                q.push(value);
                 std::this_thread::sleep_for(std::chrono::milliseconds(interval_ms));
             }
             std::cout << th_name << " ... stop" << std::endl;
@@ -57,8 +61,7 @@ namespace thread_test {
             int i     = 0;
             int count = 0;
             while (!terminate) {
-                int value;
-
+                int value{0};
 
                 if (wait_ms) {
                     if (q.pop(value, wait_ms)) {
