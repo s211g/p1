@@ -24,7 +24,7 @@ namespace ThreadSafeList {
     public:
         ThreadSafeList() {}
         ~ThreadSafeList() {
-            remove_if([](node const&) { return true; });
+            remove_if([](T const&) { return true; });
         }
         ThreadSafeList(const ThreadSafeList&) = delete;
         ThreadSafeList& operator=(const ThreadSafeList&) = delete;

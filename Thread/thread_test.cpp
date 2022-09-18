@@ -292,7 +292,6 @@ namespace thread_test {
             return read_count;
         };
 
-
         std::atomic_bool terminate = false;
         auto p1                    = std::async(th_populate, std::ref(t), "populate1", 0, iter_count, 0);
         auto p2                    = std::async(th_populate, std::ref(t), "populate2", 1000, iter_count, 0);
@@ -327,6 +326,10 @@ namespace thread_test {
 
         typedef ThreadSafeList::ThreadSafeList<std::string> table_t;
         table_t t;
+        t.push_front("1");
+        t.push_front("2");
+        return;
+
         int iter_count = 1000;
 
         auto th_populate = [](table_t& t, std::string th_name, int start, int count, int interval_ms) {
