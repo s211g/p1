@@ -383,7 +383,7 @@ namespace thread_test {
 
         t.remove_if([](const std::string& value) { static int i{1}; return i++>10; });
         t.for_each([](const std::string& value) { static int i{1}; std::cout << "[" << i++ <<  "] : " << value << std::endl; });
-        t.for_each([](std::string& value) { value += "__"; });
+        t.for_each([](std::string& value) { value = "__" + value + "__"; });
         t.for_each([](const std::string& value) { static int i{1}; std::cout << "[" << i++ <<  "] : " << value << std::endl; });
     }
 }
