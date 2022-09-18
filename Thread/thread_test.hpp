@@ -10,6 +10,7 @@ namespace thread_test {
     void test_LockFreeStack();
     void test_LockFreeStackS();
     void test_ThreadSafeLTable();
+    void test_ThreadSafeList();
 
     inline void test() {
         std::cout << "thread tests" << std::endl;
@@ -19,6 +20,7 @@ namespace thread_test {
         //test_thread_safe_queue();
         //test_LockFreeStack();
         //test_LockFreeStackS();
-        test_ThreadSafeLTable();
+        //test_ThreadSafeLTable();
+        test_ThreadSafeList();
     }
 }

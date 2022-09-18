@@ -7,6 +7,7 @@
 #include "ThreadSafeQueue.hpp"
 #include "ThreadSafeStack.hpp"
 #include "ThreadSafeLTable.hpp"
+#include "ThreadSafeList.hpp"
 
 namespace thread_test {
     void test1() {
@@ -319,5 +320,70 @@ namespace thread_test {
         int rr6 = r6.get();
         std::cout << "LockFreeStackS read r5 = " << rr5 << std::endl;
         std::cout << "LockFreeStackS read r6 = " << rr6 << std::endl;
+    }
+
+    void test_ThreadSafeList() {
+        std::cout << "\ntest ThreadSafeList::ThreadSafeList" << std::endl;
+
+        typedef ThreadSafeList::ThreadSafeList<std::string> table_t;
+        table_t t;
+        int iter_count = 1000;
+
+        auto th_populate = [](table_t& t, std::string th_name, int start, int count, int interval_ms) {
+            std::cout << th_name << " ... start" << std::endl;
+            int add_count = 0;
+            int i         = 0;
+            while (i < count) {
+                int value_        = i++ + start;
+                std::string value = std::to_string(value_);
+                t.push_front(value);
+                ++add_count;
+                std::this_thread::sleep_for(std::chrono::milliseconds(interval_ms));
+            }
+            std::cout << th_name << " ... stop" << std::endl;
+            return add_count;
+        };
+
+        auto th_remove_if = [](table_t& t, std::string th_name, int count, uint32_t wait_ms, std::atomic_bool& terminate) {
+            std::cout << th_name << "... start" << std::endl;
+            int remove_count = 0;
+            int i            = 0;
+            while (i != count) {
+                int value_ = i;
+                i += 2;
+                std::string value = std::to_string(value_);
+                remove_count += t.remove_if([](const std::string& v) { return true; });
+                std::this_thread::sleep_for(std::chrono::milliseconds(wait_ms));
+            }
+            std::cout << th_name << " ... stop" << std::endl;
+            return remove_count;
+        };
+
+        std::atomic_bool terminate = false;
+        auto p1                    = std::async(th_populate, std::ref(t), "populate1", 0, iter_count, 0);
+        auto p2                    = std::async(th_populate, std::ref(t), "populate2", 1000, iter_count, 0);
+        auto r1                    = std::async(th_remove_if, std::ref(t), "remove", iter_count + 1000, 0, std::ref(terminate));
+        auto r2                    = std::async(th_remove_if, std::ref(t), "remove", iter_count + 1000, 0, std::ref(terminate));
+
+        int a1      = p1.get();
+        int a2      = p2.get();
+        int p_total = a1 + a2;
+        std::cout << "populate p1 = " << a1 << std::endl;
+        std::cout << "populate p2 = " << a2 << std::endl;
+        std::cout << "populate total = " << p_total << std::endl;
+
+        int rr1     = r1.get();
+        int rr2     = r2.get();
+        int r_total = rr1 + rr2;
+        std::cout << "remove r1 = " << rr1 << std::endl;
+        std::cout << "remove r2 = " << rr2 << std::endl;
+        std::cout << "remove total = " << r_total << std::endl;
+
+        std::cout << "table size = " << t.size() << ", pop-remove = " << p_total - r_total << std::endl;
+
+        t.remove_if([](const std::string& value) { static int i{1}; return i++>10; });
+        t.for_each([](const std::string& value) { static int i{1}; std::cout << "[" << i++ <<  "] : " << value << std::endl; });
+        t.for_each([](std::string& value) { value += "__"; });
+        t.for_each([](const std::string& value) { static int i{1}; std::cout << "[" << i++ <<  "] : " << value << std::endl; });
     }
 }
