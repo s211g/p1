@@ -12,6 +12,8 @@ namespace ThreadSafeStack {
         LockFreeStackNode* next;
         LockFreeStackNode(T const& data_) :
             data(data_) {}
+        //T& getData() { return data; }
+        //std::shared_ptr<T> getDataS() { return std::make_shared<T>(data); }
     };
 
     template <typename T>
@@ -20,6 +22,8 @@ namespace ThreadSafeStack {
         LockFreeStackSNode* next;
         LockFreeStackSNode(T const& data_) :
             data(std::make_shared<T>(data_)) {}
+        //T& getData() { return *data; }
+        //std::shared_ptr<T> getDataS() { return std::move(data); }
     };
 
     template <typename T, typename Node>
@@ -44,6 +48,52 @@ namespace ThreadSafeStack {
 
         bool empty() {
             return !head.load();
+        }
+    };
+
+    template <typename Node>
+    class LockFreeStackNodeDeleter {
+    protected:
+        std::atomic<unsigned> threads_in_pop{0};
+        std::atomic<Node*> to_be_deleted;
+        void try_reclaim(Node* node) {
+            if (threads_in_pop == 1) {
+                Node* nodes_to_delete = to_be_deleted.exchange(nullptr);
+                if (!--threads_in_pop)
+                    delete_nodes(nodes_to_delete);
+                else if (nodes_to_delete) {
+                    chain_pending_nodes(nodes_to_delete);
+                }
+                if (node)
+                    delete node;
+            }
+            else {
+                if (node)
+                    chain_pending_nodes(node, node);
+                --threads_in_pop;
+            }
+        }
+
+        void chain_pending_nodes(Node* nodes) {
+            Node* last = nodes;
+            while (Node* const next = last->next) {
+                last = next;
+            }
+            chain_pending_nodes(nodes, last);
+        }
+
+        void chain_pending_nodes(Node* first, Node* last) {
+            last->next = to_be_deleted;
+            while (!to_be_deleted.compare_exchange_weak(last->next, first))
+                ;
+        }
+
+        static void delete_nodes(Node* nodes) {
+            while (nodes) {
+                Node* node = nodes->next;
+                delete nodes;
+                nodes = node;
+            }
         }
     };
 
@@ -88,36 +138,41 @@ namespace ThreadSafeStack {
         }
     };
 
-    template <typename T, typename Node = LockFreeStackNode<T>, typename Base = LockFreeStackBase<T, Node>>
-    class LockFreeStack : public Base {
+    template <typename T, typename Node = LockFreeStackNode<T>, typename Base = LockFreeStackBase<T, Node>, typename Deleter = LockFreeStackNodeDeleter<Node>>
+    class LockFreeStack : public Base, public Deleter {
         using Base::head;
         using Base::pop_head;
+        using Deleter::threads_in_pop;
+        using Deleter::try_reclaim;
 
     public:
         bool pop(T& data) {
+            ++threads_in_pop;
             Node* old_head = pop_head();
-            if (!old_head)
-                return false;
-            data = old_head->data;
-            delete old_head;
-            return true;
+            if (old_head)
+                data = old_head->data;
+            try_reclaim(old_head);
+            return old_head;
         }
     };
 
-    template <typename T, typename Node = LockFreeStackSNode<T>, typename Base = LockFreeStackBase<T, Node>>
-    class LockFreeStackS : public Base {
+    template <typename T, typename Node = LockFreeStackSNode<T>, typename Base = LockFreeStackBase<T, Node>, typename Deleter = LockFreeStackNodeDeleter<Node>>
+    class LockFreeStackS : public Base, public Deleter {
         using Base::head;
         using Base::pop_head;
+        using Deleter::threads_in_pop;
+        using Deleter::try_reclaim;
 
     public:
-        std::shared_ptr<T> popS() {
+        std::shared_ptr<T>
+        popS() {
+            ++threads_in_pop;
             Node* old_head = pop_head();
-            if (old_head) {
-                std::shared_ptr<T> data = old_head->data;
-                delete old_head;
-                return data;
-            }
-            return std::shared_ptr<T>();
+            std::shared_ptr<T> data;
+            if (old_head)
+                data.swap(old_head->data);
+            try_reclaim(old_head);
+            return data;
         }
 
         bool empty() {

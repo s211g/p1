@@ -15,25 +15,8 @@
 #include "atomic_hdr_test.hpp"
 
 
-template <typename T>
-class A {
-public:
-    int i;
-};
-
-template <typename T>
-class B : public A<T> {
-    using A<T>::i;
-
-public:
-    void f() {
-        i = 0;
-    }
-};
 
 int main() {
-    B<int> b;
-
     //mutex_test::test();
     //smartpointer_test::test();
     //scopeguard_test::test();

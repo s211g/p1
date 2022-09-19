@@ -20,10 +20,10 @@ namespace thread_test {
         //test1();
         //test_thread_pool();
         //test_thread_safe_queue();
-        //test_LockFreeStack();
-        test_LockFreeStackXW1R();
-        //test_LockFreeStackS();
+        //test_LockFreeStackXW1R();
         //test_LockFreeStackSXW1R();
+        //test_LockFreeStack();
+        test_LockFreeStackS();
         //test_ThreadSafeLTable();
         //test_ThreadSafeList();
     }
