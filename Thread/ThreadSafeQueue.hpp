@@ -46,7 +46,7 @@ namespace ThreadSafeQueue {
         }
     };
 
-    // head -> node -> node -> node <-tail
+    // head = node -> node -> node = tail
     template <typename T>
     class ThreadSafeQueueS {
     private:
@@ -130,6 +130,76 @@ namespace ThreadSafeQueue {
         bool empty() {
             std::unique_lock<std::mutex> lock(head_mutex);
             return head.get() == get_tail();
+        }
+    };
+
+
+    // 1 writers, 1 Reader
+    template <typename T>
+    class LockFreeQueueS1W1R {
+    private:
+        struct node {
+            std::shared_ptr<T> data;
+            node* next;
+            node() :
+                next(nullptr) {}
+        };
+
+        std::atomic<node*> head;
+        std::atomic<node*> tail;
+
+        node* pop_head() {
+            node* const old_head = head.load();
+            if (old_head == tail.load())
+                return nullptr;
+            head.store(old_head->next);
+            return old_head;
+        }
+
+    public:
+        LockFreeQueueS1W1R() :
+            head(new node), tail(head.load()) {}
+        LockFreeQueueS1W1R(const LockFreeQueueS1W1R&) = delete;
+        LockFreeQueueS1W1R& operator=(const LockFreeQueueS1W1R&) = delete;
+        ~LockFreeQueueS1W1R() {
+            while (node* const old_node = head.load()) {
+                head.store(old_node->next);
+                delete old_node;
+            }
+        }
+
+        void push(T& data) {
+            std::shared_ptr<T> new_data = std::make_shared<T>(data);
+            node* new_node              = new node;
+            node* const old_tail        = tail.load();
+            // tail фиктивный, заполняем его реальными данными , ->next = на новый пустой фиктивный tail, новый фиктивный tail в объект tail
+            old_tail->data.swap(new_data);
+            old_tail->next = new_node;
+            tail.store(new_node);
+        }
+
+        bool pop(T& data) {
+            node* old_head = pop_head();
+            if (old_head) {
+                data = std::move(*old_head->data);
+                delete old_head;
+                return true;
+            }
+            return false;
+        }
+
+        std::shared_ptr<T> popS() {
+            node* old_head = pop_head();
+            std::shared_ptr<T> data;
+            if (old_head) {
+                data.swap(old_head->data);
+                delete old_head;
+            }
+            return data;
+        }
+
+        bool empty() {
+            return head.load() == tail.load();
         }
     };
 }

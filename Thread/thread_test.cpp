@@ -115,6 +115,62 @@ namespace thread_test {
         std::cout << "populate_total = " << populate_total << " read_total = " << read_total << std::endl;
     }
 
+    void test_LockFreeQueueS1W1R() {
+        std::cout << "\ntest ThreadSafeQueue::LockFreeQueueS1W1R" << std::endl;
+        typedef ThreadSafeQueue::LockFreeQueueS1W1R<int> sInt_t;
+        sInt_t q;
+
+        auto th_populate = [](sInt_t& q, std::string th_name, int start, int count, int interval_ms) {
+            std::cout << th_name << " ... start" << std::endl;
+            int i = 0;
+            while (i < count) {
+                int value = start + i++;
+                q.push(value);
+                std::this_thread::sleep_for(std::chrono::milliseconds(interval_ms));
+            }
+            std::cout << th_name << " ... stop" << std::endl;
+            return count;
+        };
+
+        auto th_read = [](sInt_t& q, std::string th_name, uint32_t wait_ms, std::atomic_bool& terminate) {
+            std::cout << th_name << "... start" << std::endl;
+            int i     = 0;
+            int count = 0;
+            while (!terminate) {
+                int value;
+
+                if (q.pop(value)) {
+                    std::cout << th_name << "----------- read : " << value << std::endl;
+                    ++count;
+                }
+
+                if (q.empty()) {
+                    std::cout << th_name << " queue is empty" << std::endl;
+                    if (wait_ms)
+                        std::this_thread::sleep_for(std::chrono::milliseconds(wait_ms));
+                    else
+                        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                }
+            }
+            std::cout << th_name << "... stop, count = " << count << std::endl;
+            return count;
+        };
+
+        std::atomic_bool terminate = false;
+        int iter_count             = 200;
+        auto p1                    = std::async(th_populate, std::ref(q), "populate1", 1000, iter_count, 10);
+        auto r1                    = std::async(th_read, std::ref(q), "read1", 10, std::ref(terminate));
+
+        int populate_total = 0;
+        int read_total     = 0;
+
+        populate_total += p1.get();
+        terminate = true;
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        read_total += r1.get();
+        std::cout << "LockFreeQueueS1W1R populate_total = " << populate_total << " read_total = " << read_total << std::endl;
+    }
+
     void test_LockFreeStackXW1R() {
         std::cout << "\ntest ThreadSafeStack::LockFreeStackXW1R (X writers, 1 reader)" << std::endl;
 
