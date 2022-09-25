@@ -13,6 +13,21 @@ namespace thread_test {
     void test1() {
         int const ht = std::thread::hardware_concurrency();
         std::cout << "hardware_concurrency = " << ht << std::endl;
+
+        auto thread_info = [](std::string name) { std::cout << name << " thread id : " << std::this_thread::get_id() << ", number: " << ThreadsPool::getThreadNumber() << std::endl; };
+        auto thread_fn   = [thread_info](std::string name, int count, int delay_ms) {
+            while (count--) {
+                thread_info(name);
+                std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
+            }
+        };
+
+        auto f1 = std::async(thread_fn, "thread0", 10, 10);
+        auto f2 = std::async(thread_fn, "thread1", 10, 10);
+        auto f3 = std::async(thread_fn, "thread2", 10, 10);
+        f1.wait();
+        f2.wait();
+        f3.wait();
     }
 
     void test_thread_pool() {
@@ -568,4 +583,32 @@ namespace thread_test {
         t.for_each([](std::string& value) { value = "__" + value + "__"; });
         t.for_each([](const std::string& value) { static int i{1}; std::cout << "[" << i++ <<  "] : " << value << std::endl; });
     }
+
+    void test_ThreadBarier() {
+        int const ht = std::thread::hardware_concurrency();
+        std::cout << "hardware_concurrency = " << ht << std::endl;
+        ThreadsPool::ThreadBarier barier(3);
+
+        auto thread_fn = [&](std::string name, int count, int delay_ms) {
+            int i(0);
+            while (i < count) {
+                std::cout << name << " begin, remain i = " << i << std::endl;
+                std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
+                std::cout << name << " end, remain i = " << i << std::endl;
+                barier.wait();
+                ++i;
+            }
+
+            std::cout << name << " done_waiting()" << std::endl;
+            barier.done_waiting();
+        };
+
+        auto f1 = std::async(thread_fn, "thread0", 7, 100);
+        auto f2 = std::async(thread_fn, "thread1", 7, 500);
+        auto f3 = std::async(thread_fn, "thread2", 5, 1000);
+        f1.wait();
+        f2.wait();
+        f3.wait();
+    }
+
 }

@@ -12,6 +12,38 @@ namespace ThreadsPool {
 
     using work = std::function<void()>;
 
+    int getThreadNumber();
+
+    struct ThreadBarier {
+        std::atomic<unsigned> count;
+        std::atomic<unsigned> spaces;
+        std::atomic<unsigned> generation;
+
+    public:
+        ThreadBarier(unsigned count_) :
+            count(count_), spaces(count_), generation() {}
+
+        void wait() {
+            unsigned const gen = generation.load();
+            if (!--spaces) {
+                spaces = count.load();
+                ++generation;
+            }
+            else {
+                while (generation.load() == gen)
+                    std::this_thread::yield();
+            }
+        }
+
+        void done_waiting() {
+            --count;
+            if (!--spaces) {
+                spaces = count.load();
+                ++generation;
+            }
+        }
+    };
+
     template <class T>
     class notifyQueue {
     public:

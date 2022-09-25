@@ -14,6 +14,7 @@ namespace thread_test {
     void test_LockFreeStackSXW1R();
     void test_ThreadSafeLTable();
     void test_ThreadSafeList();
+    void test_ThreadBarier();
 
     inline void test() {
         std::cout << "thread tests" << std::endl;
@@ -21,12 +22,13 @@ namespace thread_test {
         //test1();
         //test_thread_pool();
         //test_thread_safe_queue();
-        test_LockFreeQueueS1W1R();
+        //test_LockFreeQueueS1W1R();
         //test_LockFreeStackXW1R();
         //test_LockFreeStackSXW1R();
         //test_LockFreeStack();
         //test_LockFreeStackS();
         //test_ThreadSafeLTable();
         //test_ThreadSafeList();
+        test_ThreadBarier();
     }
 }

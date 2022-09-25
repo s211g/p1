@@ -6,6 +6,17 @@
 
 namespace ThreadsPool {
 
+    std::atomic<int> threadNumberCounter{0};
+
+    int getThreadNumber() {
+        thread_local static int thread_number{-1};
+        if (thread_number == -1)
+            thread_number = threadNumberCounter++;
+        return thread_number;
+    }
+
+
+
     ThreadsPool::ThreadsPool(const std::atomic_bool& _shutdown) :
         shutdown(_shutdown) {
     }
