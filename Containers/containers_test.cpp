@@ -10,6 +10,7 @@
 #include <variant>
 #include <cassert>
 #include <optional>
+#include <any>
 
 #include "containers_test.hpp"
 #include "TypeUtils.hpp"
@@ -254,5 +255,31 @@ namespace containers_test {
             std::cout << "value: " << *o << std::endl;
 
         std::cout << "value_or(456): " << o.value_or(456) << std::endl;
+    }
+
+    void test_any() {
+        std::cout << "\ntest std::any" << std::endl;
+        std::any a;
+        assert(!a.has_value());
+        a = 0;
+        assert(a.has_value());
+        assert(a.type() == typeid(int));
+        std::cout << "a = " << *std::any_cast<int>(&a) << std::endl;
+
+        a = std::string("123");
+        assert(a.type() == typeid(std::string));
+
+        if (std::string* ps = std::any_cast<std::string>(&a))
+            std::cout << "a = " << *ps << std::endl;
+
+        try {
+            std::string& str = std::any_cast<std::string&>(a);
+            std::cout << "any_cast<std::string&>(a) : " << str << std::endl;
+            std::string str2 = std::any_cast<std::string>(a);
+            std::cout << "any_cast<std::string>(a) : " << str2 << std::endl;
+        }
+        catch (const std::bad_any_cast& ex) {
+            std::cout << "exception : " << ex.what() << std::endl;
+        }
     }
 }

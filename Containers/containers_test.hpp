@@ -11,6 +11,7 @@ namespace containers_test {
     void test_tuple();
     void test_variant();
     void test_optional();
+    void test_any();
 
     inline void test() {
         std::cout << "containers tests" << std::endl;
@@ -20,6 +21,7 @@ namespace containers_test {
         //test_unordered_map();
         //test_tuple();
         //test_variant();
-        test_optional();
+        //test_optional();
+        test_any();
     }
 }
