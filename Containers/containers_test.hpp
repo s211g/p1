@@ -10,6 +10,7 @@ namespace containers_test {
     void test_unordered_map();
     void test_tuple();
     void test_variant();
+    void test_optional();
 
     inline void test() {
         std::cout << "containers tests" << std::endl;
@@ -18,6 +19,7 @@ namespace containers_test {
         //test_set();
         //test_unordered_map();
         //test_tuple();
-        test_variant();
+        //test_variant();
+        test_optional();
     }
 }

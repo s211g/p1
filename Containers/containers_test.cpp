@@ -9,6 +9,7 @@
 #include <tuple>
 #include <variant>
 #include <cassert>
+#include <optional>
 
 #include "containers_test.hpp"
 #include "TypeUtils.hpp"
@@ -240,4 +241,18 @@ namespace containers_test {
         std::visit(MultiVisitor{}, v51, v51, v53);
     }
 
+    void test_optional() {
+        std::cout << "\ntest std::variant" << std::endl;
+        std::optional<int> o;
+
+        std::cout << "\ntest 1" << std::endl;
+        o = 123;
+        if (o.has_value())
+            std::cout << "value: " << *o << std::endl;
+        o.reset();
+        if (o.has_value())
+            std::cout << "value: " << *o << std::endl;
+
+        std::cout << "value_or(456): " << o.value_or(456) << std::endl;
+    }
 }
