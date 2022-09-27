@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <utility>
 #include <tuple>
+#include <variant>
+#include <cassert>
 
 #include "containers_test.hpp"
 #include "TypeUtils.hpp"
@@ -150,6 +152,92 @@ namespace containers_test {
         auto t63 = std::tuple_cat(t61, t62);
         std::cout << "tuple size = " << std::tuple_size_v<decltype(t63)> << std::endl;
         std::cout << std::get<0>(t63) << "," << std::get<1>(t63) << "," << std::get<2>(t63) << "," << std::get<3>(t63) << "," << std::endl;
+    }
+
+    struct MultiVisitor {
+        template <typename T1, typename T2, typename T3>
+        void operator()(T1, T2, T3) { std::cout << "wrong" << std::endl; }
+        void operator()(char, int, double) { std::cout << "(char, int, double)" << std::endl; }
+    };
+
+    void test_variant() {
+        std::cout << "\ntest std::variant" << std::endl;
+
+        std::cout << "\ntest 1" << std::endl;
+        std::variant<int, double> v1;
+        v1 = 1;
+        assert(v1.index() == 0);
+        assert(get<0>(v1) == 1);
+        v1 = 1.1;
+        assert(v1.index() == 1);
+        assert(get<1>(v1) == 1.1);
+        assert(get<double>(v1) == 1.1);
+
+        assert(std::holds_alternative<int>(v1) == false);
+        assert(std::holds_alternative<double>(v1) == true);
+
+        assert(std::get_if<int>(&v1) == nullptr);
+        assert(*std::get_if<double>(&v1) == 1.1);
+        std::cout << "double value = " << *std::get_if<double>(&v1) << std::endl;
+
+        std::cout << "\ntest 2 try-catch" << std::endl;
+        // bad
+        try {
+            std::cout << std::get<int>(v1) << std::endl;
+        }
+        catch (std::bad_variant_access& ex) {
+            std::cout << "exception : " << ex.what() << std::endl;
+        }
+
+        // too bad
+        if (v1.index() == 0)
+            std::cout << std::get<int>(v1) << std::endl;
+
+        // better
+        if (std::holds_alternative<int>(v1))
+            std::cout << std::get<int>(v1) << std::endl;
+
+        // best
+        if (int* value = std::get_if<int>(&v1)) {
+            std::cout << *value << std::endl;
+        }
+        if (double* value = std::get_if<double>(&v1)) {
+            std::cout << *value << std::endl;
+        }
+
+        std::cout << "\ntest 3 using std::visit" << std::endl;
+        struct Visitor {
+            double operator()(double v) { return v; }
+            double operator()(int v) { return static_cast<double>(v); }
+            double operator()(std::string v) { return -100; }
+        };
+        using var = std::variant<int, double, std::string>;
+        auto show = [](var v) { std::cout << std::visit(Visitor{}, v) << std::endl; };
+        show(1);
+        show(1.1);
+        show("123");
+
+        std::cout << "\ntest 4 using std::visit" << std::endl;
+        auto show4 = [](var v) { std::visit([](const auto& alt) {
+                                     //if constexpr (std::is_same_v<decltype(alt), const std::string&>) { // c++17
+                                     if (std::is_same_v<decltype(alt), const std::string&>) {
+                                         std::cout << "string : " << alt << std::endl;
+                                     }
+                                     else {
+                                         std::cout << alt << std::endl;
+                                     }
+                                 },
+                                            v); };
+        show4(1);
+        show4(1.1);
+        show4("123");
+
+        std::cout << "\ntest 5 using std::visit and multivisitor" << std::endl;
+        std::variant<int, double, char> v51   = 'c';
+        std::variant<int, std::string> v52    = 1;
+        std::variant<std::string, double> v53 = 1.1;
+        std::visit(MultiVisitor{}, v51, v52, v53);
+        std::visit(MultiVisitor{}, v51, v51, v53);
     }
 
 }
