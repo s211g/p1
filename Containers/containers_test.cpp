@@ -9,8 +9,11 @@
 #include <tuple>
 
 #include "containers_test.hpp"
+#include "TypeUtils.hpp"
 
 namespace containers_test {
+
+    using namespace type_utils;
 
     void test_array() {
         std::cout << "\ntest std::array" << std::endl;
@@ -85,11 +88,6 @@ namespace containers_test {
         populate_um(1000);
         populate_um(1000);
         populate_um(1000);
-    }
-
-    template <typename T>
-    void fff(T s) {
-        std::cout << s << '\n';
     }
 
     template <typename T>
