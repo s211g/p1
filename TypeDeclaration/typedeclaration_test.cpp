@@ -4,7 +4,7 @@
 namespace typedeclaration_test {
 
     void test_array() {
-        std::cout << "test array" << std::endl;
+        std::cout << "\ntest array" << std::endl;
         int a1[10];
         int a2[10];
         swap_array(a1, a2);
@@ -34,9 +34,9 @@ namespace typedeclaration_test {
     };
 
     void test_ptr_to_fn() {
-        std::cout << "test fn ptr" << std::endl;
+        std::cout << "\ntest fn ptr" << std::endl;
 
-        std::cout << "test pointer to fn" << std::endl;
+        std::cout << "\ntest pointer to fn" << std::endl;
         // ptr to fn
         // тип (*имя_указателя) (параметры);
         int (*p_fn)(int, double);
@@ -44,7 +44,7 @@ namespace typedeclaration_test {
         p_fn(1, 2.3);
         (****p_fn)(1, 2.3);
 
-        std::cout << "test pointer to fn[3]" << std::endl;
+        std::cout << "\ntest pointer to fn[3]" << std::endl;
         // ptr to array fn[]
         // тип (*имя_указателя[size]) (параметры);
         int (*p_fnarr[3])(int, double) = {fn1, fn2, fn3};
@@ -65,7 +65,7 @@ namespace typedeclaration_test {
     A a(int);
 
     void test_declaration_fn() {
-        std::cout << "test declaration fn" << std::endl;
+        std::cout << "\ntest declaration fn" << std::endl;
         a();
         a(1);
     }
@@ -79,4 +79,13 @@ namespace typedeclaration_test {
         return A{};
     }
 
+    void test_declaration_lambda() {
+        std::cout << "\ntest make lambda" << std::endl;
+
+        auto make_lambda = [](int param) { return [param](int value) { return value + param; }; };
+        auto l1          = make_lambda(1);
+        auto l2          = make_lambda(2);
+        std::cout << l1(1) << std::endl;
+        std::cout << l2(1) << std::endl;
+    }
 }
