@@ -281,5 +281,11 @@ namespace containers_test {
         catch (const std::bad_any_cast& ex) {
             std::cout << "exception : " << ex.what() << std::endl;
         }
+
+        int i  = 0;
+        auto f = [i = 1]() mutable { std::cout << ++i << std::endl; };
+        f();
+        f();
+        std::cout << "i = " << i << std::endl;
     }
 }

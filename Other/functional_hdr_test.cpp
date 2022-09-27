@@ -68,9 +68,24 @@ namespace functional_hdr_test {
         void operator()() const { std::cout << "operator()() " << std::endl; }
     };
 
-    void test_function() {
-        std::cout << "test std::function " << std::endl;
+    int* f(int) {
+        std::cout << "f()" << std::endl;
+        return (int*)nullptr;
+    }
 
+    void test_function() {
+        std::cout << "\ntest std::function " << std::endl;
+
+        std::cout << "\ntest 1" << std::endl;
+        std::function<int*(int)> l3 = f;
+        l3(1);
+        int* (*pl3)(int) = *l3.target<int* (*)(int)>();
+        if (!pl3)
+            std::cout << "pl3 == nullptr" << std::endl;
+        else
+            (*pl3)(0);
+
+        std::cout << "\ntest 2" << std::endl;
         std::function<void(int)> f1 = f_function;
         f1(1);
 

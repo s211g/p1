@@ -1,4 +1,5 @@
 #include <iostream>
+#include <functional>
 #include "typedeclaration_test.hpp"
 
 namespace typedeclaration_test {
@@ -79,13 +80,46 @@ namespace typedeclaration_test {
         return A{};
     }
 
+    int* f(int) {
+        std::cout << "f()" << std::endl;
+        return (int*)nullptr;
+    }
+
     void test_declaration_lambda() {
         std::cout << "\ntest make lambda" << std::endl;
 
+        std::cout << "\ntest 1" << std::endl;
         auto make_lambda = [](int param) { return [param](int value) { return value + param; }; };
         auto l1          = make_lambda(1);
         auto l2          = make_lambda(2);
         std::cout << l1(1) << std::endl;
         std::cout << l2(1) << std::endl;
+
+        std::cout << "\ntest 2 internal state lambda" << std::endl;
+        int i = 0;
+        // mutable разрешает менять внутриние переменные переданые в кв скобках как копии
+        auto l11 = [i]() mutable { std::cout << ++i << std::endl; };
+        l11();
+        l11();
+        std::cout << "i = " << i << std::endl;
+        auto l12 = [&i]() { std::cout << ++i << std::endl; };
+        l12();
+        l12();
+        std::cout << "i = " << i << std::endl;
+
+        std::cout << "\ntest 3" << std::endl;
+        // объявляется как
+        // int*(int)
+        // а кастица как
+        // int* (*)(int)
+        std::function<int*(int)> l3 = f;
+        l3(1);
+        int* (*pl3)(int) = *l3.target<int* (*)(int)>();
+        if (!pl3)
+            std::cout << "pl3 == nullptr" << std::endl;
+        else
+            (*pl3)(0);
+
+        std::cout << "\ntest 4" << std::endl;
     }
 }
