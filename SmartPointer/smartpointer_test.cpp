@@ -4,6 +4,7 @@
 #include <thread>
 #include <functional>
 #include <memory>
+#include <cassert>
 
 #include "smartpointer_test.hpp"
 
@@ -21,8 +22,9 @@ namespace smartpointer_test {
     };
 
     void test_shared_ptr() {
-        std::cout << "test std::shared_ptr" << std::endl;
+        std::cout << "\ntest std::shared_ptr" << std::endl;
 
+        std::cout << "\ntest 1" << std::endl;
         A* a = new A(-1);
         std::shared_ptr<A> ptr_a;
         ptr_a.reset(a);
@@ -52,10 +54,38 @@ namespace smartpointer_test {
         ptr_a5 = std::move(ptr_a4);
         ptr_a5->f();
         std::cout << "ptr_a4 = " << (ptr_a4 ? ptr_a4.get() : nullptr) << std::endl;
+
+        std::cout << "\ntest 6" << std::endl;
+        struct AA1 {
+            int i;
+            int j;
+            ~AA1() { std::cout << "AA1::~AA1() i = " << i << ", j = " << j << std::endl; }
+        };
+        struct AA2 {
+            int i;
+            AA2(int i_) :
+                i(i_) {}
+            ~AA2() { std::cout << "AA2::~AA2() i = " << i << std::endl; }
+        };
+
+        // совместное использование управляющего блока(при удалении удаляется лиш тот кусок памяти на который указывает управляющий блок)
+        // указатель на память в самом умном птр может указывать вобще в другое место
+        {
+            std::shared_ptr<AA2> p_aa2;
+            {
+                auto ptr_aa1 = std::make_shared<AA1>(1, 2);
+                AA2* aa2     = new AA2(3);
+                p_aa2        = std::shared_ptr<AA2>(ptr_aa1, aa2);
+            }
+            std::cout << " p_aa2->i = " << p_aa2->i << std::endl;
+            // здесь разрушается управляющий блок AA1 и  вызывается деструктор AA1
+            // а вот деструктор AA2 никогда не вызовется
+        }
+        std::cout << "------" << std::endl;
     }
 
     void test_unique_ptr() {
-        std::cout << "test std::unique_ptr" << std::endl;
+        std::cout << "\ntest std::unique_ptr" << std::endl;
 
         auto u0 = std::make_unique<A>(0);
         u0->f();
@@ -74,7 +104,7 @@ namespace smartpointer_test {
     }
 
     void test_weak_ptr() {
-        std::cout << "test std::weak_ptr" << std::endl;
+        std::cout << "\ntest std::weak_ptr" << std::endl;
         auto s0 = std::make_shared<A>(0);
         s0->f();
         {
@@ -122,7 +152,7 @@ namespace smartpointer_test {
     };
 
     void test_deleter() {
-        std::cout << "test deleter" << std::endl;
+        std::cout << "\ntest deleter" << std::endl;
         StorageA sa;
 
         auto ua0 = sa.New();
@@ -137,5 +167,45 @@ namespace smartpointer_test {
         auto ua5 = sa.New();
 
         std::cout << "----------------" << std::endl;
+    }
+
+    class Aesft : public std::enable_shared_from_this<Aesft> {
+    public:
+        Aesft() { std::cout << "Aesft()" << std::endl; }
+        Aesft(const Aesft&) { std::cout << "Aesft(const Aesft&)" << std::endl; }
+        ~Aesft() { std::cout << "~Aesft()" << std::endl; }
+
+        template <class F>
+        void f1(const F& fn) {
+            std::cout << "A::f()" << std::endl;
+            fn(this->shared_from_this());
+        }
+        void f2() { std::cout << "A::f2()" << std::endl; }
+    };
+
+    void test_enable_shared_from_this() {
+        std::cout << "\ntest std::enable_shared_from_this" << std::endl;
+
+        auto cb = [](auto sa) {
+            std::cout << "use count: " << sa.use_count() << std::endl;
+            sa->f2(); };
+
+        std::cout << "\ntest 1" << std::endl;
+        {
+            auto saefs = std::make_shared<Aesft>();
+            assert(saefs.use_count() == 1);
+            saefs->f1(cb);
+        }
+
+        std::cout << "\ntest 2" << std::endl;
+        {
+            Aesft aefst;
+            try {
+                aefst.f1(cb);
+            }
+            catch (const std::bad_weak_ptr& ex) {
+                std::cout << "exception : " << ex.what() << std::endl;
+            }
+        }
     }
 }

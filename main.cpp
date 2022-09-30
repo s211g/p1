@@ -20,11 +20,11 @@
 int main() {
     //containers_test::test();
     //mutex_test::test();
-    //smartpointer_test::test();
+    smartpointer_test::test();
     //scopeguard_test::test();
     //thread_test::test();
     //vatemplate_test::test();
-    typedeclaration_test::test();
+    //typedeclaration_test::test();
     //initdata_test::test();
     //functional_hdr_test::test();
     //future_hdr_test::test();
