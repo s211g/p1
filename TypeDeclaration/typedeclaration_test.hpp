@@ -13,12 +13,14 @@ namespace typedeclaration_test {
     void test_ptr_to_fn();
     void test_declaration_fn();
     void test_declaration_lambda();
+    void test_type_inference();
 
     inline void test() {
         std::cout << "typedeclaration tests" << std::endl;
-        test_array();
-        test_ptr_to_fn();
-        test_declaration_fn();
-        test_declaration_lambda();
+        //test_array();
+        //test_ptr_to_fn();
+        //test_declaration_fn();
+        //test_declaration_lambda();
+        test_type_inference();
     }
 }

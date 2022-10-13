@@ -28,6 +28,7 @@ file(GLOB src
     ${CMAKE_SOURCE_DIR}/VariableArgumentsTemplate/*.cpp
     ${CMAKE_SOURCE_DIR}/TypeDeclaration/*.cpp
     ${CMAKE_SOURCE_DIR}/Other/*.cpp    
+    
     )
 
 set(src ${src})

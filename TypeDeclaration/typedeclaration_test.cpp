@@ -4,11 +4,39 @@
 
 namespace typedeclaration_test {
 
+    class A {
+    public:
+        A() { std::cout << "A::A()" << std::endl; }
+        ~A() { std::cout << "A::~A()" << std::endl; }
+        A(int i) { std::cout << "A::A(int)" << std::endl; }
+        int fn(int i) {
+            std::cout << "A::fn(" << i << ")" << std::endl;
+            return 0;
+        }
+    };
+
     void test_array() {
         std::cout << "\ntest array" << std::endl;
+
+        std::cout << "\ntest 1" << std::endl;
         int a1[10];
         int a2[10];
         swap_array(a1, a2);
+
+        std::cout << "\ntest 2" << std::endl;
+        A* a = new A[10];
+        //delete a; //- assert
+        delete[] a;
+
+        std::cout << "\ntest 3" << std::endl;
+        int* i = new int[10];
+        delete i; // no asserts ???
+        std::cout << "---" << std::endl;
+
+        std::cout << "\ntest 4" << std::endl;
+        int i4[10];
+        std::cout << "sizeof i4 = " << sizeof i4 << std::endl;
+        std::cout << "sizeof A = " << sizeof A << std::endl;
     }
 
     int fn1(int i, double d) {
@@ -23,16 +51,6 @@ namespace typedeclaration_test {
         std::cout << "fn3() " << i << " " << d << std::endl;
         return 0;
     }
-
-    class A {
-    public:
-        A() { std::cout << "A::A()" << std::endl; }
-        A(int i) { std::cout << "A::A(int)" << std::endl; }
-        int fn(int i) {
-            std::cout << "A::fn(" << i << ")" << std::endl;
-            return 0;
-        }
-    };
 
     void test_ptr_to_fn() {
         std::cout << "\ntest fn ptr" << std::endl;
@@ -121,5 +139,110 @@ namespace typedeclaration_test {
             (*pl3)(0);
 
         std::cout << "\ntest 4" << std::endl;
+    }
+
+    template <typename T>
+    std::string fi1(T& x) {
+        if (std::is_same_v<T, int>)
+            return "int";
+        if (std::is_same_v<T, const int>)
+            return "const int";
+        if (std::is_same_v<T, int&>)
+            return "int&";
+        if (std::is_same_v<T, const int&>)
+            return "const int&";
+        if (std::is_same_v<T, int*>)
+            return "int*";
+        if (std::is_same_v<T, const int*>)
+            return "const int*";
+        return "?";
+    }
+
+    template <typename T>
+    std::string fi2(const T& x) {
+        if (std::is_same_v<T, int>)
+            return "int";
+        if (std::is_same_v<T, const int>)
+            return "const int";
+        if (std::is_same_v<T, int&>)
+            return "int&";
+        if (std::is_same_v<T, const int&>)
+            return "const int&";
+        if (std::is_same_v<T, int*>)
+            return "int*";
+        if (std::is_same_v<T, const int*>)
+            return "const int*";
+        return "?";
+    }
+
+    template <typename T>
+    std::string fi3(T* x) {
+        if (std::is_same_v<T, int>)
+            return "int";
+        if (std::is_same_v<T, const int>)
+            return "const int";
+        if (std::is_same_v<T, int&>)
+            return "int&";
+        if (std::is_same_v<T, const int&>)
+            return "const int&";
+        if (std::is_same_v<T, int*>)
+            return "int*";
+        if (std::is_same_v<T, const int*>)
+            return "const int*";
+        return "?";
+    }
+
+    template <typename T>
+    std::string fi4(const T* x) {
+        if (std::is_same_v<T, int>)
+            return "int";
+        if (std::is_same_v<T, const int>)
+            return "const int";
+        if (std::is_same_v<T, int&>)
+            return "int&";
+        if (std::is_same_v<T, const int&>)
+            return "const int&";
+        if (std::is_same_v<T, int*>)
+            return "int*";
+        if (std::is_same_v<T, const int*>)
+            return "const int*";
+        return "?";
+    }
+
+    void test_type_inference() {
+        std::cout << "\ntest type inference" << std::endl;
+        int i          = 1;
+        const int ci   = 1;
+        const int& cis = 1;
+
+        std::cout << "\ntest 1 f(T& param)" << std::endl;
+        // в параметр перетаскивается базовый тип& и константность если есть
+        // Т - базовый тип и константность если есть в аргументе
+        std::cout << "arg - int,        param type - int&,       T: " << fi1(i) << std::endl;
+        std::cout << "arg - const int,  param type - const int&, T: " << fi1(ci) << std::endl;
+        std::cout << "arg - const int&, param type - const int&, T: " << fi1(cis) << std::endl;
+        std::cout << "\ntest f(T& param)" << std::endl;
+
+        std::cout << "\ntest 2 f(const T& param)" << std::endl;
+        // в параметр перетаскивается базовый тип& + добавляется всегда константность
+        // Т всегда базовый тип
+        std::cout << "arg - int,        param type - const int&, T: " << fi2(i) << std::endl;
+        std::cout << "arg - const int,  param type - const int&, T: " << fi2(ci) << std::endl;
+        std::cout << "arg - const int&, param type - const int&, T: " << fi2(cis) << std::endl;
+
+        int* pi        = &i;
+        const int* cpi = &i;
+
+        std::cout << "\ntest 3 f(T* param)" << std::endl;
+        // в параметр перетаскивается базовый тип* и константность если есть
+        // Т - базовый тип и константность если есть в аргументе
+        std::cout << "arg - int*,        param type - int*,       T: " << fi3(pi) << std::endl;
+        std::cout << "arg - const int*,  param type - const int*, T: " << fi3(cpi) << std::endl;
+
+        std::cout << "\ntest 4 f(constT* param)" << std::endl;
+        // в параметр перетаскивается базовый тип* + добавляется всегда константность
+        // Т всегда базовый тип
+        std::cout << "arg - int*,        param type - int*,       T: " << fi4(pi) << std::endl;
+        std::cout << "arg - const int*,  param type - const int*, T: " << fi4(cpi) << std::endl;
     }
 }

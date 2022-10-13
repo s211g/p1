@@ -14,22 +14,24 @@
 #include "chrono_hdr_test.hpp"
 #include "atomic_hdr_test.hpp"
 #include "containers_test.hpp"
+#include "crtp_test.hpp"
 
 
 
 int main() {
     //containers_test::test();
     //mutex_test::test();
-    smartpointer_test::test();
+    //smartpointer_test::test();
     //scopeguard_test::test();
     //thread_test::test();
     //vatemplate_test::test();
-    //typedeclaration_test::test();
+    typedeclaration_test::test();
     //initdata_test::test();
     //functional_hdr_test::test();
     //future_hdr_test::test();
     //chrono_hdr_test::test();
     //atomic_hdr_test::test();
+    //crtp_test::test();
 
     return 0;
 }
