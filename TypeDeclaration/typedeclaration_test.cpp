@@ -1,6 +1,7 @@
 #include <iostream>
 #include <functional>
 #include "typedeclaration_test.hpp"
+#include "TypeUtils.hpp"
 
 namespace typedeclaration_test {
 
@@ -209,6 +210,11 @@ namespace typedeclaration_test {
         return "?";
     }
 
+    template <typename T>
+    std::string fi5(T&& x) {
+        return type_utils::type2name<T>();
+    }
+
     void test_type_inference() {
         std::cout << "\ntest type inference" << std::endl;
         int i          = 1;
@@ -239,10 +245,37 @@ namespace typedeclaration_test {
         std::cout << "arg - int*,        param type - int*,       T: " << fi3(pi) << std::endl;
         std::cout << "arg - const int*,  param type - const int*, T: " << fi3(cpi) << std::endl;
 
-        std::cout << "\ntest 4 f(constT* param)" << std::endl;
+        std::cout << "\ntest 4 f(const T* param)" << std::endl;
         // в параметр перетаскивается базовый тип* + добавляется всегда константность
         // Т всегда базовый тип
         std::cout << "arg - int*,        param type - int*,       T: " << fi4(pi) << std::endl;
         std::cout << "arg - const int*,  param type - const int*, T: " << fi4(cpi) << std::endl;
+
+        std::cout << "\ntest 5 f(const T&& param)" << std::endl;
+        // Для lvalue преобразуется к [константной]ссылке(к ссылке на указатель если в аргументе указатель)
+        // Для lvalue ссылка или значение:
+        // lvalue по значению и по ссылке:
+        // в параметр перетаскивается базовый тип& и константность если есть
+        // Т - базовый тип& и константность если есть в аргументе
+        // lvalue указатель:
+        // в параметр перетаскивается базовый тип*& и константность если есть
+        // Т - базовый тип*& и константность если есть в аргументе
+        // Для rvalue в аргументе:
+        // параметр тип&&
+        // Т - базовый тип
+        std::cout << "arg - int,         param type - int&,        T: " << fi5(i) << std::endl;
+        std::cout << "arg - const int,   param type - const int&,  T: " << fi5(ci) << std::endl;
+        std::cout << "arg - const int&,  param type - const int&,  T: " << fi5(cis) << std::endl;
+        std::cout << "arg - int rvalue,  param type - int&&,       T: " << fi5(123) << std::endl;
+        std::cout << "arg - int*,        param type - int*&,       T: " << fi5(pi) << std::endl;
+        std::cout << "arg - const int*,  param type - const int*&, T: " << fi5(cpi) << std::endl;
+
+        //что должно быть на выводе:
+        //arg - int,         param type - int&,        T: int&
+        //arg - const int,   param type - const int&,  T: const int&
+        //arg - const int&,  param type - const int&,  T: const int&
+        //arg - int rvalue,  param type - int&&,       T: int
+        //arg - int*,        param type - int*&,       T: int*&
+        //arg - const int*,  param type - const int*&, T: const int*&
     }
 }

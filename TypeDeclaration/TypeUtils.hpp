@@ -27,10 +27,22 @@ namespace type_utils {
     std::string type2name() {
         if (std::is_same_v<T, int>)
             return "int";
+        if (std::is_same_v<T, const int>)
+            return "const int";
         if (std::is_same_v<T, int&>)
             return "int&";
+        if (std::is_same_v<T, int*&>)
+            return "int*&";
+        if (std::is_same_v<T, const int*&>)
+            return "const int*&";
+        if (std::is_same_v<T, int&&>)
+            return "int&&";
+        if (std::is_same_v<T, const int&>)
+            return "const int&";
         if (std::is_same_v<T, int*>)
             return "int*";
+        if (std::is_same_v<T, const int*>)
+            return "const int*";
         if (std::is_same_v<T, std::reference_wrapper<int>>)
             return "ref<int>";
         if (std::is_same_v<T, std::string>)
