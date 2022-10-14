@@ -55,6 +55,12 @@ namespace type_utils {
             return "void(*)(int)";
         if (std::is_same_v<T, void (&)(int)>)
             return "void(&)(int)";
+        if (std::is_same_v<T, int[10]>)
+            return "int[10]";
+
+        typedef int m10_t[10];
+        if (std::is_same_v<T, m10_t&>)
+            return "m10_t& (typedef int m10_t[10];)";
         return "?";
     }
 
