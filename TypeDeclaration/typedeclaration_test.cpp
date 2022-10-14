@@ -144,70 +144,22 @@ namespace typedeclaration_test {
 
     template <typename T>
     std::string fi1(T& x) {
-        if (std::is_same_v<T, int>)
-            return "int";
-        if (std::is_same_v<T, const int>)
-            return "const int";
-        if (std::is_same_v<T, int&>)
-            return "int&";
-        if (std::is_same_v<T, const int&>)
-            return "const int&";
-        if (std::is_same_v<T, int*>)
-            return "int*";
-        if (std::is_same_v<T, const int*>)
-            return "const int*";
-        return "?";
+        return type_utils::type2name<T>();
     }
 
     template <typename T>
     std::string fi2(const T& x) {
-        if (std::is_same_v<T, int>)
-            return "int";
-        if (std::is_same_v<T, const int>)
-            return "const int";
-        if (std::is_same_v<T, int&>)
-            return "int&";
-        if (std::is_same_v<T, const int&>)
-            return "const int&";
-        if (std::is_same_v<T, int*>)
-            return "int*";
-        if (std::is_same_v<T, const int*>)
-            return "const int*";
-        return "?";
+        return type_utils::type2name<T>();
     }
 
     template <typename T>
     std::string fi3(T* x) {
-        if (std::is_same_v<T, int>)
-            return "int";
-        if (std::is_same_v<T, const int>)
-            return "const int";
-        if (std::is_same_v<T, int&>)
-            return "int&";
-        if (std::is_same_v<T, const int&>)
-            return "const int&";
-        if (std::is_same_v<T, int*>)
-            return "int*";
-        if (std::is_same_v<T, const int*>)
-            return "const int*";
-        return "?";
+        return type_utils::type2name<T>();
     }
 
     template <typename T>
     std::string fi4(const T* x) {
-        if (std::is_same_v<T, int>)
-            return "int";
-        if (std::is_same_v<T, const int>)
-            return "const int";
-        if (std::is_same_v<T, int&>)
-            return "int&";
-        if (std::is_same_v<T, const int&>)
-            return "const int&";
-        if (std::is_same_v<T, int*>)
-            return "int*";
-        if (std::is_same_v<T, const int*>)
-            return "const int*";
-        return "?";
+        return type_utils::type2name<T>();
     }
 
     template <typename T>
@@ -220,6 +172,8 @@ namespace typedeclaration_test {
         int i          = 1;
         const int ci   = 1;
         const int& cis = 1;
+        int* pi        = &i;
+        const int* cpi = &i;
 
         std::cout << "\ntest 1 f(T& param)" << std::endl;
         // в параметр перетаскивается базовый тип& и константность если есть
@@ -227,7 +181,14 @@ namespace typedeclaration_test {
         std::cout << "arg - int,        param type - int&,       T: " << fi1(i) << std::endl;
         std::cout << "arg - const int,  param type - const int&, T: " << fi1(ci) << std::endl;
         std::cout << "arg - const int&, param type - const int&, T: " << fi1(cis) << std::endl;
-        std::cout << "\ntest f(T& param)" << std::endl;
+        std::cout << "arg - int*,       param type - int*&,      T: " << fi1(pi) << std::endl;
+        std::cout << "arg - const int*, param type - const int*&,T: " << fi1(cpi) << std::endl;
+        // вывод:
+        //arg - int,        param type - int&,       T: int
+        //arg - const int,  param type - const int&, T: const int
+        //arg - const int&, param type - const int&, T: const int
+        //arg - int*,       param type - int*&,      T: int*
+        //arg - const int*, param type - const int*&,T: const int*
 
         std::cout << "\ntest 2 f(const T& param)" << std::endl;
         // в параметр перетаскивается базовый тип& + добавляется всегда константность
@@ -235,21 +196,28 @@ namespace typedeclaration_test {
         std::cout << "arg - int,        param type - const int&, T: " << fi2(i) << std::endl;
         std::cout << "arg - const int,  param type - const int&, T: " << fi2(ci) << std::endl;
         std::cout << "arg - const int&, param type - const int&, T: " << fi2(cis) << std::endl;
-
-        int* pi        = &i;
-        const int* cpi = &i;
+        // вывод:
+        //arg - int,        param type - const int&, T: int
+        //arg - const int,  param type - const int&, T: int
+        //arg - const int&, param type - const int&, T: int
 
         std::cout << "\ntest 3 f(T* param)" << std::endl;
         // в параметр перетаскивается базовый тип* и константность если есть
         // Т - базовый тип и константность если есть в аргументе
         std::cout << "arg - int*,        param type - int*,       T: " << fi3(pi) << std::endl;
         std::cout << "arg - const int*,  param type - const int*, T: " << fi3(cpi) << std::endl;
+        // вывод:
+        //arg - int*,        param type - int*,       T: int
+        //arg - const int*,  param type - const int*, T: const int
 
         std::cout << "\ntest 4 f(const T* param)" << std::endl;
         // в параметр перетаскивается базовый тип* + добавляется всегда константность
         // Т всегда базовый тип
         std::cout << "arg - int*,        param type - int*,       T: " << fi4(pi) << std::endl;
         std::cout << "arg - const int*,  param type - const int*, T: " << fi4(cpi) << std::endl;
+        // вывод:
+        //arg - int*,        param type - int*,       T: int
+        //arg - const int*,  param type - const int*, T: int
 
         std::cout << "\ntest 5 f(const T&& param)" << std::endl;
         // Для lvalue преобразуется к [константной]ссылке(к ссылке на указатель если в аргументе указатель)
@@ -269,8 +237,7 @@ namespace typedeclaration_test {
         std::cout << "arg - int rvalue,  param type - int&&,       T: " << fi5(123) << std::endl;
         std::cout << "arg - int*,        param type - int*&,       T: " << fi5(pi) << std::endl;
         std::cout << "arg - const int*,  param type - const int*&, T: " << fi5(cpi) << std::endl;
-
-        //что должно быть на выводе:
+        //вывод:
         //arg - int,         param type - int&,        T: int&
         //arg - const int,   param type - const int&,  T: const int&
         //arg - const int&,  param type - const int&,  T: const int&
