@@ -49,6 +49,12 @@ namespace type_utils {
             return "string";
         if (std::is_same_v<T, std::string&>)
             return "string&";
+        if (std::is_same_v<T, void(int)>)
+            return "void(int)";
+        if (std::is_same_v<T, void (*)(int)>)
+            return "void(*)(int)";
+        if (std::is_same_v<T, void (&)(int)>)
+            return "void(&)(int)";
         return "?";
     }
 

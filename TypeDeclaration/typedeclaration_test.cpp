@@ -143,6 +143,11 @@ namespace typedeclaration_test {
     }
 
     template <typename T>
+    std::string fi0(T x) {
+        return type_utils::type2name<T>();
+    }
+
+    template <typename T>
     std::string fi1(T& x) {
         return type_utils::type2name<T>();
     }
@@ -167,6 +172,8 @@ namespace typedeclaration_test {
         return type_utils::type2name<T>();
     }
 
+    void f_int(int) {}
+
     void test_type_inference() {
         std::cout << "\ntest type inference" << std::endl;
         int i          = 1;
@@ -174,6 +181,24 @@ namespace typedeclaration_test {
         const int& cis = 1;
         int* pi        = &i;
         const int* cpi = &i;
+
+        std::cout << "\ntest 0 f(T param)" << std::endl;
+        // параметр перетаскивается базовый тип
+        // Т - базовый тип
+        std::cout << "arg - int,        param type - int,  T: " << fi0(i) << std::endl;
+        std::cout << "arg - const int,  param type - int,  T: " << fi0(ci) << std::endl;
+        std::cout << "arg - const int&, param type - int,  T: " << fi0(cis) << std::endl;
+        std::cout << "arg - int*,       param type - int*, T: " << fi0(pi) << std::endl;
+        std::cout << "arg - const int*, param type - int*, T: " << fi0(cpi) << std::endl;
+        // для функции:
+        std::cout << "arg - void(int),  param type - void(*)(int), T: " << fi0(f_int) << std::endl;
+        // вывод:
+        //arg - int,        param type - int,  T: int
+        //arg - const int,  param type - int,  T: int
+        //arg - const int&, param type - int,  T: int
+        //arg - int*,       param type - int*, T: int*
+        //arg - const int*, param type - int*, T: const int*
+        //arg - void(int),  param type - void(*)(int), T: void(*)(int)
 
         std::cout << "\ntest 1 f(T& param)" << std::endl;
         // в параметр перетаскивается базовый тип& и константность если есть
@@ -183,12 +208,15 @@ namespace typedeclaration_test {
         std::cout << "arg - const int&, param type - const int&, T: " << fi1(cis) << std::endl;
         std::cout << "arg - int*,       param type - int*&,      T: " << fi1(pi) << std::endl;
         std::cout << "arg - const int*, param type - const int*&,T: " << fi1(cpi) << std::endl;
+        // для функции:
+        std::cout << "arg - void(int),  param type - void(&)(int), T: " << fi1(f_int) << std::endl;
         // вывод:
         //arg - int,        param type - int&,       T: int
         //arg - const int,  param type - const int&, T: const int
         //arg - const int&, param type - const int&, T: const int
         //arg - int*,       param type - int*&,      T: int*
         //arg - const int*, param type - const int*&,T: const int*
+        //arg - void(int),  param type - void(&)(int), T: void(int)
 
         std::cout << "\ntest 2 f(const T& param)" << std::endl;
         // в параметр перетаскивается базовый тип& + добавляется всегда константность
@@ -204,11 +232,14 @@ namespace typedeclaration_test {
         std::cout << "\ntest 3 f(T* param)" << std::endl;
         // в параметр перетаскивается базовый тип* и константность если есть
         // Т - базовый тип и константность если есть в аргументе
-        std::cout << "arg - int*,        param type - int*,       T: " << fi3(pi) << std::endl;
-        std::cout << "arg - const int*,  param type - const int*, T: " << fi3(cpi) << std::endl;
+        std::cout << "arg - int*,        param type - int*,         T: " << fi3(pi) << std::endl;
+        std::cout << "arg - const int*,  param type - const int*,   T: " << fi3(cpi) << std::endl;
+        // для функции:
+        std::cout << "arg - void(int),   param type - void(*)(int), T: " << fi3(f_int) << std::endl;
         // вывод:
         //arg - int*,        param type - int*,       T: int
         //arg - const int*,  param type - const int*, T: const int
+        //arg - void(int),   param type - void(*)(int), T: void(int)
 
         std::cout << "\ntest 4 f(const T* param)" << std::endl;
         // в параметр перетаскивается базовый тип* + добавляется всегда константность
@@ -237,6 +268,8 @@ namespace typedeclaration_test {
         std::cout << "arg - int rvalue,  param type - int&&,       T: " << fi5(123) << std::endl;
         std::cout << "arg - int*,        param type - int*&,       T: " << fi5(pi) << std::endl;
         std::cout << "arg - const int*,  param type - const int*&, T: " << fi5(cpi) << std::endl;
+        // для функции:
+        std::cout << "arg - void(int),  param type -             , T: " << fi5(f_int) << std::endl;
         //вывод:
         //arg - int,         param type - int&,        T: int&
         //arg - const int,   param type - const int&,  T: const int&
@@ -244,5 +277,6 @@ namespace typedeclaration_test {
         //arg - int rvalue,  param type - int&&,       T: int
         //arg - int*,        param type - int*&,       T: int*&
         //arg - const int*,  param type - const int*&, T: const int*&
+        //arg - void(int),  param type -             , T: void(&)(int)
     }
 }
