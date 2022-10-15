@@ -336,7 +336,6 @@ namespace typedeclaration_test {
 
         std::vector<int> v{1, 2, 3};
         std::cout << "> " << type_utils::type2name<decltype(v[0])>() << std::endl;
-
         auto printv = [&] {for(const auto& i: v) std::cout << i << " "; std::cout<<std::endl; };
 
         std::cout << "\ntest 0" << std::endl;
@@ -364,5 +363,88 @@ namespace typedeclaration_test {
         a4                = 14;
         std::cout << "a4 type : " << type_utils::type2name<decltype(a4)>() << std::endl;
         printv();
+
+        std::cout << "\ntest 1" << std::endl;
+        // в случае функций предположительно которые возвращают proxy, которые инициализируют переменную объявленную как auto
+        // лучше делать статик каст:
+        std::vector<bool> v2{true, false, true};
+        auto b = static_cast<bool>(v[0]); // v[0] возвращает vector<bool>::reference
+        // auto b = v[0]; создаст переменную (не ссылку) типа vector<bool>::reference
+        // и есть непределенность как эта переменная будет преобразована в bool если ее передать в какуюнито функцию f(b)
+
+        std::cout << "\ntest 2 [](auto){}" << std::endl;
+    }
+
+
+    struct AB {
+        //AB() { std::cout << "AB::AB()" << std::endl; }
+        int a{1};
+        int b{2};
+        std::string s{"abc"};
+        void print() { std::cout << "a = " << a << ", b = " << b << ", s : " << s << std::endl; }
+    };
+
+    struct CD : public AB {
+        CD(std::initializer_list<int>) {
+            std::cout << "CD::CD(std::initializer_list<int>)" << std::endl;
+        }
+        CD(int, int) {
+            std::cout << "CD::CD(int, int)" << std::endl;
+        }
+        CD(int, int, std::string) {
+            std::cout << "CD::CD(int, int, std::string)" << std::endl;
+        }
+    };
+
+    void test_bracket() {
+        std::cout << "\ntest bracket" << std::endl;
+
+        auto printv = [](auto& v) {for(const auto& i: v) std::cout << i << " "; std::cout<<std::endl; };
+
+        std::cout << "\ntest 0" << std::endl;
+        int x1(0);
+        int x2 = 0;
+        int x3{0};
+        int x4 = {0};
+
+        // не путать с объявлением функции f type - int(void):
+        int f1(); // объявление функции
+        std::cout << "f1 type - " << type_utils::type2name<decltype(f1)>() << std::endl;
+        int f2{}; // переменная
+        std::cout << "f2 type - " << type_utils::type2name<decltype(f2)>() << std::endl;
+
+        std::cout << "\ntest 1" << std::endl;
+        std::vector<int> v1{3, 5};
+        std::cout << "v1{4, 5} : ";
+        printv(v1);
+        std::vector<int> v2(4, 5);
+        std::cout << "v1(4, 5) : ";
+        printv(v2);
+
+        std::cout << "\ntest 2 std::initializer_list<int>" << std::endl;
+        auto il1 = {1.1, 2.2, 3.3};
+        printv(il1);
+        std::cout << "il1 type - " << type_utils::type2name<decltype(il1)>() << std::endl;
+        auto il2 = {1, 2, 3};
+        printv(il2);
+        std::cout << "il2 type - " << type_utils::type2name<decltype(il2)>() << std::endl;
+        // нельзя задавать разные типы
+        //auto il3 = {1, 2.2, 3.3};
+
+        std::cout << "\ntest 3 structure initialisation" << std::endl;
+        AB ab1;
+        ab1.print();
+        AB ab2 = {3, 4}; // если нет конструктора то инициализируются поэлементно
+        ab2.print();
+        AB ab3{5, 6, "def1"};
+        ab3.print();
+        AB ab4 = {7, 8, "def2"};
+        ab4.print();
+        //AB ab5(7, 8, "def2"); // !!! нет такого конструктора
+
+        std::cout << "\ntest 4 structure initialisation" << std::endl;
+        CD cd1{1, 2};        // не смотря что есть конструктор CD(int, int) предпочтение отдается CD(std::initializer_list<int>)
+        CD cd2{3, 4, "def"}; // CD(int, int, std::string)
+        CD cd3{3, 4, 5};     // CD(std::initializer_list<int>)
     }
 }

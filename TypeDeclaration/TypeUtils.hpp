@@ -50,7 +50,14 @@ namespace type_utils {
         if (std::is_same_v<T, std::string&>)
             return "string&";
 
+        if (std::is_same_v<T, std::initializer_list<int>>)
+            return "std::initializer_list<int>";
+        if (std::is_same_v<T, std::initializer_list<double>>)
+            return "std::initializer_list<double>";
+
         // function
+        if (std::is_same_v<T, int(void)>)
+            return "int(void)";
         if (std::is_same_v<T, void(int)>)
             return "void(int)";
         if (std::is_same_v<T, void (*)(int)>)
