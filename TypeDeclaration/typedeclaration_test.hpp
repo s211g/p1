@@ -14,6 +14,7 @@ namespace typedeclaration_test {
     void test_declaration_fn();
     void test_declaration_lambda();
     void test_type_inference();
+    void test_auto();
 
     inline void test() {
         std::cout << "typedeclaration tests" << std::endl;
@@ -21,6 +22,7 @@ namespace typedeclaration_test {
         //test_ptr_to_fn();
         //test_declaration_fn();
         //test_declaration_lambda();
-        test_type_inference();
+        //test_type_inference();
+        test_auto();
     }
 }

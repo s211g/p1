@@ -88,7 +88,9 @@
 			"xlocmon": "cpp",
 			"xloctime": "cpp",
 			"xtree": "cpp",
-			"set": "cpp"
+			"set": "cpp",
+			"any": "cpp",
+			"variant": "cpp"
 		}
 	}
 }

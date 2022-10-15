@@ -178,7 +178,7 @@ namespace typedeclaration_test {
         std::cout << "\ntest type inference" << std::endl;
         int i          = 1;
         const int ci   = 1;
-        const int& cis = 1;
+        const int& cis = ci;
         int* pi        = &i;
         const int* cpi = &i;
         int m10[10];
@@ -217,13 +217,13 @@ namespace typedeclaration_test {
         // массив
         std::cout << "arg - int[10],  param type -               , T: " << fi1(m10) << std::endl;
         // вывод:
-        //arg - int,        param type - int&,       T: int
-        //arg - const int,  param type - const int&, T: const int
-        //arg - const int&, param type - const int&, T: const int
-        //arg - int*,       param type - int*&,      T: int*
-        //arg - const int*, param type - const int*&,T: const int*
+        //arg - int,        param type - int&,        T: int
+        //arg - const int,  param type - const int&,  T: const int
+        //arg - const int&, param type - const int&,  T: const int
+        //arg - int*,       param type - int*&,       T: int*
+        //arg - const int*, param type - const int*&, T: const int*
         //arg - void(int),  param type - void(&)(int), T: void(int)
-        //arg - int[10],  param type -               , T: int[10]
+        //arg - int[10],  param type - int(&)[10]    , T: int[10]
 
         std::cout << "\ntest 2 f(const T& param)" << std::endl;
         // в параметр перетаскивается базовый тип& + добавляется всегда константность
@@ -249,6 +249,7 @@ namespace typedeclaration_test {
         //arg - int*,        param type - int*,       T: int
         //arg - const int*,  param type - const int*, T: const int
         //arg - void(int),   param type - void(*)(int), T: void(int)
+        //arg - int[10],     param type - int*,         T: int
 
         std::cout << "\ntest 4 f(const T* param)" << std::endl;
         // в параметр перетаскивается базовый тип* + добавляется всегда константность
@@ -259,7 +260,7 @@ namespace typedeclaration_test {
         //arg - int*,        param type - int*,       T: int
         //arg - const int*,  param type - const int*, T: int
 
-        std::cout << "\ntest 5 f(const T&& param)" << std::endl;
+        std::cout << "\ntest 5 f(T&& param)" << std::endl;
         // Для lvalue преобразуется к [константной]ссылке(к ссылке на указатель если в аргументе указатель)
         // Для lvalue ссылка или значение:
         // lvalue по значению и по ссылке:
@@ -290,5 +291,76 @@ namespace typedeclaration_test {
         //arg - const int*,  param type - const int*&, T: const int*&
         //arg - void(int),  param type -             , T: void(&)(int)
         //arg - int[10],     param type -    ,         T: m10_t& (typedef int m10_t[10];)
+
+        // typeid() пока выводит бред, должен показать что это const int&, а показывает int
+        std::cout << ">" << typeid(cis).name() << std::endl;
+    }
+
+    template <typename C>
+    auto f0_ta(C&& c) {
+        return (c[0]);
+    }
+
+    template <typename C>
+    decltype(auto) f1_ta(C&& c) {
+        return c[0];
+    }
+
+    template <typename C>
+    auto f2_ta(C&& c) {
+        return std::forward<C>(c)[0];
+    }
+
+    template <typename C>
+    auto f3_ta(C&& c) -> decltype(std::forward<C>(c)[0]) {
+        return std::forward<C>(c)[0];
+    }
+
+    template <typename C>
+    decltype(auto) f4_ta(C&& c) {
+        return std::forward<C>(c)[0];
+    }
+
+    void test_auto() {
+        std::cout << "\ntest auto" << std::endl;
+
+        // чтобы переменная auto была в точности такого же типа как ее инициализатор то надо объявлять ее:
+        // decltype(auto) var = ...
+        // чтобы функция(auto f()) возвращала ссылку есть 2 варианта:
+        // 1 спецификатор возвращаемого значения:
+        // auto f() -> ... { ... }
+        // 2 объявить функцию  decltype(auto) f() { return reference; } и возвратить тип ссылки
+        // PS: для универсальных ссылок пользовать std::forward<>()
+
+        std::vector<int> v{1, 2, 3};
+        std::cout << "> " << type_utils::type2name<decltype(v[0])>() << std::endl;
+
+        auto printv = [&] {for(const auto& i: v) std::cout << i << " "; std::cout<<std::endl; };
+
+        std::cout << "\ntest 0" << std::endl;
+        decltype(auto) a0 = f0_ta(v);
+        a0                = 10;
+        std::cout << "a0 type : " << type_utils::type2name<decltype(a0)>() << std::endl;
+        printv();
+
+        decltype(auto) a1 = f1_ta(v);
+        a1                = 11;
+        std::cout << "a1 type : " << type_utils::type2name<decltype(a1)>() << std::endl;
+        printv();
+
+        decltype(auto) a2 = f2_ta(v);
+        a2                = 12;
+        std::cout << "a2 type : " << type_utils::type2name<decltype(a2)>() << std::endl;
+        printv();
+
+        decltype(auto) a3 = f3_ta(v);
+        a3                = 13;
+        std::cout << "a3 type : " << type_utils::type2name<decltype(a3)>() << std::endl;
+        printv();
+
+        decltype(auto) a4 = f3_ta(v);
+        a4                = 14;
+        std::cout << "a4 type : " << type_utils::type2name<decltype(a4)>() << std::endl;
+        printv();
     }
 }
