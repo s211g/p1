@@ -16,6 +16,7 @@ namespace typedeclaration_test {
     void test_type_inference();
     void test_auto();
     void test_bracket();
+    void test_using();
 
     inline void test() {
         std::cout << "typedeclaration tests" << std::endl;
@@ -25,6 +26,7 @@ namespace typedeclaration_test {
         //test_declaration_lambda();
         //test_type_inference();
         //test_auto();
-        test_bracket();
+        //test_bracket();
+        test_using();
     }
 }

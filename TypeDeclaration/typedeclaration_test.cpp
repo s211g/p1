@@ -1,5 +1,8 @@
 #include <iostream>
 #include <functional>
+#include <map>
+#include <vector>
+
 #include "typedeclaration_test.hpp"
 #include "TypeUtils.hpp"
 
@@ -446,5 +449,37 @@ namespace typedeclaration_test {
         CD cd1{1, 2};        // не смотря что есть конструктор CD(int, int) предпочтение отдается CD(std::initializer_list<int>)
         CD cd2{3, 4, "def"}; // CD(int, int, std::string)
         CD cd3{3, 4, 5};     // CD(std::initializer_list<int>)
+    }
+
+
+    template <typename T>
+    struct MyMapV_typedef {
+        typedef std::map<T, std::vector<T>> type;
+    };
+    template <typename T>
+    using MyMapV_using = std::map<T, std::vector<T>>;
+
+    void test_using() {
+        std::cout << "\ntest using" << std::endl;
+
+        std::cout << "\ntest 0" << std::endl;
+        // using typedef
+        typedef std::map<int, std::vector<int>> mapv_typedef;
+        typedef void (*pfn_typedef)(int);
+        // using using
+        using mapv_usging = std::map<int, std::vector<int>>;
+        using pfn_using   = void (*)(int);
+
+        // temlates using typedef
+        // !!! перед зависимыми(зависят от параметра шаблона) типами надо указывать typename
+        typename MyMapV_typedef<int>::type m1;
+        m1[1].push_back(1);
+        // temlates using using
+        MyMapV_using<int> m2;
+        m2[1].push_back(1);
+
+        //PS: в заголовках определены псевдонимы для таких функций например:
+        //template <class _Ty>
+        //using remove_const_t = typename remove_const<_Ty>::type;
     }
 }
