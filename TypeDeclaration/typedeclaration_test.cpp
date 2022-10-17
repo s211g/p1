@@ -482,4 +482,83 @@ namespace typedeclaration_test {
         //template <class _Ty>
         //using remove_const_t = typename remove_const<_Ty>::type;
     }
+
+    void test_enum() {
+        std::cout << "\ntest enum" << std::endl;
+
+        enum class E : std::uint8_t {
+            red   = 1,
+            blue  = 3,
+            green = 5
+        };
+
+        std::cout << "\ntest 0" << std::endl;
+        //std::cout << E::red << std::endl; // error
+        // toUType(E::red) преобразует в тип uint
+        std::cout << type_utils::toUType(E::red) << std::endl; // error
+    }
+
+    class A3 {
+    public:
+        A3() = default;
+        template <typename T>
+        A3(const T&) {
+            std::cout << "A3::A3(const T&)" << std::endl;
+        }
+    };
+
+    void test_default() {
+        std::cout << "\ntest default" << std::endl;
+
+        // рекомендации о большой тройке, если объявлен хоть один из:
+        // - дестркуктор
+        // - копирующий конструктор
+        // - оператор присваивания
+        // то должны быть объявлени и остальные два
+        class A {
+        public:
+            ~A()        = default; // ! по умолнчнию noexcept
+            A(const A&) = default;
+            A& operator=(const A&) = default;
+        };
+
+        std::cout << "\ntest 1" << std::endl;
+        // перемещающие операции(констр перемещ и присваивание перемещением)
+        // генерируются если не объявлены явно
+        // 1) пеермещающие операции
+        // 2) или деструктор
+        // 3) или копирующие операции(констр коп и присваивание коп)
+        class A1 {
+        public:
+            A1() { std::cout << "A1::A1()" << std::endl; }
+            ~A1() { std::cout << "A1::~A1()" << std::endl; }
+            A1(const A1&) { std::cout << "A1::A1(const A1&)" << std::endl; }
+            A1& operator=(const A1&) {
+                std::cout << "A1::operator=()" << std::endl;
+                return *this;
+            }
+        };
+        A1 a11;
+        A1 a1(std::move(a11)); // конструктора перемещения не генерируется, кастица к конструктору копирования A(const A&)
+
+        std::cout << "\ntest 2" << std::endl;
+        // копирующие операции (констр копирования и присваивание копированием)
+        // генерируются если не объявлены явно
+        // 1) пеермещающие операции
+        class A2 {
+        public:
+            A2() { std::cout << "A2::A2()" << std::endl; }
+            A2(A2&&) { std::cout << "A2::A2(A1&&)" << std::endl; }
+        };
+        A2 a22;
+        //A2 a2(a22); - ошибка, конструктор копирования не сгенерен, тк есть конструктор перемещения
+
+        std::cout << "\ntest 3" << std::endl;
+        // Шаблоны функций-членов не подавляют генерацию специальных функций
+        A3 a33;
+        A3 a3(a33); // вызывается A3::A3(const A3&) - сгенерирвана автоматически, хотя есть шаблонная - A3::A3(const T&)
+
+        std::cout << "\ntest 4" << std::endl;
+        A3 a4(a22); // вызывается шаблонная - A3::A3(const T&)
+    }
 }

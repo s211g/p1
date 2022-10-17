@@ -78,4 +78,8 @@ namespace type_utils {
         return "?";
     }
 
+    template <typename T>
+    constexpr auto toUType(T t) noexcept {
+        return static_cast<std::underlying_type_t<T>>(t);
+    }
 }
