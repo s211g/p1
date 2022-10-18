@@ -33,6 +33,7 @@ namespace type_utils {
         B& operator=(const B&) = delete;
         B& operator=(B&) = delete;
         B(B&&) { std::cout << "B::B(B&&)" << std::endl; }
+        B(B&&, int) { std::cout << "B::B(B&&,int)" << std::endl; }
         B& operator=(B&&) = delete;
     };
 

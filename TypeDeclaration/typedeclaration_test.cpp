@@ -297,38 +297,6 @@ namespace typedeclaration_test {
 
         // typeid() пока выводит бред, должен показать что это const int&, а показывает int
         std::cout << ">" << typeid(cis).name() << std::endl;
-
-        std::cout << "\ntest 6" << std::endl;
-        using B = type_utils::B;
-
-        auto f = [](B&& b) {
-            using B = type_utils::B;
-            std::cout << "type b : " << type_utils::type2name<decltype(b)>() << std::endl;
-            //B b0(b); // ошибка !!! хоть b имеет тип B&& - тоесть r-value но без move(b) его конструктору как r-value не передать
-            B b1(std::move(b));
-            std::cout << "-----" << std::endl;
-            B b2(B{2});
-            std::cout << "b2.i = " << b2.i << std::endl;
-        };
-
-        f(B{1});
-        std::cout << "-----" << std::endl;
-        B b3{B{3, 4}}; // временный объект B{3, 4} и является объектом b3, никакого конструктора для b3 не вызывается
-        std::cout << "b3.i = " << b3.i << std::endl;
-        auto f3 = [](B& b) {
-            return std::move(b);
-        };
-        std::cout << "-----" << std::endl;
-        B b4(f3(b3)); // а вот тут уже вызывается B::B(B&&)
-
-        std::cout << "\ntest 7" << std::endl;
-        using A = type_utils::A;
-        auto f2 = [](int i) {
-            return A{i};
-        };
-        A a0(0);
-        A a1(f2(4)); // объект создается функцией f2() и онже является а1, !!! никакого конструктора для a1 не вызывается
-        //A a2(std::move(a0)); // ошибка, тк конструктор перемещения удален
     }
 
     template <typename C>
@@ -592,5 +560,48 @@ namespace typedeclaration_test {
 
         std::cout << "\ntest 4" << std::endl;
         A3 a4(a22); // вызывается шаблонная - A3::A3(const T&)
+    }
+
+    void test_delete() {
+        std::cout << "\ntest class fn() = delete" << std::endl;
+
+        std::cout << "\ntest 1" << std::endl;
+        using B = type_utils::B;
+        auto f  = [](B&& b) {
+            using B = type_utils::B;
+            std::cout << "type b : " << type_utils::type2name<decltype(b)>() << std::endl;
+            //B b0(b); // ошибка !!! хоть b имеет тип B&& - тоесть r-value но без move(b) его конструктору как r-value не передать
+            B b1(std::move(b));
+            std::cout << "-----" << std::endl;
+            B b2(B{2});
+            std::cout << "b2.i = " << b2.i << std::endl;
+        };
+
+        f(B{1});
+
+        std::cout << "\ntest 2" << std::endl;
+        B b3{B{3, 4}}; // временный объект B{3, 4} и является объектом b3, никакого конструктора для b3 не вызывается
+        std::cout << "b3.i = " << b3.i << std::endl;
+        auto f3 = [](B& b) {
+            return std::move(b);
+        };
+
+        std::cout << "\ntest 3" << std::endl;
+        B b4(f3(b3)); // а вот тут уже вызывается B::B(B&&)
+
+        std::cout << "\ntest 4" << std::endl;
+        B b5(B(B(B(B(4))))); // вызывается только один конструктор B::B(int) i = 4
+
+        std::cout << "\ntest 5" << std::endl;
+        B b6(B(B(B(B(5)))), 0); // сначала вызывается конструктор B::B(int) i = 5, потом B::B(B&&, int)
+
+        std::cout << "\ntest 6" << std::endl;
+        using A = type_utils::A;
+        auto f2 = [](int i) {
+            return A{i};
+        };
+        A a0(0);
+        A a1(f2(4)); // объект создается функцией f2() и онже является а1, !!! никакого конструктора для a1 не вызывается
+        //A a2(std::move(a0)); // ошибка, тк конструктор перемещения удален
     }
 }
