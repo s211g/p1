@@ -589,6 +589,13 @@ namespace typedeclaration_test {
         std::cout << "\ntest 3" << std::endl;
         B b4(f3(b3)); // а вот тут уже вызывается B::B(B&&)
 
+        std::cout << "\ntest 31" << std::endl;
+        auto f31 = []() {
+            B b{31};
+            return b; // !!! для возвращаемых локальных переменных оптимизируется как return std::move(b);
+        };
+        B b31{f31()};
+
         std::cout << "\ntest 4" << std::endl;
         B b5(B(B(B(B(4))))); // вызывается только один конструктор B::B(int) i = 4
 
