@@ -15,6 +15,9 @@ namespace template_test {
                       !std::is_integral<std::remove_reference_t<T>>::value>>
         explicit Person(T&& name_) :
             name(std::forward<T>(name_)) {
+            static_assert(
+                std::is_constructible_v<std::string, T>);
+
             std::cout << "Person::Person(T&&)" << std::endl;
         }
 
@@ -29,6 +32,7 @@ namespace template_test {
         // is_base_of<T1, T2>::value - является ли Т1 базовым для Т2
         // is_integral<T>::value - является ли тип интегральным
         // decay<T> - убирает все ссылки и квалификаторы volatile и const (+превращает массивы и функции в указатели)
+        // is_constructible<T1, T2> - можно ли создать Т1 из Т2
 
         // в классе Person исключают вызов шаблонного конструктора в случае если параметр является(унаследован от) Person или интегральным значением
         std::cout << "\ntest 1" << std::endl;
@@ -41,5 +45,7 @@ namespace template_test {
         Person p4(p1);
         std::cout << "\ntest 5" << std::endl;
         Person p5(std::move(p1));
+        std::cout << "\ntest 6" << std::endl;
+        //Person p6(u"123"); // выдаст статический ассерт is_constructible() что объяснит почему нельзя вызывать с таким аргументом
     }
 }
