@@ -19,7 +19,7 @@ namespace typedeclaration_test {
     void test_using();
     void test_enum();
     void test_default();
-    void test_delete();
+    void test_return();
 
     inline void test() {
         std::cout << "typedeclaration tests" << std::endl;
@@ -33,6 +33,6 @@ namespace typedeclaration_test {
         //test_using();
         //test_enum();
         //test_default();
-        test_delete();
+        test_return();
     }
 }

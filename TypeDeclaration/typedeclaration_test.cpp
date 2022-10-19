@@ -562,8 +562,8 @@ namespace typedeclaration_test {
         A3 a4(a22); // вызывается шаблонная - A3::A3(const T&)
     }
 
-    void test_delete() {
-        std::cout << "\ntest class fn() = delete" << std::endl;
+    void test_return() {
+        std::cout << "\ntest constructor and inference return values from functions" << std::endl;
 
         std::cout << "\ntest 1" << std::endl;
         using B = type_utils::B;

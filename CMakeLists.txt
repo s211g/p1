@@ -11,6 +11,7 @@ include_directories (
     ${CMAKE_SOURCE_DIR}/VariableArgumentsTemplate
     ${CMAKE_SOURCE_DIR}/TypeDeclaration
     ${CMAKE_SOURCE_DIR}/Other
+    ${CMAKE_SOURCE_DIR}/Template
     )
 
 include(CTest)
@@ -28,7 +29,7 @@ file(GLOB src
     ${CMAKE_SOURCE_DIR}/VariableArgumentsTemplate/*.cpp
     ${CMAKE_SOURCE_DIR}/TypeDeclaration/*.cpp
     ${CMAKE_SOURCE_DIR}/Other/*.cpp    
-    
+    ${CMAKE_SOURCE_DIR}/Template/*.cpp        
     )
 
 set(src ${src})
