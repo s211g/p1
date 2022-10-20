@@ -27,12 +27,12 @@ namespace typedeclaration_test {
         //test_ptr_to_fn();
         //test_declaration_fn();
         //test_declaration_lambda();
-        //test_type_inference();
+        test_type_inference();
         //test_auto();
         //test_bracket();
         //test_using();
         //test_enum();
         //test_default();
-        test_return();
+        //test_return();
     }
 }

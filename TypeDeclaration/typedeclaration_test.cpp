@@ -264,6 +264,12 @@ namespace typedeclaration_test {
         //arg - const int*,  param type - const int*, T: int
 
         std::cout << "\ntest 5 f(T&& param)" << std::endl;
+        // общее правило template<typename T>f(T&& param) -> f(param_type param):
+        // base - базовый тип(int, double, char ...)
+        // - в аргументе тип X - для Т = X&, param_type = X& (добавляется ссылочность)
+        // - в аргументе тип rvalue(временный объект) -  Т = base, param_type = base&&
+        // - в аргументе тип именованная переменная rvalue(base&&) - выводится как еслиб вызвали f(base)
+
         // Для lvalue преобразуется к [константной]ссылке(к ссылке на указатель если в аргументе указатель)
         // Для lvalue ссылка или значение:
         // lvalue по значению и по ссылке:
@@ -281,6 +287,9 @@ namespace typedeclaration_test {
         std::cout << "arg - int rvalue,  param type - int&&,       T: " << fi5(123) << std::endl;
         std::cout << "arg - int*,        param type - int*&,       T: " << fi5(pi) << std::endl;
         std::cout << "arg - const int*,  param type - const int*&, T: " << fi5(cpi) << std::endl;
+        int&& i5(5);
+        // на входе ИМЕНОВАННАЯ rvalue ссылка !!! но это не считается rvalue а считается как будто передан в аргумент int
+        std::cout << "arg - " << type_utils::type2name<decltype(i5)>() << ",  param type - , T: " << fi5(i5) << std::endl;
         // для функции:
         std::cout << "arg - void(int),  param type -             , T: " << fi5(f_int) << std::endl;
         // массив
