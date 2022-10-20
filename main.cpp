@@ -24,8 +24,8 @@ int main() {
     //scopeguard_test::test();
     //thread_test::test();
     //vatemplate_test::test();
-    typedeclaration_test::test();
-    //initdata_test::test();
+    //typedeclaration_test::test();
+    initdata_test::test();
     //functional_hdr_test::test();
     //future_hdr_test::test();
     //chrono_hdr_test::test();
