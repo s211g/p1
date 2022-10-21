@@ -12,6 +12,7 @@ include_directories (
     ${CMAKE_SOURCE_DIR}/TypeDeclaration
     ${CMAKE_SOURCE_DIR}/Other
     ${CMAKE_SOURCE_DIR}/Template
+    ${CMAKE_SOURCE_DIR}/Patterns
     )
 
 include(CTest)
@@ -30,6 +31,7 @@ file(GLOB src
     ${CMAKE_SOURCE_DIR}/TypeDeclaration/*.cpp
     ${CMAKE_SOURCE_DIR}/Other/*.cpp    
     ${CMAKE_SOURCE_DIR}/Template/*.cpp        
+    ${CMAKE_SOURCE_DIR}/Patterns/*.cpp
     )
 
 set(src ${src})
