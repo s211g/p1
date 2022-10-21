@@ -2,6 +2,7 @@
 #include "patterns_test.hpp"
 #include "pattern_factory_method.hpp"
 #include "pattern_abstract_factory.hpp"
+#include "pattern_builder.hpp"
 
 namespace patterns_test {
 
@@ -59,5 +60,28 @@ namespace patterns_test {
         pa1->fn2();
         pb1->fn3();
         pb1->fn4();
+    }
+
+    void test_builder() {
+        using namespace pattern_builder;
+
+        class ResultCreaterT1 {
+        public:
+            ResultBase* CreateResult(BuilderBase& builder) {
+                builder.Init();
+                builder.BuildPartA(1);
+                builder.BuildPartA(2);
+                builder.BuildPartA(3);
+                builder.BuildPartB(4);
+                builder.BuildPartB(5);
+                return builder.GetResult();
+            }
+        };
+
+        std::cout << "\ntest builder" << std::endl;
+        ResultCreaterT1 rc;
+        BuilderT1 bt1;
+        ResultBase* result = rc.CreateResult(bt1);
+        result->print();
     }
 }
