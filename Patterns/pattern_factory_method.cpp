@@ -2,6 +2,8 @@
 
 namespace pattern_factory_method {
 
+    std::map<Buildings, BuildingFactory_t> Building::building_registry;
+
     std::unique_ptr<Building>
     MakeBuilding(Buildings type) {
         switch (type) {

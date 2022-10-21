@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <memory>
+#include <map>
 
 namespace pattern_factory_method {
 
@@ -31,34 +32,78 @@ namespace pattern_factory_method {
         std::string castle_param;
     };
 
+    class Building;
+    using BuildingFactory_t = std::unique_ptr<Building> (*)(const BuildingSpec* spec);
+
     class Building {
     public:
-        Building(std::string name_) :
-            name(name_) {}
+        Building(Buildings type_, std::string name_) :
+            type(type_), name(name_) {}
         virtual ~Building() {}
         std::string name;
+        Buildings type;
+
+    public:
+        static void RegisterBuilding(Buildings type, BuildingFactory_t factory) {
+            building_registry[type] = factory;
+        }
+
+        static std::unique_ptr<Building> MakeBuilding(const BuildingSpec* spec) {
+            BuildingFactory_t factory = building_registry[spec->get_type()];
+            if (factory)
+                return factory(spec);
+            return nullptr;
+        }
+
+    private:
+        static std::map<Buildings, BuildingFactory_t> building_registry;
     };
 
     class House : public Building {
     public:
         House() :
-            Building("House") {}
+            Building(Buildings::HOUSE, "House") {}
         House(const HouseSpec* spec) :
-            Building(spec->get_name()) {
+            Building(Buildings::HOUSE, spec->get_name()) {
             // spec-> ...
+        }
+
+        static std::unique_ptr<Building> MakeBuilding(const BuildingSpec* spec) {
+            return std::make_unique<House>(static_cast<const HouseSpec*>(spec));
+        }
+
+        static void Register() {
+            RegisterBuilding(Buildings::HOUSE, House::MakeBuilding);
         }
     };
 
     class Castle : public Building {
     public:
         Castle() :
-            Building("Castle") {}
+            Building(Buildings::CASTLE, "Castle") {}
         Castle(const CastleSpec* spec) :
-            Building(spec->get_name()) {
+            Building(Buildings::CASTLE, spec->get_name()) {
             // spec-> ...
+        }
+
+        static std::unique_ptr<Building> MakeBuilding(const BuildingSpec* spec) {
+            return std::make_unique<Castle>(static_cast<const CastleSpec*>(spec));
+        }
+
+        static void Register() {
+            RegisterBuilding(Buildings::CASTLE, Castle::MakeBuilding);
         }
     };
 
+    // создание объекта через тип
     std::unique_ptr<Building> MakeBuilding(Buildings type);
+    // создание объекта через спецификатор
     std::unique_ptr<Building> MakeBuildingSpec(const BuildingSpec* spec);
+
+    // работа с пулом:
+    // регистрация пула
+    // Castle::Register();
+    // House::Register();
+    // создание объекта через спецификатор из пула зарегистрированных
+    // Building::MakeBuilding(const BuildingSpec* spec);
 }

@@ -19,6 +19,14 @@ namespace patterns_test {
         HouseSpec hspec2("hspec2");
         std::cout << MakeBuildingSpec(&hspec2)->name << std::endl;
         CastleSpec cspec1("cspec1");
-        std::cout << MakeBuildingSpec(&cspec1)->name << std::endl;
+        std::shared_ptr<Building> b = MakeBuildingSpec(&cspec1);
+        std::cout << b->name << std::endl;
+
+        std::cout << "\ntest 3" << std::endl;
+        Castle::Register();
+        House::Register();
+        std::cout << Building::MakeBuilding(&hspec1)->name << std::endl;
+        std::cout << Building::MakeBuilding(&hspec2)->name << std::endl;
+        std::cout << Building::MakeBuilding(&cspec1)->name << std::endl;
     }
 }
