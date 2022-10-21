@@ -13,7 +13,8 @@ include_directories (
     ${CMAKE_SOURCE_DIR}/Other
     ${CMAKE_SOURCE_DIR}/Template
     ${CMAKE_SOURCE_DIR}/Patterns
-    )
+    ${CMAKE_SOURCE_DIR}/Patterns/Creational 
+        )
 
 include(CTest)
 enable_testing()
@@ -32,6 +33,7 @@ file(GLOB src
     ${CMAKE_SOURCE_DIR}/Other/*.cpp    
     ${CMAKE_SOURCE_DIR}/Template/*.cpp        
     ${CMAKE_SOURCE_DIR}/Patterns/*.cpp
+    ${CMAKE_SOURCE_DIR}/Patterns/Creational/*.cpp
     )
 
 set(src ${src})
