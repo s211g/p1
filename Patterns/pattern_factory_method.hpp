@@ -6,6 +6,10 @@
 
 namespace pattern_factory_method {
 
+    // фабричный метод:
+    // определяет интерфейс для созданя объекта, но оставляет подклассам решение о том экземпляры какого класса должны создаваться.
+    // фабричный метод позволяет классу делегировать создание экземпляров подклассам
+
     enum class Buildings {
         HOUSE,
         CASTLE
@@ -95,8 +99,29 @@ namespace pattern_factory_method {
         }
     };
 
+    // фабричные методы конкретизируется в производном классе:
+    class Creator {
+    public:
+        virtual std::unique_ptr<Building> CreateBuilding() = 0;
+    };
+
+    // конкретизированный класс с конкретизированным фабричным методом
+    class CreatorCastle : public Creator {
+    public:
+        std::unique_ptr<Building> CreateBuilding() { return std::make_unique<Castle>(); };
+    };
+
+    // использование шаблонов чтобы не порождать подклассы
+    template <typename B>
+    class TemlateCreator : public Creator {
+    public:
+        std::unique_ptr<Building> CreateBuilding() { return std::make_unique<B>(); };
+    };
+
+    // Параметризированные фабричные методы:
     // создание объекта через тип
-    std::unique_ptr<Building> MakeBuilding(Buildings type);
+    std::unique_ptr<Building>
+    MakeBuilding(Buildings type);
     // создание объекта через спецификатор
     std::unique_ptr<Building> MakeBuildingSpec(const BuildingSpec* spec);
 

@@ -9,6 +9,16 @@ namespace patterns_test {
 
         std::cout << "\ntest fabric" << std::endl;
 
+        // фабричный медод через производный класс
+        std::cout << "\ntest 0" << std::endl;
+        CreatorCastle cc;
+        std::cout << cc.CreateBuilding()->name << std::endl;
+
+        // через шаблонный класс
+        TemlateCreator<House> tch;
+        std::cout << tch.CreateBuilding()->name << std::endl;
+
+        // параметризированный фабричный метод
         std::cout << "\ntest 1" << std::endl;
         std::cout << MakeBuilding(Buildings::HOUSE)->name << std::endl;
         std::cout << MakeBuilding(Buildings::CASTLE)->name << std::endl;
