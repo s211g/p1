@@ -8,12 +8,14 @@ namespace patterns_test {
     void test_abstract_factory();
     void test_builder();
     void test_singleton();
+    void test_prototype();
 
     inline void test() {
         std::cout << "patterns tests" << std::endl;
         //test_fabric();
         //test_abstract_factory();
         //test_builder();
-        test_singleton();
+        //test_singleton();
+        test_prototype();
     }
 }

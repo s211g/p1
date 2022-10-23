@@ -5,6 +5,7 @@
 #include "pattern_abstract_factory.hpp"
 #include "pattern_builder.hpp"
 #include "pattern_singleton.hpp"
+#include "pattern_prototype.hpp"
 
 namespace patterns_test {
 
@@ -134,5 +135,41 @@ namespace patterns_test {
         S4::getInstance()->f();
 
         std::cout << "---" << std::endl;
+    }
+
+    void test_prototype() {
+        std::cout << "\ntest prototype" << std::endl;
+
+        using namespace pattern_prototype;
+
+        class A {
+        public:
+            int i{0};
+            double d{1.1};
+            long long l{100};
+            A() { std::cout << "A::A()" << std::endl; }
+            A(int i_, double d_) :
+                i(i_), d(d_) {
+                std::cout << "A::A(int, double)" << std::endl;
+            }
+
+            bool Init(long long l_) {
+                l = l_;
+                return true;
+            }
+
+            ~A() { std::cout << "A::~A()" << std::endl; }
+            void f() { std::cout << "void A::f() i = " << i << ", d = " << d << ", l = " << l << std::endl; }
+        };
+
+
+        std::cout << "\ntest 1" << std::endl;
+        Prototype<A> a;
+        a.Reset(1, 2.2);
+        a.Initialize(&A::Init, 100);
+        auto ca1 = a.Clone();
+        ca1->f();
+        auto ca2 = a.Clone();
+        ca2->f();
     }
 }

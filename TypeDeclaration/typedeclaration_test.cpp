@@ -82,6 +82,10 @@ namespace typedeclaration_test {
         A a;
         (a.*p_A_fn)(1);
         (a.*p_A_fn)(1);
+
+        // shared_ptr:
+        //((*instance).*f)(std::forward<Args>(args)...);
+        //(instance.get()->*f)(std::forward<Args>(args)...);
     }
 
     A a();
