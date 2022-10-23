@@ -18,6 +18,8 @@
 #include "template_test.hpp"
 #include "patterns_test.hpp"
 
+#include "pattern_singleton.hpp"
+
 int main() {
     //containers_test::test();
     //mutex_test::test();
