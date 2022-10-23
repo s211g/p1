@@ -1,8 +1,10 @@
 #include <iostream>
+#include <cassert>
 #include "patterns_test.hpp"
 #include "pattern_factory_method.hpp"
 #include "pattern_abstract_factory.hpp"
 #include "pattern_builder.hpp"
+#include "pattern_singleton.hpp"
 
 namespace patterns_test {
 
@@ -83,5 +85,54 @@ namespace patterns_test {
         BuilderT1 bt1;
         ResultBase* result = rc.CreateResult(bt1);
         result->print();
+    }
+
+    void test_singleton() {
+        using namespace pattern_singleton;
+
+        std::cout << "\ntest singleton" << std::endl;
+
+        std::cout << "\ntest 1" << std::endl;
+        std::cout << Singleton1::Instance() << std::endl;
+        Singleton1::Instance()->f();
+        std::cout << Singleton1::Instance() << std::endl;
+        Singleton1::Instance()->f();
+
+        std::cout << "\ntest 2" << std::endl;
+        std::cout << Singleton2::Instance() << std::endl;
+        Singleton2::Instance()->f();
+        std::cout << Singleton2::Instance() << std::endl;
+        Singleton2::Instance()->f();
+
+
+        std::cout << "\ntest 3" << std::endl;
+        class A {
+        public:
+            A() { std::cout << "A::A()" << std::endl; }
+            A(int, double) { std::cout << "A::A(int, double)" << std::endl; }
+            ~A() { std::cout << "A::~A()" << std::endl; }
+            void f() { std::cout << "void A::f()" << std::endl; }
+        };
+        std::cout << Singleton_t<A>::getInstance() << std::endl;
+        Singleton_t<A>::getInstance()->f();
+        std::cout << Singleton_t<A>::getInstance() << std::endl;
+        Singleton_t<A>::getInstance()->f();
+
+        std::cout << "\ntest 4" << std::endl;
+        class A4 {
+        public:
+            A4() { std::cout << "A4::A4()" << std::endl; }
+            A4(int, double) { std::cout << "A4::A4(int, double)" << std::endl; }
+            ~A4() { std::cout << "A4::~A4()" << std::endl; }
+            void f() { std::cout << "void A4::f()" << std::endl; }
+        };
+        using S4 = Singleton_t<A4>;
+
+        std::cout << S4::getInstanceInit(1, 1.1) << std::endl;
+        S4::getInstance()->f();
+        std::cout << S4::getInstance() << std::endl;
+        S4::getInstance()->f();
+
+        std::cout << "---" << std::endl;
     }
 }
