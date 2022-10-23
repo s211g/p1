@@ -16,9 +16,8 @@
 #include "containers_test.hpp"
 #include "crtp_test.hpp"
 #include "template_test.hpp"
-#include "patterns_test.hpp"
-
-#include "pattern_singleton.hpp"
+#include "patterns_creational_test.hpp"
+#include "patterns_structure_test.hpp"
 
 int main() {
     //containers_test::test();
@@ -35,7 +34,9 @@ int main() {
     //atomic_hdr_test::test();
     //crtp_test::test();
     //template_test::test();
-    patterns_test::test();
+
+    //patterns_creational_test::test();
+    patterns_structure_test::test();
 
     return 0;
 }
