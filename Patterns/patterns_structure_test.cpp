@@ -5,6 +5,7 @@
 
 #include "pattern_adapter.hpp"
 #include "pattern_bridge.hpp"
+#include "pattern_composite.hpp"
 
 namespace patterns_structure_test {
 
@@ -127,5 +128,49 @@ namespace patterns_structure_test {
         fb_file.Open(filename);
         fb_file.Write("HI\n");
         fb_file.Close();
+    }
+
+    void test_composite() {
+        std::cout << "\ntest composite" << std::endl;
+        using namespace pattern_composite;
+
+        // назначение:
+        // компонует объекты в древовидные структуры для представления иерархий часть-целое.
+        // позволяет клиентам единообразно трактовать индивидуальные и составные объекты
+        // позволяет группировать мелкие объекты в более крупные которые в свою очередь могут стать основой для еще более крупных
+        // ключем к паттерну я вляется абстрактный класс который представляет одновременно и примитивы и контейнеры
+
+        std::cout << "\ntest 1" << std::endl;
+
+        auto computer = new CompositeEquipment("computer");
+        computer->Add(new ItemEquipment("Supply", 10));
+
+        auto mainboard = new CompositeEquipment("Mainboard");
+        mainboard->Add(new ItemEquipment("Memory8Gb", 10));
+        mainboard->Add(new ItemEquipment("Memory16Gb", 20));
+        mainboard->Add(new ItemEquipment("VideoCard", 100));
+        computer->Add(mainboard);
+
+        auto pciex_raid = new CompositeEquipment("Raid");
+        pciex_raid->Add(new ItemEquipment("Hdd_1TB", 10));
+        pciex_raid->Add(new ItemEquipment("Hdd_2TB", 20));
+        mainboard->Add(pciex_raid);
+
+        std::cout << "computer description:" << std::endl;
+        std::cout << computer->Description() << std::endl;
+        std::cout << "computer power consumption: " << computer->Power() << " Watt" << std::endl;
+
+        auto FindByName = [&](std::string name) {
+            auto x = computer->GetItemByName(name);
+            if (x)
+                std::cout << "item type: " << (dynamic_cast<const CompositeEquipment*>(x) ? "Composite" : "Item")
+                          << ", description: " << x->Description() << std::endl;
+            else
+                std::cout << "item " << name << " not found" << std::endl;
+        };
+
+        FindByName("Raid");
+        FindByName("Raid2");
+        FindByName("Memory8Gb");
     }
 }
