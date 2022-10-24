@@ -6,6 +6,7 @@
 #include "pattern_adapter.hpp"
 #include "pattern_bridge.hpp"
 #include "pattern_composite.hpp"
+#include "pattern_decorator.hpp"
 
 namespace patterns_structure_test {
 
@@ -172,5 +173,49 @@ namespace patterns_structure_test {
         FindByName("Raid");
         FindByName("Raid2");
         FindByName("Memory8Gb");
+    }
+
+    void test_decorator() {
+        std::cout << "\ntest decorator" << std::endl;
+        using namespace pattern_decorator;
+
+        // decorator(wrapper)
+        // назначение:
+        // динамически добавляет новые обязанности, как альтернатива порождению подклассов
+
+        class Component : public ComponentInterface {
+        public:
+            Component(std::string text_) :
+                text(text_) {}
+            std::string GetText() override { return text; }
+
+        private:
+            std::string text;
+        };
+
+        class ComponentDecoratorPrefix : public ComponentInterface {
+        public:
+            ComponentDecoratorPrefix(ComponentInterface* obj_) :
+                obj(obj_) {}
+            std::string GetText() override { return "prefix_" + obj->GetText(); }
+
+        private:
+            ComponentInterface* obj;
+        };
+
+        class ComponentDecoratorSuffix : public ComponentInterface {
+        public:
+            ComponentDecoratorSuffix(ComponentInterface* obj_) :
+                obj(obj_) {}
+            std::string GetText() override { return obj->GetText() + "_suffix"; }
+
+        private:
+            ComponentInterface* obj;
+        };
+
+        std::cout << "\ntest 1" << std::endl;
+        auto component   = new Component("Component");
+        auto d_component = new ComponentDecoratorPrefix(new ComponentDecoratorSuffix(component));
+        std::cout << "component text: " << d_component->GetText() << std::endl;
     }
 }
