@@ -18,6 +18,7 @@
 #include "template_test.hpp"
 #include "patterns_creational_test.hpp"
 #include "patterns_structure_test.hpp"
+#include "patterns_behavior_test.hpp"
 
 int main() {
     //containers_test::test();
@@ -36,7 +37,8 @@ int main() {
     //template_test::test();
 
     //patterns_creational_test::test();
-    patterns_structure_test::test();
+    //patterns_structure_test::test();
+    patterns_behavior_test::test();
 
     return 0;
 }
