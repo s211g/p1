@@ -10,6 +10,7 @@ namespace patterns_structure_test {
     void test_decorator();
     void test_facade();
     void test_flyweight();
+    void test_proxy();
 
     inline void test() {
         std::cout << "patterns structure tests" << std::endl;
@@ -19,6 +20,7 @@ namespace patterns_structure_test {
         //test_composite();
         //test_decorator();
         //test_facade();
-        test_flyweight();
+        //test_flyweight();
+        test_proxy();
     }
 }

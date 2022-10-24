@@ -9,6 +9,7 @@
 #include "pattern_decorator.hpp"
 #include "pattern_facade.hpp"
 #include "pattern_flyweight.hpp"
+#include "pattern_proxy.hpp"
 
 namespace patterns_structure_test {
 
@@ -255,7 +256,6 @@ namespace patterns_structure_test {
         // Поведение оригинального объекта чаще всего оставляют в Легковесе, передавая значения контекста через параметры методов.
         // Тем не менее, поведение можно поместить и в контекст, используя легковес как объект данных.
 
-
         std::cout << "\ntest 1" << std::endl;
         // тараканьи бега
         CockroachFactory factory;
@@ -284,4 +284,53 @@ namespace patterns_structure_test {
         }
     }
 
+    void test_proxy() {
+        std::cout << "\ntest proxy" << std::endl;
+        using namespace pattern_proxy;
+
+        // proxy(surrogate)
+        // назначение
+        // заменяет реальный объект
+        // контроль доступа к объекту
+
+        // применимость:
+        //      Ленивая инициализация (виртуальный прокси). Когда у вас есть тяжёлый объект, грузящий данные из файловой системы или базы данных.
+        //      Защита доступа
+        //      Локальный запуск сервиса (удалённый прокси). Когда настоящий сервисный объект находится на удалённом сервере.
+        //      Логирование запросов (логирующий прокси). Когда требуется хранить историю обращений к сервисному объекту.
+        //      Кеширование объектов («умная» ссылка). Когда нужно кешировать результаты запросов клиентов и управлять их жизненным циклом.
+
+
+        class FileProxy {
+        public:
+            void open(std::string path_) {
+                path = path_;
+            }
+            void write(std::string text_) {
+                text += text_;
+            }
+            void close() {
+                std::ofstream file;
+                file.open(path);
+                file << text;
+                file.close();
+            }
+
+        private:
+            std::string text;
+            std::string path;
+        };
+
+        // пример ленивой инициализации
+        std::cout << "\ntest 1" << std::endl;
+        FileProxy fp;
+        std::string filename = "test_proxy.txt";
+        fp.open(filename);
+        fp.write("1");
+        fp.write("2");
+        fp.write("3");
+        fp.close();
+        std::cout << "write to file: " << std::filesystem::current_path().generic_string() << "/"
+                  << filename << std::endl;
+    }
 }
