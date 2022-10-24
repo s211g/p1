@@ -90,7 +90,9 @@
 			"xtree": "cpp",
 			"set": "cpp",
 			"any": "cpp",
-			"variant": "cpp"
+			"variant": "cpp",
+			"filesystem": "cpp",
+			"fstream": "cpp"
 		}
 	}
 }

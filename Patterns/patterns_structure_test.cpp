@@ -274,12 +274,13 @@ namespace patterns_structure_test {
         }
 
         // забег
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < 20; ++i) {
             std::cout << "it = " << i << " -------------------------------------" << std::endl;
             for (auto& ctx : cockroachs_ctx) {
                 auto fw = factory.GetCockroach(ctx.type);
                 fw->display(ctx);
             }
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
         }
     }
 
