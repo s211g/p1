@@ -7,6 +7,8 @@
 #include "pattern_bridge.hpp"
 #include "pattern_composite.hpp"
 #include "pattern_decorator.hpp"
+#include "pattern_facade.hpp"
+#include "pattern_flyweight.hpp"
 
 namespace patterns_structure_test {
 
@@ -218,4 +220,67 @@ namespace patterns_structure_test {
         auto d_component = new ComponentDecoratorPrefix(new ComponentDecoratorSuffix(component));
         std::cout << "component text: " << d_component->GetText() << std::endl;
     }
+
+    void test_facade() {
+        std::cout << "\ntest facade" << std::endl;
+        using namespace pattern_facade;
+
+        // назначение:
+        // интерфейс более высокого уровня вместо набора интерфейсов некой подсистемы
+
+        std::cout << "\ntest 1" << std::endl;
+    }
+
+    void test_flyweight() {
+        std::cout << "\ntest flyweight" << std::endl;
+        using namespace pattern_flyweight;
+
+        // назначение:
+        // применяет совместное использование для эффективной поддержки множества мелких объектов
+        // оптимизирует использование большого количества мелких объектов с целью уменьшения затрат ресурсов
+        // внутреннее состояние хранится в самом приспособленце и состоит из информации не зависящей от его контекста
+        // внешнее состояние зависит от контекста и изменяется вместе с ним, поэтому совместно не используется
+        // обекты-клиенты отвечают за передачу внешнего состояния приспособленцу
+
+        // 1 Паттерн разделяет данные объектов на две части — легковесы и контексты.
+        // 2 Легковес:
+        //             Cодержит состояние(внутреннее), которое повторялось бы во множестве первоначальных объектов.
+        //             Всё внутреннее состояние легковес должен получать через параметры конструктора.
+        //             Он не должен иметь сеттеров и публичных полей.
+        //             Для удобства работы с легковесами и контекстами можно создать фабричный метод
+        // 3 Контекст:
+        //            Cодержит «внешнюю» часть состояния, уникальную для каждого объекта.
+        //            Контекст связан с одним из объектов-легковесов, хранящих оставшееся состояние.
+        //            Клиент вычисляет или хранит контекст, то есть внешнее состояние легковесов.
+        // Поведение оригинального объекта чаще всего оставляют в Легковесе, передавая значения контекста через параметры методов.
+        // Тем не менее, поведение можно поместить и в контекст, используя легковес как объект данных.
+
+
+        std::cout << "\ntest 1" << std::endl;
+        // тараканьи бега
+        CockroachFactory factory;
+        // 3 типа тараканов(flyweight объекты)
+        factory.AddCockroach(1, "A");
+        factory.AddCockroach(2, "B");
+        factory.AddCockroach(3, "C");
+
+        // 10 тараканов в забеге, а могло быть 100 милионов, у каждого в контексте сохраняется своя позиция
+        std::vector<CockroachContext> cockroachs_ctx;
+        int count = 10;
+        while (count--) {
+            std::string name = "Tarakan" + std::to_string(count);
+            int type         = count % factory.GetCount();
+            cockroachs_ctx.push_back({name, type, 0});
+        }
+
+        // забег
+        for (int i = 0; i < 5; ++i) {
+            std::cout << "it = " << i << " -------------------------------------" << std::endl;
+            for (auto& ctx : cockroachs_ctx) {
+                auto fw = factory.GetCockroach(ctx.type);
+                fw->display(ctx);
+            }
+        }
+    }
+
 }
