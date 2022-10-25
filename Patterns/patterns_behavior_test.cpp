@@ -1,8 +1,11 @@
 
 #include <iostream>
+#include <vector>
+#include <algorithm>
 
 #include "patterns_behavior_test.hpp"
 #include "pattern_chain_of_responsibility.hpp"
+#include "pattern_command.hpp"
 
 namespace patterns_behavior_test {
 
@@ -89,5 +92,65 @@ namespace patterns_behavior_test {
         std::cout << "\ntest 5" << std::endl;
         Request req5{Request_t::UNKNOWN};
         button->Handle(&req5);
+    }
+
+    void test_command() {
+        std::cout << "\ntest command" << std::endl;
+        using namespace pattern_command;
+
+        // command(action,transaction)
+        // инкапсулирует запрос в объект
+        // +
+        // можно ставить запросы в очередь
+        // протоколировать
+        // поддерживать отмену операций
+        // структура:
+        // Invoker - инициатор, выполняет command_obj->Execute();
+        // Commmand - инициализированный объект который по запросу инициатора выполняет некоторое действие над Receiver:
+        // Command::Execute() { receiver->Action(); }
+        // Receiver - получатель, распологает способами выполнения операций необходимых для удовлетворения запроса(receiver->Action())
+
+        class WriteCommand : public Command {
+        public:
+            WriteCommand(std::ostream& receiver_, std::string text_) :
+                receiver(receiver_), text(text_) {}
+            void Execute() override {
+                receiver << text;
+            }
+
+        private:
+            std::ostream& receiver;
+            std::string text;
+        };
+
+        std::cout << "\ntest 1" << std::endl;
+        std::vector<Command*> commands;
+        commands.push_back(new WriteCommand(std::cout, "1"));
+        commands.push_back(new WriteCommand(std::cout, "2"));
+        commands.push_back(new WriteCommand(std::cout, "3"));
+        commands.push_back(new WriteCommand(std::cout, "\n"));
+        std::for_each(commands.begin(), commands.end(), [](auto c) { c->Execute(); });
+
+        std::cout << "\ntest 2" << std::endl;
+
+        class MyCommand1 {
+        public:
+            void f1() { std::cout << "1"; }
+            void f4() { std::cout << std::endl; }
+        };
+        class MyCommand2 {
+        public:
+            void f2() { std::cout << "2"; }
+            void f3() { std::cout << "3"; }
+        };
+
+        std::vector<Command*> commands2;
+        MyCommand1 mc1;
+        MyCommand2 mc2;
+        commands2.push_back(new SimpleCommand<MyCommand1>(&mc1, &MyCommand1::f1));
+        commands2.push_back(new SimpleCommand<MyCommand2>(&mc2, &MyCommand2::f2));
+        commands2.push_back(new SimpleCommand<MyCommand2>(&mc2, &MyCommand2::f3));
+        commands2.push_back(new SimpleCommand<MyCommand1>(&mc1, &MyCommand1::f4));
+        std::for_each(commands2.begin(), commands2.end(), [](auto c) { c->Execute(); });
     }
 }
