@@ -6,6 +6,7 @@
 #include "patterns_behavior_test.hpp"
 #include "pattern_chain_of_responsibility.hpp"
 #include "pattern_command.hpp"
+#include "pattern_interpreter.hpp"
 
 namespace patterns_behavior_test {
 
@@ -152,5 +153,39 @@ namespace patterns_behavior_test {
         commands2.push_back(new SimpleCommand<MyCommand2>(&mc2, &MyCommand2::f3));
         commands2.push_back(new SimpleCommand<MyCommand1>(&mc1, &MyCommand1::f4));
         std::for_each(commands2.begin(), commands2.end(), [](auto c) { c->Execute(); });
+    }
+
+    void test_interpreter() {
+        std::cout << "\ntest interpreter" << std::endl;
+        using namespace pattern_interpreter;
+
+        // определяет представление грамматики языка. интерпретатор предложений этого языка.
+        // применяется где конструкции на этом языка можно представить в виде абстрактных синтаксических дервьев
+
+        Context ctx;
+        ctx.Assign("true", true);
+        ctx.Assign("false", false);
+
+        // (true and x) or y)
+        // !!! парсинг в дерево отдельная задача, идеологии паттерна не касается
+        VariableExp* x  = new VariableExp("x");
+        VariableExp* y  = new VariableExp("y");
+        AndExp* and_exp = new AndExp(new VariableExp("true"), x);
+        OrExp* or_exp   = new OrExp(and_exp, y);
+
+        std::cout << "\ntest 1" << std::endl;
+        ctx.Assign("x", true);
+        ctx.Assign("y", false);
+        std::cout << "ret = " << or_exp->Evaluate(ctx) << std::endl;
+
+        std::cout << "\ntest 2" << std::endl;
+        ctx.Assign("x", false);
+        ctx.Assign("y", false);
+        std::cout << "ret = " << or_exp->Evaluate(ctx) << std::endl;
+
+        std::cout << "\ntest 3" << std::endl;
+        ctx.Assign("x", false);
+        ctx.Assign("y", true);
+        std::cout << "ret = " << or_exp->Evaluate(ctx) << std::endl;
     }
 }
