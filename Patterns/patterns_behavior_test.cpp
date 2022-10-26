@@ -7,6 +7,7 @@
 #include "pattern_chain_of_responsibility.hpp"
 #include "pattern_command.hpp"
 #include "pattern_interpreter.hpp"
+#include "pattern_iterator.hpp"
 
 namespace patterns_behavior_test {
 
@@ -188,4 +189,10 @@ namespace patterns_behavior_test {
         ctx.Assign("y", true);
         std::cout << "ret = " << or_exp->Evaluate(ctx) << std::endl;
     }
+
+    void test_iterator() {
+        std::cout << "\ntest iterator" << std::endl;
+        using namespace pattern_iterator;
+    }
+
 }
