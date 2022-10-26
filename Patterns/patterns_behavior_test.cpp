@@ -8,6 +8,7 @@
 #include "pattern_command.hpp"
 #include "pattern_interpreter.hpp"
 #include "pattern_iterator.hpp"
+#include "pattern_mediator.hpp"
 
 namespace patterns_behavior_test {
 
@@ -193,6 +194,89 @@ namespace patterns_behavior_test {
     void test_iterator() {
         std::cout << "\ntest iterator" << std::endl;
         using namespace pattern_iterator;
+
+        // iterator(cursor)
+        // предоставляет способ последовательного обращения ко всем элементам
+        // составного объекта без раскрытия его внутреннего представления
     }
 
+    void test_mediator() {
+        std::cout << "\ntest mediator" << std::endl;
+        using namespace pattern_mediator;
+
+        // mediator(посредник)
+        // определяет объект, инкапсулирующий способ взаимодействия множества объектов
+        // +
+        // обеспечивает слабую связанность объектов
+        // коллективное поведение инкапсулируется в отдельном объекте-посреднике
+        // структура паттерна:
+        // colleague - подклассы объектов связанных определенным поведением
+        //             каждый класс знает свой объект mediator
+        // mediator - определяет интерфейс для обмена информацией между объектами(colleague)
+        //            реализует кооперативное поведение, координируя действия объектов(colleague)
+        //
+        // одним из подходов к реализации посредника является применение паттерна наблюдатель:
+        // объекты посылают извещения посреднику, посредник сообхает об них другим коллегам.
+        // другой подход - определение специального интерфейса для уведомления медиатора
+
+        class Colleague1 : public Colleague {
+        public:
+            Colleague1(Mediator* mediator) :
+                Colleague(mediator) {}
+            void SetText(std::string text_) {
+                text = text_;
+                std::cout << "Colleague1::SetText() text: " << text << std::endl;
+                Changed();
+            }
+            void ResetText() {
+                std::cout << "Colleague1::ResetText()" << std::endl;
+                text = "";
+            }
+            std::string GetText() { return text; }
+
+        private:
+            std::string text;
+        };
+
+        class Colleague2 : public Colleague {
+        public:
+            Colleague2(Mediator* mediator) :
+                Colleague(mediator) {}
+            void f1(std::string text) {
+                std::cout << "Colleague2::f1() text: " << text << std::endl;
+            }
+            void f2() {
+                std::cout << "Colleague2::f2()" << std::endl;
+                Changed();
+            }
+        };
+
+        class DirectorMediator : public Mediator {
+        public:
+            void CreateColleagues() {
+                colleague1 = new Colleague1(this);
+                colleague2 = new Colleague2(this);
+            }
+
+            void Changed(Colleague* colleague) override {
+                if (colleague == colleague1)
+                    colleague2->f1(colleague1->GetText());
+                if (colleague == colleague2)
+                    colleague1->ResetText();
+            }
+
+        public:
+            Colleague1* colleague1;
+            Colleague2* colleague2;
+        };
+
+        DirectorMediator dm;
+        dm.CreateColleagues();
+
+        std::cout << "\ntest 1" << std::endl;
+        dm.colleague1->SetText("123");
+
+        std::cout << "\ntest 2" << std::endl;
+        dm.colleague2->f2();
+    }
 }
