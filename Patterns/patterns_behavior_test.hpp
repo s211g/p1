@@ -10,6 +10,7 @@ namespace patterns_behavior_test {
     void test_iterator();
     void test_mediator();
     void test_memento();
+    void test_observer();
 
     inline void test() {
         std::cout << "patterns behavior tests" << std::endl;
@@ -18,7 +19,8 @@ namespace patterns_behavior_test {
         //test_command();
         //test_interpreter();
         //test_iterator();
-        // test_mediator();
-        test_memento();
+        //test_mediator();
+        //test_memento();
+        test_observer();
     }
 }

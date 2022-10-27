@@ -11,6 +11,7 @@
 #include "pattern_iterator.hpp"
 #include "pattern_mediator.hpp"
 #include "pattern_memento.hpp"
+#include "pattern_observer.hpp"
 
 namespace patterns_behavior_test {
 
@@ -340,5 +341,89 @@ namespace patterns_behavior_test {
         ca.SetMomento();
         a.PrintState();
     }
+
+    void test_observer() {
+        std::cout << "\ntest observer" << std::endl;
+        using namespace pattern_observer;
+
+        // observer(наблюдатель), dependens(подчиненные), publish-subscribe(издатель-подписчик)
+        // определяет зависимость типа "один ко многим" между объектами таким образом, что при
+        // изменении состоянии одного объекта все зависящие от него оповещаются об этом и
+        // автоматически обновляются
+
+        // структура
+
+        // Subject - наблюдаемый объект
+        // Subject::Attach(Observer) - добавление наблюдателя
+        // Subject::Attach(Observer, topic) - добавление наблюдателя c определенным интересом
+        // Subject::Detach(Observer) - удаление наблюдателя
+        // Subject::GetState() - может вызвать наблюдатель чтоб опросить состояние
+        // Subject::SetState() - может вызвать наблюдатель чтоб задать состояние
+        // Об изменении состояния сразу будут оповещены все наблюдатели:
+        // Subject::Notify(){        - информирование всех наблюдателей об изменении состояния
+        //      for_each(){ o->Update() }
+        // }
+
+        // Observer - наблюдатель
+        // Observer::Update(subjectX) { - вызывается наблюдаемым объектом
+        //      state = subjectX->GetState() - может в ответ посмотреть состояние
+        //      subjectY->Settate(state) - может задать состояние другому наблюдаемому объекту
+        // }
+        // 1) (push model)модель проталкивания - в аргументе передается вся информация
+        // 2) (pull model)модель вытягивания - в аргументе передается причина, наблюдатель дополнительно запрашивает уточнение
+        // Observer::Update(subject, Interest interest) {}
+        //      data = subject->GetState(interest);
+        // }
+
+        // ChangeManager - менеджер изменений(он же паттерн Mediator)
+        // Должен уменьшить сложность семантики обновления:
+        //  - определяет стратегию обновлений, например не апдейтить наблюдателя несколько раз при связанном изменении нескольких субъектов
+        //  - освободить субъектов от необходимости хранить ссылки на своих наблюдателей и наоборот
+        //  - обновлять всех зависимых наблюдателей по запросу субъекта
+
+        class Timer : public Subject {
+        public:
+            int GetTime() {
+                return i;
+            }
+            void Tick() {
+                ++i;
+                Notify();
+            }
+
+        private:
+            int i{0};
+        };
+
+        class Clock : public Observer {
+        public:
+            Clock(Timer* timer_) :
+                subject_timer(timer_) {
+                subject_timer->Attach(this);
+            }
+            ~Clock() {
+                subject_timer->Detach(this);
+            }
+
+            void Update(Subject* subject) override {
+                if (subject == subject_timer) {
+                    int time = subject_timer->GetTime();
+                    std::cout << "Clock::Update() time = " << time << std::endl;
+                }
+            }
+
+        private:
+            Timer* subject_timer;
+        };
+
+        std::cout << "\ntest 1" << std::endl;
+        Timer timer;
+        Clock clock(&timer);
+        timer.Tick();
+        timer.Tick();
+        timer.Tick();
+    }
+
+
 
 }

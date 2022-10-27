@@ -30,7 +30,7 @@ namespace pattern_flyweight {
         void AddCockroach(int speed, std::string property) {
             cache.push_back({speed, property});
         }
-        int GetCount() { return cache.size(); }
+        size_t GetCount() { return cache.size(); }
         CockroachFlyweight* GetCockroach(int idx) { return &cache[idx]; }
 
     private:
