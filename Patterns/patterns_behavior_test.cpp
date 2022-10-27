@@ -422,8 +422,51 @@ namespace patterns_behavior_test {
         timer.Tick();
         timer.Tick();
         timer.Tick();
+
+        std::cout << "\ntest 2 managed subject - observer" << std::endl;
+        class ManagedTimer : public ManagedSubject {
+        public:
+            ManagedTimer(ChangeManager* manager) :
+                ManagedSubject(manager) {}
+
+            int GetTime() {
+                return i;
+            }
+            void Tick() {
+                ++i;
+                Notify();
+            }
+
+        private:
+            int i{0};
+        };
+
+        class ManagedClock : public ManagedObserver {
+        public:
+            ManagedClock(ManagedTimer* timer_) :
+                subject_timer(timer_) {
+                subject_timer->Attach(this);
+            }
+            ~ManagedClock() {
+                subject_timer->Detach(this);
+            }
+
+            void Update(ManagedSubject* subject) override {
+                if (subject == subject_timer) {
+                    int time = subject_timer->GetTime();
+                    std::cout << "ManagedClock::Update() time = " << time << std::endl;
+                }
+            }
+
+        private:
+            ManagedTimer* subject_timer;
+        };
+
+        ChangeManager manager;
+        ManagedTimer mtimer(&manager);
+        ManagedClock mclock(&mtimer);
+        mtimer.Tick();
+        mtimer.Tick();
+        mtimer.Tick();
     }
-
-
-
 }
