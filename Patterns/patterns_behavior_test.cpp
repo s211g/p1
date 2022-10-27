@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <string>
 
 #include "patterns_behavior_test.hpp"
 #include "pattern_chain_of_responsibility.hpp"
@@ -9,6 +10,7 @@
 #include "pattern_interpreter.hpp"
 #include "pattern_iterator.hpp"
 #include "pattern_mediator.hpp"
+#include "pattern_memento.hpp"
 
 namespace patterns_behavior_test {
 
@@ -279,4 +281,64 @@ namespace patterns_behavior_test {
         std::cout << "\ntest 2" << std::endl;
         dm.colleague2->f2();
     }
+
+    void test_memento() {
+        std::cout << "\ntest memento" << std::endl;
+        using namespace pattern_memento;
+
+        // memento(token)
+        // не нарушая инкапсуляции, фиксирует и выносит за пределы объекта его
+        // внутреннее состояние, чтобы позднее можно было восстановить в нем объект
+
+        // структура:
+
+        // Originator - хозяин, state - внутренее состояние
+        // Originator::CreateMemento() - создает хранитель по пинку от Caretaker
+        // Originator::SetMemento(Memento m) - восстанавливает внутреннее состояние(state)
+
+        // Memento - хранитель,
+        //           запрещает доступ другим объектам, кроме хозяина
+        // Memento::SetState() - сохраняет внутренее состояние объекта Originator
+        // Memento::GetState() - возвращает состояние Originator-у
+        // !!! чтобы хозяин имел доступ к закрытым членам надо его объявить другом
+
+        // Caretaker - посыльный(механизм отката)
+        // Caretaker::CreateMomento() - сигнал Originator -у что надо создать Memento и дернуть memento->SetState()
+        // Caretaker::SetMomento() - сигнал Originator -у что надо восстановить состояние и дернуть memento->GetState()
+
+        class AState : public State {
+        public:
+            std::string text;
+            State* Clone() const override {
+                return new AState(*this);
+            }
+        };
+
+        class A : public Originator {
+        public:
+            ~A() = default;
+            void PrintState() { std::cout << "text: " << GetState()->text << std::endl; }
+            void Execute(int i) { GetState()->text += std::to_string(i); }
+
+        private:
+            AState* GetState() { return static_cast<AState*>(state); }
+        };
+
+        A a;
+        Caretaker ca(&a);
+
+        a.PrintState();
+        a.Execute(1);
+        a.Execute(2);
+        a.Execute(3);
+        a.PrintState();
+        ca.CreateMomento();
+        a.Execute(4);
+        a.Execute(5);
+        a.Execute(6);
+        a.PrintState();
+        ca.SetMomento();
+        a.PrintState();
+    }
+
 }
