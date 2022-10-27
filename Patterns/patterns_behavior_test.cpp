@@ -12,6 +12,7 @@
 #include "pattern_mediator.hpp"
 #include "pattern_memento.hpp"
 #include "pattern_observer.hpp"
+#include "pattern_state.hpp"
 
 namespace patterns_behavior_test {
 
@@ -468,5 +469,30 @@ namespace patterns_behavior_test {
         mtimer.Tick();
         mtimer.Tick();
         mtimer.Tick();
+    }
+
+    void test_state() {
+        std::cout << "\ntest state" << std::endl;
+        using namespace pattern_state;
+
+        // state
+        // позволяет объекту изменять свое поведение в зависимости от внутреннего состояния.
+        // +
+        // поведение меняется динамически во время выполнения
+        // не надо условных операторов для выбора поведения
+
+        // структура
+        // Context - определяет интерфейс для клиента, хранит экземпляр объекта State которым определяется текущее поведение
+        //           делегирует ему зависящие от состояния запросы
+        // State - реализует поведение, ассоциированое с некоторым состоянием контекста
+        // смену состояний решает либо сам Context либо Context
+
+
+        std::cout << "\ntest 1" << std::endl;
+
+        TCPConnection connection;
+        connection.Open();
+        connection.Send("123");
+        connection.Close();
     }
 }
