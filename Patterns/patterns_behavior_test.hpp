@@ -14,6 +14,7 @@ namespace patterns_behavior_test {
     void test_state();
     void test_strategy();
     void test_template_method();
+    void test_visitor();
 
     inline void test() {
         std::cout << "patterns behavior tests" << std::endl;
@@ -27,6 +28,7 @@ namespace patterns_behavior_test {
         //test_observer();
         //test_state();
         //test_strategy();
-        test_template_method();
+        //test_template_method();
+        test_visitor();
     }
 }

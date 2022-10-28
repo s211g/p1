@@ -15,6 +15,7 @@
 #include "pattern_state.hpp"
 #include "pattern_strategy.hpp"
 #include "pattern_template_method.hpp"
+#include "pattern_visitor.hpp"
 
 namespace patterns_behavior_test {
 
@@ -598,5 +599,86 @@ namespace patterns_behavior_test {
         // template method
         // клас содержит алгоритм, но позволяет подклассам переопределить
         // некоторые шаги алгоритма, не изменяя его структуры в целом
+    }
+
+    void test_visitor() {
+        std::cout << "\ntest visitor" << std::endl;
+        using namespace pattern_visitor;
+
+        // visitor
+        // описывает операцию, выполняемую с каждым объектом из некоторой структуры.
+        // позволяет определить новую операцию не изменяя классы этих объектов.
+
+        // структура:
+        // Collection - структура содержащая 'массив' элементов в виде какойто структуры которую можно обойти
+        //              либо эта структура может представить высокоуровневый доступ для обхода элементов
+        // Element - элемент, у которого есть метод:
+        // Element::Accept(Visitor v) {
+        //      v.visit(this);            - внутри этого метода вызывается Visitor::visit(Node*)
+        // }
+        // Visitor - посетитель с функцией:
+        // Visitor::visit(Node* node){
+        //      process(node);             - выполнение какойто операции с элементом Node
+        // }
+        // Может содержать перегруженые функции для обхода разных типов:
+        // Visitor::visit(ElementA*)
+        // Visitor::visit(ElementB*)
+
+        class ElementA : public Element {
+        public:
+            ElementA(std::string name_) :
+                name(name_) {
+            }
+            std::string GetName() { return name; }
+
+        private:
+            std::string name;
+        };
+
+        class ElementB : public Element {
+        public:
+            ElementB(std::string name_) :
+                name(name_) {
+            }
+
+            //void Accept(Visitor& v) override {
+            //    v.Visit(this);
+            //}
+
+            std::string GetName() { return name; }
+
+        private:
+            std::string name;
+        };
+
+        class VisitorE : public Visitor {
+        public:
+            void Visit(Element* e) override {
+                if (auto ea = dynamic_cast<ElementA*>(e)) {
+                    std::cout << "VisitorE()::Visit(Element*) element: " << ea->GetName() << std::endl;
+                }
+                if (auto eb = dynamic_cast<ElementB*>(e)) {
+                    std::cout << "VisitorE()::Visit(Element*) element: " << eb->GetName() << std::endl;
+                }
+            }
+
+            void Visit(ElementA* e) {
+                std::cout << "VisitorE()::Visit(ElementA*) element: " << e->GetName() << std::endl;
+            }
+
+            void Visit(ElementB* e) {
+                std::cout << "VisitorE()::Visit(ElementB*) element: " << e->GetName() << std::endl;
+            }
+        };
+
+        std::cout << "\ntest 1" << std::endl;
+        CompositeElements composite;
+        composite.AddElement(new ElementA("A1"));
+        composite.AddElement(new ElementA("A2"));
+        composite.AddElement(new ElementA("A3"));
+        composite.AddElement(new ElementB("B4"));
+
+        VisitorE visitor;
+        composite.Accept(visitor);
     }
 }
