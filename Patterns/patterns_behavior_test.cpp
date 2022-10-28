@@ -13,6 +13,7 @@
 #include "pattern_memento.hpp"
 #include "pattern_observer.hpp"
 #include "pattern_state.hpp"
+#include "pattern_strategy.hpp"
 
 namespace patterns_behavior_test {
 
@@ -494,5 +495,93 @@ namespace patterns_behavior_test {
         connection.Open();
         connection.Send("123");
         connection.Close();
+    }
+
+    void test_strategy() {
+        std::cout << "\ntest state" << std::endl;
+        using namespace pattern_strategy;
+
+        // strategy, policy
+        // определяет семейство алгоритмов, инкапсулирует каждый из них и делает их взаимозаменяемыми.
+        // позволяет изменять алгоритмы независимо от клиентов, которые им пользуются.
+        // +
+        // избавляет от порождения множества подклассов с различным поведением
+        // динамически выбирать алгоритм во время выполнения
+        // выбирать алгорим независимо(скрыто) от клиента
+        // скрытость работы и данных алгоритма от клиента
+        // структура
+        // Strategy - объект в котором реализовано поведение
+        // Context - содержит объект strategy, при вызове его функций передает либо необходимые параметры ли бо ссылку на самого себя
+        // !!! при отсутствии стратегии, Context может иметь реализацию по умолчанию
+        // возможна реализация через параметр шаблона:
+        // Context<Strategy> - статически привязывается с контекстом, что повышает эффективность программы
+
+        enum class splitter_type {
+            SPLITTER_TYPE_C,
+            SPLITTER_TYPE_CPP,
+            SPLITTER_TYPE_UNKNOWN
+        };
+
+        class StringSplitterStrategyC : public StringSplitterStrategyBase {
+        public:
+            std::vector<std::string> Split(const char* text, size_t length, char delimiter) override {
+                std::vector<std::string> result;
+                return result;
+            }
+        };
+
+        class StringSplitterStrategyCPP : public StringSplitterStrategyBase {
+        public:
+            std::vector<std::string> Split(const char* text, size_t length, char delimiter) override {
+                std::vector<std::string> result;
+                std::string s(text, length);
+                std::string::size_type prev_pos = 0, pos = 0;
+                while ((pos = s.find(delimiter, pos)) != std::string::npos) {
+                    std::string substring(s.substr(prev_pos, pos - prev_pos));
+                    result.push_back(substring);
+                    prev_pos = ++pos;
+                }
+                result.push_back(s.substr(prev_pos, pos - prev_pos)); // Last word
+                return result;
+            }
+        };
+
+        class StringSplitter {
+        public:
+            StringSplitter(splitter_type type, char delimiter) {
+                switch (type) {
+                    case splitter_type::SPLITTER_TYPE_C:
+                        ctx = new StringSplitterContext(new StringSplitterStrategyC(), delimiter);
+                        break;
+                    case splitter_type::SPLITTER_TYPE_CPP:
+                        ctx = new StringSplitterContext(new StringSplitterStrategyCPP(), delimiter);
+                        break;
+                    default:
+                        ctx = new StringSplitterContext(nullptr, delimiter);
+                        break;
+                }
+            }
+
+            std::vector<std::string> Split(const char* text, size_t length) {
+                return ctx->Split(text, length);
+            }
+
+        private:
+            StringSplitterContext* ctx;
+        };
+
+        auto print_result = [](auto& v) {
+            std::for_each(v.begin(), v.end(), [](auto& i) {
+                std::cout << i << ",";
+            });
+            std::cout << std::endl;
+        };
+
+        std::cout
+            << "\ntest 1" << std::endl;
+        StringSplitter splitter(splitter_type::SPLITTER_TYPE_CPP, ' ');
+        std::string text = "1 2 3 44 55";
+        auto v1          = splitter.Split(text.c_str(), text.length());
+        print_result(v1);
     }
 }
