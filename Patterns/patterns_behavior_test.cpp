@@ -548,7 +548,7 @@ namespace patterns_behavior_test {
 
         class StringSplitter {
         public:
-            StringSplitter(splitter_type type, char delimiter) {
+            StringSplitter(splitter_type type, char delimiter = '\n') {
                 switch (type) {
                     case splitter_type::SPLITTER_TYPE_C:
                         ctx = new StringSplitterContext(new StringSplitterStrategyC(), delimiter);
@@ -557,7 +557,7 @@ namespace patterns_behavior_test {
                         ctx = new StringSplitterContext(new StringSplitterStrategyCPP(), delimiter);
                         break;
                     default:
-                        ctx = new StringSplitterContext(nullptr, delimiter);
+                        ctx = new StringSplitterContext(new StringSplitterStrategyBase(), delimiter);
                         break;
                 }
             }
@@ -577,11 +577,16 @@ namespace patterns_behavior_test {
             std::cout << std::endl;
         };
 
-        std::cout
-            << "\ntest 1" << std::endl;
-        StringSplitter splitter(splitter_type::SPLITTER_TYPE_CPP, ' ');
         std::string text = "1 2 3 44 55";
-        auto v1          = splitter.Split(text.c_str(), text.length());
+
+        std::cout << "\ntest 1" << std::endl;
+        StringSplitter splitter1(splitter_type::SPLITTER_TYPE_CPP, ' ');
+        auto v1 = splitter1.Split(text.c_str(), text.length());
         print_result(v1);
+
+        std::cout << "\ntest 2" << std::endl;
+        StringSplitter splitter2(splitter_type::SPLITTER_TYPE_UNKNOWN);
+        auto v2 = splitter2.Split(text.c_str(), text.length());
+        print_result(v2);
     }
 }
