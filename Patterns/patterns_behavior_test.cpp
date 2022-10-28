@@ -14,6 +14,7 @@
 #include "pattern_observer.hpp"
 #include "pattern_state.hpp"
 #include "pattern_strategy.hpp"
+#include "pattern_template_method.hpp"
 
 namespace patterns_behavior_test {
 
@@ -588,5 +589,14 @@ namespace patterns_behavior_test {
         StringSplitter splitter2(splitter_type::SPLITTER_TYPE_UNKNOWN);
         auto v2 = splitter2.Split(text.c_str(), text.length());
         print_result(v2);
+    }
+
+    void test_template_method() {
+        std::cout << "\ntest template method" << std::endl;
+        using namespace pattern_template_method;
+
+        // template method
+        // клас содержит алгоритм, но позволяет подклассам переопределить
+        // некоторые шаги алгоритма, не изменяя его структуры в целом
     }
 }
