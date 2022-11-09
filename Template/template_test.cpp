@@ -48,4 +48,29 @@ namespace template_test {
         std::cout << "\ntest 6" << std::endl;
         //Person p6(u"123"); // выдаст статический ассерт is_constructible() что объяснит почему нельзя вызывать с таким аргументом
     }
+
+    template <typename T>
+    class A {
+    public:
+        A(T t_) :
+            t(t_) {}
+        friend std::ostream& operator<<(std::ostream& os, const A<T>& a) {
+            os << a.t;
+            return os;
+        }
+
+    private:
+        T t;
+    };
+
+    void
+    test_friend() {
+        std::cout << "\ntest friend function" << std::endl;
+
+        std::cout << "\ntest 1" << std::endl;
+        A a1(1);
+        std::cout << a1 << std::endl;
+        A a2(std::string("abc"));
+        std::cout << a2 << std::endl;
+    }
 }
