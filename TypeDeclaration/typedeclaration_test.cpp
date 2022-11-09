@@ -271,8 +271,8 @@ namespace typedeclaration_test {
         // общее правило template<typename T>f(T&& param) -> f(param_type param):
         // base - базовый тип(int, double, char ...)
         // - в аргументе тип X - для Т = X&, param_type = X& (добавляется ссылочность)
-        // - в аргументе тип rvalue(временный объект) -  Т = base, param_type = base&&
-        // - в аргументе тип именованная переменная rvalue(base&&) - выводится как еслиб вызвали f(base)
+        // - в аргументе тип rvalue(временный объект) -  Т = base, param_type = base&& (добавляется константность если она была в аргументе)
+        // - в аргументе тип именованная переменная rvalue(base&&) - выводится как еслиб вызвали f(base) (добавляется константность если она была в аргументе)
 
         // Для lvalue преобразуется к [константной]ссылке(к ссылке на указатель если в аргументе указатель)
         // Для lvalue ссылка или значение:
@@ -291,13 +291,40 @@ namespace typedeclaration_test {
         std::cout << "arg - int rvalue,  param type - int&&,       T: " << fi5(123) << std::endl;
         std::cout << "arg - int*,        param type - int*&,       T: " << fi5(pi) << std::endl;
         std::cout << "arg - const int*,  param type - const int*&, T: " << fi5(cpi) << std::endl;
-        int&& i5(5);
+
+        // Именованные и неименованные rvalue:
+
         // на входе ИМЕНОВАННАЯ rvalue ссылка !!! но это не считается rvalue а считается как будто передан в аргумент int
+        int&& i5(5);
+        const int&& i5c(5);
+        std::cout << "Arg: Named r-value" << std::endl;
         std::cout << "arg - " << type_utils::type2name<decltype(i5)>() << ",  param type - , T: " << fi5(i5) << std::endl;
+        std::cout << "arg - " << type_utils::type2name<decltype(i5c)>() << ",  param type - , T: " << fi5(i5c) << std::endl;
+
+        // на входе НЕ ИМЕНОВАННАЯ rvalue ссылка !!! и поэтому в аргумент идет int&& как rvalue
+        std::cout << "Arg: No Named r-value" << std::endl;
+        auto retRvalue = []() -> decltype(auto) {
+            int i = 0;
+            return std::move(i);
+        };
+        std::cout << "arg - " << type_utils::type2name<decltype(retRvalue())>() << ",  param type - , T: " << fi5(retRvalue()) << std::endl;
+
+        // на входе НЕ ИМЕНОВАННАЯ const rvalue ссылка !!! и поэтому в аргумент идет const int&& как rvalue
+        auto retRvalueC = []() -> const int&& {
+            int i = 0;
+            return std::move(i);
+        };
+        std::cout << "arg - " << type_utils::type2name<decltype(retRvalueC())>() << ",  param type - , T: " << fi5(retRvalueC()) << std::endl;
+
         // для функции:
+        std::cout << "Arg: function" << std::endl;
         std::cout << "arg - void(int),  param type -             , T: " << fi5(f_int) << std::endl;
+
         // массив
+        //int m10[10];
+        std::cout << "Arg: array" << std::endl;
         std::cout << "arg - int[10],     param type -    ,         T: " << fi5(m10) << std::endl;
+
         //вывод:
         //arg - int,         param type - int&,        T: int&
         //arg - const int,   param type - const int&,  T: const int&

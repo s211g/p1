@@ -68,6 +68,8 @@ namespace type_utils {
             return "const int*&";
         if (std::is_same_v<T, int&&>)
             return "int&&";
+        if (std::is_same_v<T, const int&&>)
+            return "const int&&";
         if (std::is_same_v<T, const int&>)
             return "const int&";
         if (std::is_same_v<T, int*>)

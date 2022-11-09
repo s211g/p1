@@ -27,7 +27,7 @@ int main() {
     //scopeguard_test::test();
     //thread_test::test();
     //vatemplate_test::test();
-    //typedeclaration_test::test();
+    typedeclaration_test::test();
     //initdata_test::test();
     //functional_hdr_test::test();
     //future_hdr_test::test();
@@ -38,7 +38,7 @@ int main() {
 
     //patterns_creational_test::test();
     //patterns_structure_test::test();
-    patterns_behavior_test::test();
+    //patterns_behavior_test::test();
 
     return 0;
 }
