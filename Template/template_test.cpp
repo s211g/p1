@@ -2,6 +2,7 @@
 #include <string>
 
 #include "template_test.hpp"
+#include "TStack.hpp"
 
 namespace template_test {
 
@@ -72,5 +73,21 @@ namespace template_test {
         std::cout << a1 << std::endl;
         A a2(std::string("abc"));
         std::cout << a2 << std::endl;
+    }
+
+    void test_template_parameters() {
+        std::cout << "\ntest template parameters of temlate" << std::endl;
+
+        std::cout << "\ntest 1" << std::endl;
+        TStack<double> s1;
+        TStack<int> s2;
+        s1.push(1.1);
+        s1.push(2.2);
+        s1.push(3.3);
+        s2 = s1;
+        while (!s2.empty()) {
+            std::cout << " " << s2.top();
+            s2.pop();
+        }
     }
 }

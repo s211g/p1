@@ -377,11 +377,18 @@ namespace typedeclaration_test {
         // return (var);
         // PS: для универсальных ссылок пользовать std::forward<>()
 
+
+
         std::vector<int> v{1, 2, 3};
         std::cout << "> " << type_utils::type2name<decltype(v[0])>() << std::endl;
         auto printv = [&] {for(const auto& i: v) std::cout << i << " "; std::cout<<std::endl; };
 
         std::cout << "\ntest 0" << std::endl;
+
+        int i{0};
+        decltype(auto) a00 = i;
+        std::cout << "a00 type : " << type_utils::type2name<decltype(a00)>() << std::endl;
+
         decltype(auto) a0 = f0_ta(v);
         a0                = 10;
         std::cout << "a0 type : " << type_utils::type2name<decltype(a0)>() << std::endl;
