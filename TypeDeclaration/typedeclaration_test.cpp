@@ -41,6 +41,18 @@ namespace typedeclaration_test {
         int i4[10];
         std::cout << "sizeof i4 = " << sizeof i4 << std::endl;
         std::cout << "sizeof A = " << sizeof A << std::endl;
+
+        std::cout << "\ntest 5" << std::endl;
+        int m[10];
+        // !!! в аргументе имя массивва превращается в указатель
+        auto f5 = [](int m[10]) {
+            std::cout << "fn(int m[10]), m type: " << type_utils::type2name<decltype(m)>() << std::endl;
+        };
+        std::cout << "int m[10], m type: " << type_utils::type2name<decltype(m)>() << std::endl;
+        f5(m);
+        // вывод:
+        //int m[10], m type: int[10]
+        //fn(int m[10]), m type: int*
     }
 
     int fn1(int i, double d) {
@@ -218,6 +230,9 @@ namespace typedeclaration_test {
         // не подходит сигнатура для временных и X значений
         //std::cout << "arg - int(),        param type - int&,       T: " << fi1(int()) << std::endl;
         //std::cout << "arg - move(int),        param type - int&,       T: " << fi1(std::move(i)) << std::endl;
+        // !!! но подходит для const r и const X значений
+        std::cout << "arg - move(const int),        param type - ,       T: " << fi1(std::move(ci)) << std::endl;
+
         std::cout << "arg - const int,  param type - const int&, T: " << fi1(ci) << std::endl;
         std::cout << "arg - const int&, param type - const int&, T: " << fi1(cis) << std::endl;
         std::cout << "arg - int*,       param type - int*&,      T: " << fi1(pi) << std::endl;
@@ -228,6 +243,7 @@ namespace typedeclaration_test {
         std::cout << "arg - int[10],  param type -               , T: " << fi1(m10) << std::endl;
         // вывод:
         //arg - int,        param type - int&,       T: int,           param: int&
+        //arg - move(const int),        param type - ,       T: const int,           param: const int&
         //arg - const int,  param type - const int&, T: const int,           param: const int&
         //arg - const int&, param type - const int&, T: const int,           param: const int&
         //arg - int*,       param type - int*&,      T: int*,           param: int*&

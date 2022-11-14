@@ -23,11 +23,11 @@ namespace typedeclaration_test {
 
     inline void test() {
         std::cout << "typedeclaration tests" << std::endl;
-        //test_array();
+        test_array();
         //test_ptr_to_fn();
         //test_declaration_fn();
         //test_declaration_lambda();
-        test_type_inference();
+        //test_type_inference();
         //test_auto();
         //test_bracket();
         //test_using();
