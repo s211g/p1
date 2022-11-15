@@ -46,13 +46,13 @@ namespace typedeclaration_test {
         int m[10];
         // !!! в аргументе имя массивва превращается в указатель
         auto f5 = [](int m[10]) {
-            std::cout << "fn(int m[10]), m type: " << type_utils::type2name<decltype(m)>() << std::endl;
+            std::cout << "fn(int m[10]), sizeof(m) = " << sizeof(m) << ", m type: " << type_utils::type2name<decltype(m)>() << std::endl;
         };
-        std::cout << "int m[10], m type: " << type_utils::type2name<decltype(m)>() << std::endl;
+        std::cout << "int m[10], sizeof(m) = " << sizeof(m) << ", m type: " << type_utils::type2name<decltype(m)>() << std::endl;
         f5(m);
         // вывод:
-        //int m[10], m type: int[10]
-        //fn(int m[10]), m type: int*
+        //int m[10], sizeof(m) = 40, m type: int[10]
+        //fn(int m[10]), sizeof(m) = 8, m type: int*
     }
 
     int fn1(int i, double d) {
@@ -400,6 +400,11 @@ namespace typedeclaration_test {
         return std::forward<C>(c)[0];
     }
 
+    template <typename T>
+    decltype(auto) f5_ta(T&& t) {
+        return std::forward<T>(t);
+    }
+
     void test_auto() {
         std::cout << "\ntest auto" << std::endl;
 
@@ -412,8 +417,6 @@ namespace typedeclaration_test {
         // PS: чтобы возвратить ссылку на некую переменную из функции(не явл ссылкой) надо возвратить ее в скобках:
         // return (var);
         // PS: для универсальных ссылок пользовать std::forward<>()
-
-
 
         std::vector<int> v{1, 2, 3};
         std::cout << "> " << type_utils::type2name<decltype(v[0])>() << std::endl;
@@ -445,10 +448,26 @@ namespace typedeclaration_test {
         std::cout << "a3 type : " << type_utils::type2name<decltype(a3)>() << std::endl;
         printv();
 
-        decltype(auto) a4 = f3_ta(v);
+        decltype(auto) a4 = f4_ta(v);
         a4                = 14;
         std::cout << "a4 type : " << type_utils::type2name<decltype(a4)>() << std::endl;
         printv();
+
+        decltype(auto) a5 = f5_ta(1);
+        std::cout << "a5 type : " << type_utils::type2name<decltype(a5)>() << std::endl;
+
+        // вывод:
+        //a00 type : int
+        //a0 type : int
+        //1 2 3
+        //a1 type : int&
+        //11 2 3
+        //a2 type : int
+        //11 2 3
+        //a3 type : int&
+        //13 2 3
+        //a4 type : int&
+        //14 2 3
 
         std::cout << "\ntest 1" << std::endl;
         // в случае функций предположительно которые возвращают proxy, которые инициализируют переменную объявленную как auto
