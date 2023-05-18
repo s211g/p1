@@ -22,6 +22,7 @@ include_directories (
 include(CTest)
 enable_testing()
 
+#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCMAKE_GENERATOR_PLATFORM=x64)
 set (CMAKE_CXX_STANDARD 20)
 
 file(GLOB src 

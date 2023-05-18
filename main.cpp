@@ -19,30 +19,19 @@
 #include "patterns_creational_test.hpp"
 #include "patterns_structure_test.hpp"
 #include "patterns_behavior_test.hpp"
+#include "virtual_function_test.hpp"
 
-class A {
-    public:
-    A():p_i(&i){}
-    int i{1};
-    int* p_i;
-    int* f() const { return p_i;}
-    int f1() const { return i;}
-};
+
 
 int main() {
-
-    A a;
-    std::cout << a.f1() << std::endl;
-    std::cout << *a.f() << std::endl;
-    return 0;
-
+    virtual_function_test::test();
     //containers_test::test();
     //mutex_test::test();
     //smartpointer_test::test();
     //scopeguard_test::test();
     //thread_test::test();
     //vatemplate_test::test();
-    typedeclaration_test::test();
+    //typedeclaration_test::test();
     //initdata_test::test();
     //functional_hdr_test::test();
     //future_hdr_test::test();
