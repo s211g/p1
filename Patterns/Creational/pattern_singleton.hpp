@@ -33,19 +33,24 @@ namespace pattern_singleton {
     template <typename T>
     class Singleton_t {
     private:
+
+#ifdef VS_COMPIL
         Singleton_t<T>(const Singleton_t<T>&) = delete;
         Singleton_t<T>(Singleton_t<T>&&)      = delete;
+#endif
         Singleton_t<T>& operator=(const Singleton_t<T>&) = delete;
         Singleton_t<T>& operator=(Singleton_t<T>&&) = delete;
 
+#ifdef VS_COMPIL
         Singleton_t<T>() = default;
-
+#endif
         static std::unique_ptr<T> m_instance;
         static std::once_flag m_once;
 
     public:
+#ifdef VS_COMPIL
         virtual ~Singleton_t<T>() = default;
-
+#endif
         static T* getInstance() {
             std::call_once(m_once, []() {
                 m_instance.reset(new T);

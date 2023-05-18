@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <filesystem>
+#include <thread>
 
 #include "pattern_adapter.hpp"
 #include "pattern_bridge.hpp"

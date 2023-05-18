@@ -2,6 +2,7 @@
 #include "initdata_test.hpp"
 #include "TypeUtils.hpp"
 #include <mutex>
+#include <memory>
 #include <functional>
 
 namespace initdata_test {

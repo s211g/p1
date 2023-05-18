@@ -2,6 +2,7 @@
 #include "functional_hdr_test.hpp"
 #include <functional>
 #include <string>
+#include <memory>
 
 namespace functional_hdr_test {
 

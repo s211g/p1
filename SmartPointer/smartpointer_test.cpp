@@ -59,6 +59,8 @@ namespace smartpointer_test {
         struct AA1 {
             int i;
             int j;
+            AA1(int i_, int j_) :
+                i(i_), j(j_) {}
             ~AA1() { std::cout << "AA1::~AA1() i = " << i << ", j = " << j << std::endl; }
         };
         struct AA2 {

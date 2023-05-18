@@ -2,6 +2,7 @@
 #include "chrono_hdr_test.hpp"
 #include <chrono>
 #include <string>
+#include <thread>
 
 namespace chrono_hdr_test {
 
@@ -69,12 +70,17 @@ yotta 	std::ratio<1000000000000000000000000, 1>, if std::intmax_t can represent 
         std::chrono::time_point now = std::chrono::system_clock::now();
         auto dur                    = now.time_since_epoch();
         auto sec                    = std::chrono::duration_cast<std::chrono::seconds>(dur);
+
+#ifdef VS_COMPIL
         std::cout << "now : " << now << std::endl;
         std::cout << "time_since_epoch : " << dur << std::endl;
         std::cout << "sec         : " << sec << std::endl;
+#endif
+
         std::cout << "sec.count() : " << sec.count() << std::endl;
         std::cout << "time(NULL)  : " << time(nullptr) << std::endl;
         // to time_t
+        // years sins 20
         time_t now_t = std::chrono::system_clock::to_time_t(now + std::chrono::years(1));
         // from time_t
         auto now2 = std::chrono::system_clock::from_time_t(now_t); // +1h

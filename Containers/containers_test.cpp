@@ -169,11 +169,11 @@ namespace containers_test {
         std::variant<int, double> v1;
         v1 = 1;
         assert(v1.index() == 0);
-        assert(get<0>(v1) == 1);
+        assert(std::get<0>(v1) == 1);
         v1 = 1.1;
         assert(v1.index() == 1);
-        assert(get<1>(v1) == 1.1);
-        assert(get<double>(v1) == 1.1);
+        assert(std::get<1>(v1) == 1.1);
+        assert(std::get<double>(v1) == 1.1);
 
         assert(std::holds_alternative<int>(v1) == false);
         assert(std::holds_alternative<double>(v1) == true);

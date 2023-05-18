@@ -20,7 +20,22 @@
 #include "patterns_structure_test.hpp"
 #include "patterns_behavior_test.hpp"
 
+class A {
+    public:
+    A():p_i(&i){}
+    int i{1};
+    int* p_i;
+    int* f() const { return p_i;}
+    int f1() const { return i;}
+};
+
 int main() {
+
+    A a;
+    std::cout << a.f1() << std::endl;
+    std::cout << *a.f() << std::endl;
+    return 0;
+
     //containers_test::test();
     //mutex_test::test();
     //smartpointer_test::test();
