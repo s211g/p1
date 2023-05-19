@@ -32,14 +32,19 @@ namespace virtual_function_test {
             std::cout << "cast failed" << std::endl;
         }
 
+        if (dynamic_cast<BA*>(&c) == nullptr)
+            std::cout << "error cast to BA* : return nullptr" << std::endl;
+
         try {
-            auto& s = dynamic_cast<BA&>(c);
+            auto& sba = dynamic_cast<BA&>(c);
             std::cout << "cast ok" << std::endl;
         }
         catch (std::bad_cast& ex) {
-            std::cout << "std::bad_cast" << std::endl;
+            std::cout << "error cast to BA& : exception std::bad_cast" << std::endl;
         }
 
+        // в случае ошибки
+        // каст на указатель возвращает nullptr
         // каст на ссылку генерирует std::bad_cast
 
         std::cout << " pc " << pc << " pb " << pb << " pa " << pa << std::endl;
