@@ -92,8 +92,7 @@ namespace virtual_function_test {
         //dump(reinterpret_cast<uint8_t*>(pcba), sizeof(cba));
         dump((uint8_t*)pcba, sizeof(cba));
 
-        std::cout
-            << "pcba->f()" << std::endl;
+        std::cout << "pcba->f()" << std::endl;
         pcba->f();
         std::cout << "pba->f()" << std::endl;
         pba->f();
@@ -110,5 +109,16 @@ namespace virtual_function_test {
                  data CBA  00000014A1F0F710          c 
         }
         */
+    }
+
+    void test3() {
+        std::cout << "virtual function test3" << std::endl;
+        BA ba;
+        A* pa = dynamic_cast<A*>(&ba);
+        pa->getThis();
+        // !!! вызовется переопределенная BA::getThis() хотя сигнатуры виртуальных функций разные
+        // случай, когда возвращаемый тип метода - это указатель на сам класс
+        pa->A::getThis();
+        // можно напрямую указать какой метод вызывать
     }
 }

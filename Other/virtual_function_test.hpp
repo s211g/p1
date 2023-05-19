@@ -19,6 +19,11 @@ namespace virtual_function_test {
         ~A() { std::cout << "A::~A()" << std::endl; }
 
         virtual void f() { std::cout << "A::f()" << std::endl; }
+
+        virtual A* getThis() {
+            std::cout << "A::getThis()" << std::endl;
+            return nullptr;
+        }
     };
 
     class B {
@@ -55,6 +60,11 @@ namespace virtual_function_test {
         ~BA() { std::cout << "BA::~BA()" << std::endl; }
 
         virtual void f() { std::cout << "BA::f()" << std::endl; }
+
+        virtual BA* getThis() {
+            std::cout << "BA::getThis()" << std::endl;
+            return nullptr;
+        }
     };
 
     class C_BA : public BA {
@@ -70,14 +80,17 @@ namespace virtual_function_test {
     };
 
 
+    void dump(uint8_t* data, uint32_t size);
+
     void test1();
     void test2();
-    void dump(uint8_t* data, uint32_t size);
+    void test3();
 
     inline void test() {
         std::cout << "virtual functions tests" << std::endl;
 
-        test1();
+        //test1();
         //test2();
+        test3();
     }
 }
