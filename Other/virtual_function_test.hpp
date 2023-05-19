@@ -11,6 +11,11 @@ namespace virtual_function_test {
             std::cout << "A::A()" << std::endl;
             f();
         }
+
+        A(const A&) {
+            std::cout << "A::A(const A&)" << std::endl;
+        }
+
         ~A() { std::cout << "A::~A()" << std::endl; }
 
         virtual void f() { std::cout << "A::f()" << std::endl; }
@@ -72,7 +77,7 @@ namespace virtual_function_test {
     inline void test() {
         std::cout << "virtual functions tests" << std::endl;
 
-        //test1();
-        test2();
+        test1();
+        //test2();
     }
 }

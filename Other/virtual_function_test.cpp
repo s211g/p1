@@ -23,6 +23,25 @@ namespace virtual_function_test {
         C* pc = &c;
         B* pb = dynamic_cast<B*>(&c);
         A* pa = dynamic_cast<A*>(&c);
+
+        try {
+            auto& sa = dynamic_cast<A&>(c);
+            std::cout << "cast ok" << std::endl;
+        }
+        catch (...) {
+            std::cout << "cast failed" << std::endl;
+        }
+
+        try {
+            auto& s = dynamic_cast<BA&>(c);
+            std::cout << "cast ok" << std::endl;
+        }
+        catch (std::bad_cast& ex) {
+            std::cout << "std::bad_cast" << std::endl;
+        }
+
+        // каст на ссылку генерирует std::bad_cast
+
         std::cout << " pc " << pc << " pb " << pb << " pa " << pa << std::endl;
         std::cout << " c " << &pc->c << " b " << &pb->b << " a " << &pa->a << std::endl;
 
