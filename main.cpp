@@ -20,11 +20,12 @@
 #include "patterns_structure_test.hpp"
 #include "patterns_behavior_test.hpp"
 #include "virtual_function_test.hpp"
+#include "rtti_cast_test.hpp"
 
 
 
 int main() {
-    virtual_function_test::test();
+    //virtual_function_test::test();
     //containers_test::test();
     //mutex_test::test();
     //smartpointer_test::test();
@@ -43,6 +44,8 @@ int main() {
     //patterns_creational_test::test();
     //patterns_structure_test::test();
     //patterns_behavior_test::test();
+
+    rtti_cast_test::test();
 
     return 0;
 }
