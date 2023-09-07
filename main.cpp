@@ -25,7 +25,7 @@
 
 
 int main() {
-    //virtual_function_test::test();
+    virtual_function_test::test();
     //containers_test::test();
     //mutex_test::test();
     //smartpointer_test::test();
@@ -45,7 +45,7 @@ int main() {
     //patterns_structure_test::test();
     //patterns_behavior_test::test();
 
-    rtti_cast_test::test();
+    //rtti_cast_test::test();
 
     return 0;
 }

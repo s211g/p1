@@ -17,7 +17,7 @@ namespace virtual_function_test {
         std::cout << "virtual function test1" << std::endl;
 
         std::cout << " sizeof(void*) " << sizeof(void*) << std::endl;
-        std::cout << "sizeof C >" << sizeof(C) << std::endl;
+        std::cout << "sizeof C " << sizeof(C) << std::endl;
 
         C c;
         C* pc = &c;
@@ -57,6 +57,7 @@ namespace virtual_function_test {
         std::cout << "pa->f()" << std::endl;
         pa->f();
 
+        // class C : public B, public A
         // расположение данных внутри объекта класса С :
         // вложенности у базовых классов нет
         /*
@@ -80,7 +81,7 @@ namespace virtual_function_test {
         std::cout << "virtual function test2" << std::endl;
 
         std::cout << " sizeof(void*) " << sizeof(void*) << std::endl;
-        std::cout << "sizeof C_BA >" << sizeof(C_BA) << std::endl;
+        std::cout << "sizeof C_BA " << sizeof(C_BA) << std::endl;
 
         C_BA cba;
         C_BA* pcba = &cba;
@@ -99,7 +100,9 @@ namespace virtual_function_test {
         std::cout << "pa->f()" << std::endl;
         pa->f();
 
-        // расположение данных внутри объекта класса С :
+        // class BA : public A
+        // class C_BA : public BA
+        // расположение данных внутри объекта класса BA :
         /*
         {
         class BA { data A  00000014A1F0F6F8 pcba,pba vptrBA,vptrA
@@ -112,6 +115,74 @@ namespace virtual_function_test {
     }
 
     void test3() {
+        std::cout << "virtual function test3" << std::endl;
+
+        std::cout << " sizeof(void*) " << sizeof(void*) << std::endl;
+        std::cout << "sizeof D " << sizeof(D) << std::endl;
+
+        // class D : public A
+        // !!! D без виртуальных функций
+        D d;
+        D* pd = &d;
+        A* pa = dynamic_cast<A*>(&d);
+
+        std::cout << " pd " << pd << std::endl;
+        std::cout << " pa " << pa << std::endl;
+
+        //dump(reinterpret_cast<uint8_t*>(pcba), sizeof(cba));
+        dump((uint8_t*)pd, sizeof(d));
+
+        // class D : public A
+        // !!! D без виртуальных функций
+        // расположение данных внутри объекта класса D :
+        /*
+        {
+        class D {   B8 2E BB BF F6 7F 00 00  000000DFB22FF688 pd,pa, vptrD,vptrA
+                    01 00 00 00 CC CC CC CC  a
+                    04 00 00 00 CC CC CC CC  d
+                }
+        }
+        */
+    }
+
+    void test4() {
+        std::cout << "virtual function test4" << std::endl;
+
+        std::cout << " sizeof(void*) " << sizeof(void*) << std::endl;
+        std::cout << "sizeof F " << sizeof(F) << std::endl;
+
+        //  class F : public E
+        // !!! E без виртуальных функций, F c
+        F f;
+        F* pf = &f;
+        E* pe = dynamic_cast<E*>(&f);
+
+        std::cout << " pf " << pf << " &pf->ff " << &pf->ff << std::endl;
+        std::cout << " pe " << pe << " &pe->e " << &pe->e << std::endl;
+
+        //dump(reinterpret_cast<uint8_t*>(pcba), sizeof(cba));
+        dump((uint8_t*)pf, sizeof(f));
+
+        //sizeof F 16
+        // pf 000000873F92FAF8 &pf->ff 000000873F92FB04
+        // pe 000000873F92FB00 &pe->e 000000873F92FB00
+        // D0 2E C3 E8 F6 7F 00 00
+        // 05 00 00 00 06 00 00 00
+
+        //  class F : public E
+        // !!! E без виртуальных функций, F c
+        // расположение данных внутри объекта класса F :
+        /*
+        {
+        class F {   D0 2E C3 E8 F6 7F 00 00  000000873F92FAF8 pf,vptrF
+                    05 00 00 00              000000873F92FB00 e,pe (у E нет vptr)
+                    06 00 00 00              000000873F92FB04 f
+                }
+        }
+        */
+    }
+
+    void test5() {
         std::cout << "virtual function test3" << std::endl;
         BA ba;
         A* pa = dynamic_cast<A*>(&ba);

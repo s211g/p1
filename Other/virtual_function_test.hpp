@@ -79,18 +79,38 @@ namespace virtual_function_test {
         virtual void f() { std::cout << "C_BA::f()" << std::endl; }
     };
 
+    class D : public A {
+    public:
+        int d{4};
+    };
 
-    void dump(uint8_t* data, uint32_t size);
+    class E {
+    public:
+        int e{5};
+    };
+
+    class F : public E {
+    public:
+        int ff{6};
+        virtual void f() { std::cout << "F::f()" << std::endl; };
+    };
+
+    void
+    dump(uint8_t* data, uint32_t size);
 
     void test1();
     void test2();
     void test3();
+    void test4();
+    void test5();
 
     inline void test() {
         std::cout << "virtual functions tests" << std::endl;
 
         //test1();
         //test2();
-        test3();
+        //test3();
+        test4();
+        //test5();
     }
 }
