@@ -21,11 +21,13 @@
 #include "patterns_behavior_test.hpp"
 #include "virtual_function_test.hpp"
 #include "rtti_cast_test.hpp"
+#include "rvalue_test.hpp"
 
 
 
 int main() {
-    virtual_function_test::test();
+    rvalue_test::test();
+    //virtual_function_test::test();
     //containers_test::test();
     //mutex_test::test();
     //smartpointer_test::test();

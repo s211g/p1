@@ -43,6 +43,8 @@ namespace type_utils {
             return "int";
         if (std::is_same_v<T, int&>)
             return "int&";
+        if (std::is_same_v<T, int&&>)
+            return "int&&";
         if (std::is_same_v<T, int*>)
             return "int*";
         if (std::is_same_v<T, std::reference_wrapper<int>>)
