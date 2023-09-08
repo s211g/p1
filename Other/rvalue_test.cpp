@@ -10,10 +10,10 @@ namespace rvalue_test {
     }
 
     template <typename T>
-    void print_type(T&& t) {
-        std::cout << "type T             : " << type_utils::type2name<T>() << std::endl;
-        std::cout << "type t             : " << type_utils::type2name<decltype(t)>() << std::endl;
-        std::cout << "forward return type: " << type_utils::type2name<decltype(std::forward<T>(t))>() << std::endl;
+    void print_type(const char* caption, T&& t) {
+        std::cout << caption << ", type T             : " << type_utils::type2name<T>() << std::endl;
+        std::cout << caption << ", type t             : " << type_utils::type2name<decltype(t)>() << std::endl;
+        std::cout << caption << ", forward return type: " << type_utils::type2name<decltype(std::forward<T>(t))>() << std::endl;
     }
 
     void test1() {
@@ -58,15 +58,56 @@ namespace rvalue_test {
 
         //  void print_type(T&& t) { std::forward<T>(t) }
         // если передавать временные значения или неим ссылки на rvalue, то forward возвращает(кастит) неим ссылки rvalue
-        print_type(5);
-        print_type(int(1));
-        print_type(std::move(srv4));
+        print_type("5", 5);
+        print_type("int(1)", int(1));
+        print_type("std::move(srv4)", std::move(srv4));
+        //вывод:
+        //5, type T             : int
+        //5, type t             : int&&
+        //5, forward return type: int&&
+        //int(1), type T             : int
+        //int(1), type t             : int&&
+        //int(1), forward return type: int&&
+        //std::move(srv4), type T             : int
+        //std::move(srv4), type t             : int&&
+        //std::move(srv4), forward return type: int&&
+
         // если передать lvalue или ссылку(& или &&)
         int j{0};
         int& ref_j   = j;
         int&& rref_j = std::move(j);
-        print_type(j);
-        print_type(ref_j);
-        print_type(rref_j);
+        print_type("j", j);
+        print_type("ref_j", ref_j);
+        print_type("rref_j", rref_j);
+        //вывод:
+        //j, type T             : int&
+        //j, type t             : int&
+        //j, forward return type: int&
+        //ref_j, type T             : int&
+        //ref_j, type t             : int&
+        //ref_j, forward return type: int&
+        //rref_j, type T             : int&
+        //rref_j, type t             : int&
+        //rref_j, forward return type: int&
+
+        // правила свертки ссылок
+        // && & = &
+        // && && = &&
+        using T1 = int&;
+        using T2 = T1&&;
+        std::cout << "type T1 : " << type_utils::type2name<T1>() << std::endl;
+        std::cout << "type T2 : " << type_utils::type2name<T2>() << std::endl;
+        using T3 = int&&;
+        using T4 = T3&;
+        using T5 = T3&&;
+        std::cout << "type T3 : " << type_utils::type2name<T3>() << std::endl;
+        std::cout << "type T4 : " << type_utils::type2name<T4>() << std::endl;
+        std::cout << "type T5 : " << type_utils::type2name<T5>() << std::endl;
+        //вывод:
+        //type T1 : int&
+        //type T2 : int&
+        //type T3 : int&&
+        //type T4 : int&
+        //type T5 : int&&
     }
 }
