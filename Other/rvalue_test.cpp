@@ -138,5 +138,16 @@ namespace rvalue_test {
         std::cout << "ref4 type :" << type_utils::type2name<decltype(ref4)>() << std::endl;
         std::cout << "ref5 type :" << type_utils::type2name<decltype(ref5)>() << std::endl;
         std::cout << "ref6 type :" << type_utils::type2name<decltype(ref6)>() << std::endl;
+
+        // Person&& rValueRef  = MakePerson(); // rValueRef --- rvalue ссылка
+        // auto&& universalRef = rValueRef;    // Не rvalue ссылка
+
+        // Тип аргумента функции выводится не полностью.
+        // template <typename T>
+        // void DoSomething(std::vector<T> && rValueRef2); // Это rvalue ссылка.
+
+        // Тип аргумента функции выводится полностью.
+        // template <typename T>
+        // void DoSomething(T && universalRef2); // Это не rvalue ссылка.
     }
 }
