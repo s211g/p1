@@ -24,7 +24,7 @@ namespace rvalue_test {
         // template <class _Ty>
         // _NODISCARD constexpr remove_reference_t<_Ty>&& move(_Ty&& _Arg) noexcept { // forward _Arg as movable
         // return static_cast<remove_reference_t<_Ty>&&>(_Arg);
-        //}
+        // }
 
         // возвращает неименованную ссылку на rvalue
         int&& srv1 = static_cast<int&&>(i);
@@ -61,16 +61,16 @@ namespace rvalue_test {
         print_type("5", 5);
         print_type("int(1)", int(1));
         print_type("std::move(srv4)", std::move(srv4));
-        //вывод:
-        //5, type T             : int
-        //5, type t             : int&&
-        //5, forward return type: int&&
-        //int(1), type T             : int
-        //int(1), type t             : int&&
-        //int(1), forward return type: int&&
-        //std::move(srv4), type T             : int
-        //std::move(srv4), type t             : int&&
-        //std::move(srv4), forward return type: int&&
+        // вывод:
+        // 5, type T             : int
+        // 5, type t             : int&&
+        // 5, forward return type: int&&
+        // int(1), type T             : int
+        // int(1), type t             : int&&
+        // int(1), forward return type: int&&
+        // std::move(srv4), type T             : int
+        // std::move(srv4), type t             : int&&
+        // std::move(srv4), forward return type: int&&
 
         // если передать lvalue или ссылку(& или &&)
         int j{0};
