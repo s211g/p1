@@ -110,4 +110,33 @@ namespace rvalue_test {
         // type T4 : int&
         // type T5 : int&&
     }
+
+    void test2() {
+        std::cout << "test2" << std::endl;
+
+        // вывод типа универсальной ссылки тот же что
+        // правила свертки ссылок
+        // && & = &
+        // && && = &&
+
+        int i{0};
+        int& refi = i;
+
+        // как ссылка на r-value
+        auto&& ref1 = 5;
+        auto&& ref2 = int();
+        auto&& ref3 = std::move(i);
+
+        // как ссылка
+        auto&& ref4 = i;
+        auto&& ref5 = ref1;
+        auto&& ref6 = refi;
+
+        std::cout << "ref1 type :" << type_utils::type2name<decltype(ref1)>() << std::endl;
+        std::cout << "ref2 type :" << type_utils::type2name<decltype(ref2)>() << std::endl;
+        std::cout << "ref3 type :" << type_utils::type2name<decltype(ref3)>() << std::endl;
+        std::cout << "ref4 type :" << type_utils::type2name<decltype(ref4)>() << std::endl;
+        std::cout << "ref5 type :" << type_utils::type2name<decltype(ref5)>() << std::endl;
+        std::cout << "ref6 type :" << type_utils::type2name<decltype(ref6)>() << std::endl;
+    }
 }
