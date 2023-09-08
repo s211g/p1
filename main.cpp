@@ -22,11 +22,12 @@
 #include "virtual_function_test.hpp"
 #include "rtti_cast_test.hpp"
 #include "rvalue_test.hpp"
-
+#include "constructor_test.hpp"
 
 
 int main() {
-    rvalue_test::test();
+    constructor_test::test();
+    //rvalue_test::test();
     //virtual_function_test::test();
     //containers_test::test();
     //mutex_test::test();
