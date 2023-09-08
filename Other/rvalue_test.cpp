@@ -56,7 +56,7 @@ namespace rvalue_test {
         std::cout << "srv4 = " << srv4 << std::endl;
 
 
-        //  void print_type(T&& t) { std::forward<T>(t) }
+        // void print_type(T&& t) { std::forward<T>(t) }
         // если передавать временные значения или неим ссылки на rvalue, то forward возвращает(кастит) неим ссылки rvalue
         print_type("5", 5);
         print_type("int(1)", int(1));
@@ -79,16 +79,16 @@ namespace rvalue_test {
         print_type("j", j);
         print_type("ref_j", ref_j);
         print_type("rref_j", rref_j);
-        //вывод:
-        //j, type T             : int&
-        //j, type t             : int&
-        //j, forward return type: int&
-        //ref_j, type T             : int&
-        //ref_j, type t             : int&
-        //ref_j, forward return type: int&
-        //rref_j, type T             : int&
-        //rref_j, type t             : int&
-        //rref_j, forward return type: int&
+        // вывод:
+        // j, type T             : int&
+        // j, type t             : int&
+        // j, forward return type: int&
+        // ref_j, type T             : int&
+        // ref_j, type t             : int&
+        // ref_j, forward return type: int&
+        // rref_j, type T             : int&
+        // rref_j, type t             : int&
+        // rref_j, forward return type: int&
 
         // правила свертки ссылок
         // && & = &
@@ -103,11 +103,11 @@ namespace rvalue_test {
         std::cout << "type T3 : " << type_utils::type2name<T3>() << std::endl;
         std::cout << "type T4 : " << type_utils::type2name<T4>() << std::endl;
         std::cout << "type T5 : " << type_utils::type2name<T5>() << std::endl;
-        //вывод:
-        //type T1 : int&
-        //type T2 : int&
-        //type T3 : int&&
-        //type T4 : int&
-        //type T5 : int&&
+        // вывод:
+        // type T1 : int&
+        // type T2 : int&
+        // type T3 : int&&
+        // type T4 : int&
+        // type T5 : int&&
     }
 }
