@@ -11,7 +11,12 @@ namespace crtp_test {
         A a3{3};
         a3 = a1 + a2;
         std::cout << "a3.i = " << a3.i << std::endl;
-    }
 
+        A2 a21{11};
+        A2 a22{12};
+        A2 a23{3};
+        a23 = a21 + a22;
+        std::cout << "a23.i = " << a23.i << std::endl;
+    }
 
 }

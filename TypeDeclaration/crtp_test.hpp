@@ -24,12 +24,20 @@ namespace crtp_test {
     };
 
     //    class A : public addable<A> {
-    class A : public addable_f<A> {
+    class A : public addable_f<A>, public addable<A> {
     public:
         A(int i_) :
             i(i_) {}
         int i;
     };
+
+    class A2 : public addable<A2> {
+    public:
+        A2(int i_) :
+            i(i_) {}
+        int i;
+    };
+
 
     void test_1();
 

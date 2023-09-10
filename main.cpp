@@ -23,10 +23,11 @@
 #include "rtti_cast_test.hpp"
 #include "rvalue_test.hpp"
 #include "constructor_test.hpp"
+#include "static_test.hpp"
 
 
 int main() {
-    constructor_test::test();
+    //constructor_test::test();
     //rvalue_test::test();
     //virtual_function_test::test();
     //containers_test::test();
@@ -49,6 +50,7 @@ int main() {
     //patterns_behavior_test::test();
 
     //rtti_cast_test::test();
+    static_test::test();
 
     return 0;
 }
