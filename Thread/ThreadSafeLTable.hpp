@@ -5,6 +5,7 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
+#include <memory>
 
 namespace ThreadSafeLTable {
 
@@ -55,9 +56,9 @@ namespace ThreadSafeLTable {
 
             bool removeValue(Key const& key) {
                 std::lock_guard lock(mutex);
-                const bucket_iterator found_entry = find_entry_for(key);
+                bucket_iterator_const found_entry = find_entry_for(key);
                 if (found_entry != data.end()) {
-                    data.erase(bucket_iterator);
+                    data.erase(found_entry);
                     return true;
                 }
                 return false;

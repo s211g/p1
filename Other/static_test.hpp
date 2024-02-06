@@ -1,16 +1,33 @@
 #pragma once
 
 #include <iostream>
+#include <atomic>
+
+//#define STATIC_TEST_ENABLED
 
 namespace static_test {
-
 
     class A {
     public:
         A(int i_) :
-            i(i_) { std::cout << "A::A() i = " << i << std::endl; }
-        A() { std::cout << "A::A()" << std::endl; }
-        ~A() { std::cout << "~A::A() i = " << i << std::endl; }
+            i(i_) { 
+                #ifndef STATIC_TEST_ENABLED
+                    return; 
+                #endif
+                std::cout << "A::A() i = " << i << std::endl; 
+                }
+        A() { 
+            #ifndef STATIC_TEST_ENABLED
+                return; 
+            #endif
+            std::cout << "static_test A::A()" << std::endl; 
+            }
+        ~A() { 
+            #ifndef STATIC_TEST_ENABLED
+                return; 
+            #endif
+            std::cout << "static_test ~A::A() i = " << i << std::endl; 
+            }
         int i{777};
     };
 
@@ -35,6 +52,7 @@ namespace static_test {
     void test2();
 
     inline void test() {
+        //#define STATIC_TEST_ENABLED
         std::cout << "static tests" << std::endl;
 
         test1();

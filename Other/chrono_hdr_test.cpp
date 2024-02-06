@@ -3,6 +3,7 @@
 #include <chrono>
 #include <string>
 #include <thread>
+#include <iostream>
 
 namespace chrono_hdr_test {
 
@@ -84,6 +85,7 @@ yotta 	std::ratio<1000000000000000000000000, 1>, if std::intmax_t can represent 
         time_t now_t = std::chrono::system_clock::to_time_t(now + std::chrono::years(1));
         // from time_t
         auto now2 = std::chrono::system_clock::from_time_t(now_t); // +1h
-        std::cout << "now2 : " << now2 << std::endl;
+        //std::cout << "now2 : " << std::to_string(now2) << std::endl;
+        //std::cout << "now2 : " <<  std::format("{:%Y-%m-%d %X}", now2);
     }
 }

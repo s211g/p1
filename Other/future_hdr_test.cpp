@@ -2,6 +2,9 @@
 #include <future>
 #include <string>
 #include <vector>
+#include <stdexcept>
+#include <thread>
+#include <functional>
 
 namespace future_hdr_test {
 
@@ -196,7 +199,8 @@ namespace future_hdr_test {
         std::future<std::string> f2 = p2.get_future();
         { // thread 1
             try {
-                throw std::exception("Division by zero!");
+                throw std::runtime_error("Division by zero!");
+                //throw std::runtime_error(std::string("Division by zero!"));
             }
             catch (...) {
                 p2.set_exception(std::current_exception());

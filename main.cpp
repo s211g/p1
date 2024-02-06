@@ -24,7 +24,7 @@
 #include "rvalue_test.hpp"
 #include "constructor_test.hpp"
 #include "static_test.hpp"
-
+#include "inheritance_test.hpp"
 
 int main() {
     //constructor_test::test();
@@ -50,7 +50,9 @@ int main() {
     //patterns_behavior_test::test();
 
     //rtti_cast_test::test();
-    static_test::test();
+    //static_test::test();
+
+    inheritance_test::test();
 
     return 0;
 }

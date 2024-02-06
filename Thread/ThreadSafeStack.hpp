@@ -1,6 +1,7 @@
 #pragma once
 
 #include <atomic>
+#include <memory>
 
 namespace ThreadSafeStack {
 
@@ -20,7 +21,7 @@ namespace ThreadSafeStack {
     struct LockFreeStackSNode {
         std::shared_ptr<T> data;
         LockFreeStackSNode* next;
-        LockFreeStackSNode(T const& data_) :
+        LockFreeStackSNode(const T & data_) :
             data(std::make_shared<T>(data_)) {}
         //T& getData() { return *data; }
         //std::shared_ptr<T> getDataS() { return std::move(data); }

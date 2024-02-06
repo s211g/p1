@@ -39,8 +39,8 @@ namespace typedeclaration_test {
 
         std::cout << "\ntest 4" << std::endl;
         int i4[10];
-        std::cout << "sizeof i4 = " << sizeof i4 << std::endl;
-        std::cout << "sizeof A = " << sizeof A << std::endl;
+        std::cout << "sizeof i4 = " << sizeof(i4) << std::endl;
+        std::cout << "sizeof A = " << sizeof(A) << std::endl;
 
         std::cout << "\ntest 5" << std::endl;
         int m[10];

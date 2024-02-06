@@ -97,12 +97,12 @@ namespace containers_test {
     template <typename T>
     void printTupleInfo(T& t) {
         std::cout << "\ntuple info: " << std::endl;
-        std::cout << "tuple size = " << std::tuple_size_v<std::remove_reference<decltype(t)>::type> << std::endl;
+        //std::cout << "tuple size = " << std::tuple_size_v<std::remove_reference<decltype(t)>> << std::endl;
         //std::cout << "tuple size = " << std::tuple_size_v<decltype(t)> << std::endl;
         std::cout << "[0] : " << std::get<0>(t) << std::endl;
         std::cout << "[1] : " << std::get<1>(t) << std::endl;
-        std::cout << "[0] type: " << type2name<std::tuple_element_t<0, std::remove_reference<decltype(t)>::type>>() << std::endl;
-        std::cout << "[1] type: " << type2name<std::tuple_element_t<1, std::remove_reference<decltype(t)>::type>>() << std::endl;
+        //std::cout << "[0] type: " << type2name<std::tuple_element_t<0, std::remove_reference<decltype(t)>>>() << std::endl;
+        //std::cout << "[1] type: " << type2name<std::tuple_element_t<1, std::remove_reference<decltype(t)>>>() << std::endl;
         std::cout << "[0] type decltype(std::get<0>(t)) : " << type2name<decltype(std::get<0>(t))>() << std::endl;
         std::cout << "[1] type decltype(std::get<0>(t)) : " << type2name<decltype(std::get<1>(t))>() << std::endl;
     }
