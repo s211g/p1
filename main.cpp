@@ -27,6 +27,9 @@
 #include "inheritance_test.hpp"
 
 int main() {
+    std::cout << "sizeof(void*) : " << sizeof(void*) << std::endl
+              << std::endl;
+
     //constructor_test::test();
     //rvalue_test::test();
     //virtual_function_test::test();
