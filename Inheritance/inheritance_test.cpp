@@ -154,6 +154,9 @@ namespace inheritance_test {
 
     class A4 {
     public:
+        A4() { std::cout << "A4::A4()" << std::endl; }
+        A4(int i_) :
+            i(i_) { std::cout << "A4::A4(int i)" << std::endl; }
         int i{1};
     };
 
@@ -167,6 +170,7 @@ namespace inheritance_test {
         int k{3};
     };
 
+
     class D4 : public B4A, public C4A {
     public:
         int l{4};
@@ -174,7 +178,9 @@ namespace inheritance_test {
 
     class B4vA : virtual public A4 {
     public:
-        B4vA() {
+        B4vA() :
+            A4(9) {
+            std::cout << "B4vA::B4vA" << std::endl;
             i = 7;
         }
         int j{2};
@@ -182,19 +188,32 @@ namespace inheritance_test {
 
     class C4vA : virtual public A4 {
     public:
-        C4vA() {
+        C4vA() :
+            A4(10) {
+            std::cout << "C4vA::C4vA" << std::endl;
             i = 8;
         }
         int k{3};
     };
 
-    class D4v : public B4vA, public C4vA {
+    class E4 {
+    public:
+        E4() {
+            std::cout << "E4::E4()" << std::endl;
+        }
+        int m{11};
+    };
+
+    class D4v : public E4, public B4vA, public C4vA {
     public:
         int l{4};
     };
 
     void test_4() {
         std::cout << "\ntest 4" << std::endl;
+
+
+        std::cout << "non-virtual rhombic inheritance -----------------------------------------------------" << std::endl;
 
         D4 d;
         dump("d", reinterpret_cast<uint8_t*>(&d), sizeof(d), 4);
@@ -219,20 +238,52 @@ namespace inheritance_test {
         //03 00 00 00
         //04 00 00 00
 
+        std::cout << "virtual rhombic inheritance -----------------------------------------------------" << std::endl;
+
+        B4vA bb;
+        dump("B4vA bb", reinterpret_cast<uint8_t*>(&bb), sizeof(bb), 4);
+        std::cout << std::endl;
+
+        // !!! в данном случае вызывается конструктор базового виртуального класса
+        // A4::A4(int i)  - конструктор базового
+        // B4vA::B4vA
+        // B4vA bb(0x5c359ff560) :
+        // 88 07 0F 2E
+        // F7 7F 00 00
+        // 02 00 00 00
+        // 07 00 00 00
+
+        std::cout << "D4v dv; ... " << std::endl;
         D4v dv;
         dump("D4v", reinterpret_cast<uint8_t*>(&dv), sizeof(dv), 4);
         std::cout << std::endl;
 
-        //E8 F5 E2 38
-        //F7 7F 00 00
-        //02 00 00 00
-        //F9 7F 00 00
-        //00 F6 E2 38
-        //F7 7F 00 00
-        //03 00 00 00
-        //04 00 00 00
-        //08 00 00 00 // сюда уехал класс A4 кто последний проинициализировал тот и задал значение
-        //39 02 00 00 // выравнивание
+        //  !!! Хоть и вызывается конструктор базового класса B4vA() : A4(9) {}
+        // Но он не вызывается ))
+        // вызывается только конструктор по умолчанию до всех конструкторов с виртуальным базовым классом
+        //
+        //  Все классы, наследующие виртуальный базовый класс, будут иметь виртуальную таблицу,
+        //  даже если в противном случае у них ее обычно не было бы, и, таким образом, размер
+        //  экземпляров этих классов будет больше на размер указателя.
+
+        // D4v dv; ...
+        // A4::A4()  - вызывается один раз
+        // E4::E4()
+        // B4vA::B4vA  - не вызывает A4(int), хоть и прописан
+        // C4vA::C4vA
+        // D4v(0xdc3d7ff970) :
+        // 98 07 4B 88   B4vA почемуто переместился в начало, хоть первым идет Е4
+        // F7 7F 00 00   B4vA
+        // 02 00 00 00   B4vA
+        // 0B 00 00 00   E4
+        // B0 07 4B 88   C4vA
+        // F7 7F 00 00   C4vA
+        // 03 00 00 00   C4vA
+        // 04 00 00 00   D4v
+        // 08 00 00 00   A4 - в конец уехал виртуальный класс
+        // 00 00 00 00
+
+        // в начале виртуальных классов указатель на таблицу которая, по сути, сохраняет смещение от каждого подкласса к виртуальному подобъекту
 
         B4vA* bv = &dv;
         C4vA* cv = &dv;
