@@ -306,4 +306,43 @@ namespace inheritance_test {
         // A4 0xfb9b3ff9c0 :
         // 08 00 00 00
     }
+
+
+    class A5 {
+        int i{1};
+    };
+    class C5 : private A5 {
+        int k{3};
+    };
+
+    void test_5() {
+        std::cout << "\ntest 5" << std::endl;
+
+        C5 c;
+        //A5* a = &c; // нет доступа к приватному базовуму классу
+        //A5* a = static_cast<A5*>(&c); // нет доступа к приватному базовуму классу
+        A5* a = reinterpret_cast<A5*>(&c); // только насильно
+        dump("A5", reinterpret_cast<uint8_t*>(a), sizeof(A5), 4);
+    }
+
+    class A6 {
+        int i{1};
+    };
+    class C6 : public A6 {
+        int k{3};
+    };
+    class D6 : public A6 {
+        int k{4};
+    };
+
+    void test_6() {
+        std::cout << "\ntest 6" << std::endl;
+
+        C6 c;
+        A6* a = &c;                  // тип потерян, и дальше не определить реальный производный класс
+        D6* d = static_cast<D6*>(a); // дает преобразовать без проверки, что приводит к ошибке приведения к другому типу
+        //D6* d_dyn = dynamic_cast<D6*>(a); // нельзя тк D6 не полиморфный тип
+    }
+
+
 }

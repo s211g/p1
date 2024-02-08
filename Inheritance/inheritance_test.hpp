@@ -8,12 +8,14 @@ namespace inheritance_test {
     void test_2();
     void test_3();
     void test_4();
+    void test_5();
 
     inline void test() {
         std::cout << "inheritance tests" << std::endl;
         //test_1();
         //test_2();
         //test_3();
-        test_4();
+        //test_4();
+        test_5();
     }
 }
