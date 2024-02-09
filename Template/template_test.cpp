@@ -34,6 +34,7 @@ namespace template_test {
         >
     int ContainerPush3(ContainerIn<>& container, T value) {
         container.push_back(value);
+        ContainerIn<> co;
         return container.size();
     }
 
@@ -45,10 +46,16 @@ namespace template_test {
         return container.size();
     }
 
+    template <
+        typename T,
+        typename C>
+    class CContainerPush4 {
+    public:
+        CContainerPush4(C& container, T value) {}
+    };
 
 
-    void
-    test_template_template_parameters() {
+    void test_template_template_parameters() {
         std::cout << "\ntest template template parameter" << std::endl;
 
         // внутри параметров шаблона можно также указать параметр шаблон, формат:
@@ -60,20 +67,30 @@ namespace template_test {
         // можно задать имя которое можно дальше использовать
         // template <typename T1, typename T2= std::allocator<T1>, typename = T2> typename
         // если typename T3 = T4, а Т4 предполагает что должен быть параметр то в коде потом надо { T4<...> }
-        // если typename T6 = T4<T5>, тут Т6 уже определен с параметром и в коде уже используется просто { Т6 t }
+        // ??? если typename T6 = T4<T5>, тут Т6 уже определен с параметром и в коде уже используется просто { Т6 t }
+        // !!!???? почемуто для т6 в аргументе надо объявлять T6<>, вероятно и в теле функции
+        // !!! при создании объекта после типа класса надо <> а при вызове функции можно не указывать <>
 
         std::vector<int> v;
         auto s = ContainerPush<std::vector>(v, 1);
+
         // далее параметры шаблона выводятся из аргументов
         s = ContainerPush(v, 2);
         s = ContainerPush<>(v, 3);
+
         s = ContainerPush2<int>(v, 4);
         s = ContainerPush2<>(v, 5);
-        s = ContainerPush3<>(v, 6);
-        s = ContainerPush3(v, 7);
-        //s = ContainerPush3(v, double(7)); // поскольку тип контейнера и тип value связаны(должны быть одного типа), не скомпилируется
-        s = ContainerPush4(v, 8);
-        s = ContainerPush4(v, double(8)); // !!! T - double
+        s = ContainerPush2(v, 6);
+
+        s = ContainerPush3<>(v, 7);
+        s = ContainerPush3(v, 8);
+        //s = ContainerPush3(v, double(8)); // поскольку тип контейнера и тип value связаны(должны быть одного типа), не скомпилируется
+
+        s = ContainerPush4(v, 9);
+        s = ContainerPush4(v, double(10)); // !!! T - double, тип контейнера и тип значения не связаны
+
+        // автоматически вывод типа параметров шаблона
+        CContainerPush4 cc(v, 0);
 
         std::cout << "Container size : " << s << std::endl;
     }
