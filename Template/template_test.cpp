@@ -1,10 +1,82 @@
 #include <type_traits>
 #include <string>
+#include <vector>
 
 #include "template_test.hpp"
 #include "TStack.hpp"
 
 namespace template_test {
+
+    template <
+        template <typename> class ContainerIn,
+        typename T>
+    int ContainerPush(ContainerIn<T>& container, T value) {
+        container.push_back(value);
+        return container.size();
+    }
+
+    template <
+        typename T,
+        template <typename> class ContainerIn>
+    int ContainerPush2(ContainerIn<T>& container, T value) {
+        container.push_back(value);
+        return container.size();
+    }
+
+    // template <
+    //     typename T,
+    //     template <typename Elem, typename = std::allocator<Elem>> class ContainerInT, // определение некого типа контейнера
+    //     typename ContainerIn = ContainerInT<T>>                                       // определение контейнера с указанным параметром
+    template <
+        typename T,
+        template <typename Elem = T, typename = std::allocator<T>> class ContainerIn // определение типа контейнера, поскольку есть значения по умолчанию
+                                                                                     // то в сигнатуре функции можно не указывать параметры шаблона
+        >
+    int ContainerPush3(ContainerIn<>& container, T value) {
+        container.push_back(value);
+        return container.size();
+    }
+
+    template <
+        typename T,
+        typename C>
+    int ContainerPush4(C& container, T value) {
+        container.push_back(value);
+        return container.size();
+    }
+
+
+
+    void
+    test_template_template_parameters() {
+        std::cout << "\ntest template template parameter" << std::endl;
+
+        // внутри параметров шаблона можно также указать параметр шаблон, формат:
+        // template <typename, typename ....> typename
+        // каждое typename может быть проименовано
+        // template <typename T1> typename
+        // чтобы в дальнейшем можно было например конкретизировать второй параметр шаблона
+        // template <typename T1, typename = std::allocator<T1>> typename
+        // можно задать имя которое можно дальше использовать
+        // template <typename T1, typename T2= std::allocator<T1>, typename = T2> typename
+        // если typename T3 = T4, а Т4 предполагает что должен быть параметр то в коде потом надо { T4<...> }
+        // если typename T6 = T4<T5>, тут Т6 уже определен с параметром и в коде уже используется просто { Т6 t }
+
+        std::vector<int> v;
+        auto s = ContainerPush<std::vector>(v, 1);
+        // далее параметры шаблона выводятся из аргументов
+        s = ContainerPush(v, 2);
+        s = ContainerPush<>(v, 3);
+        s = ContainerPush2<int>(v, 4);
+        s = ContainerPush2<>(v, 5);
+        s = ContainerPush3<>(v, 6);
+        s = ContainerPush3(v, 7);
+        //s = ContainerPush3(v, double(7)); // поскольку тип контейнера и тип value связаны(должны быть одного типа), не скомпилируется
+        s = ContainerPush4(v, 8);
+        s = ContainerPush4(v, double(8)); // !!! T - double
+
+        std::cout << "Container size : " << s << std::endl;
+    }
 
     class Person {
     public:
@@ -64,8 +136,7 @@ namespace template_test {
         T t;
     };
 
-    void
-    test_friend() {
+    void test_friend() {
         std::cout << "\ntest friend function" << std::endl;
 
         std::cout << "\ntest 1" << std::endl;

@@ -46,7 +46,8 @@ int main() {
     //chrono_hdr_test::test();
     //atomic_hdr_test::test();
     //crtp_test::test();
-    //template_test::test();
+
+    template_test::test();
 
     //patterns_creational_test::test();
     //patterns_structure_test::test();
@@ -55,7 +56,7 @@ int main() {
     //rtti_cast_test::test();
     //static_test::test();
 
-    inheritance_test::test();
+    //inheritance_test::test();
 
     return 0;
 }
