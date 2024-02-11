@@ -15,7 +15,10 @@
 #include "atomic_hdr_test.hpp"
 #include "containers_test.hpp"
 #include "crtp_test.hpp"
+
 #include "template_test.hpp"
+#include "template_specialization_test.hpp"
+
 #include "patterns_creational_test.hpp"
 #include "patterns_structure_test.hpp"
 #include "patterns_behavior_test.hpp"
@@ -47,7 +50,8 @@ int main() {
     //atomic_hdr_test::test();
     //crtp_test::test();
 
-    template_test::test();
+    //template_test::test();
+    template_specialization_test::test();
 
     //patterns_creational_test::test();
     //patterns_structure_test::test();
