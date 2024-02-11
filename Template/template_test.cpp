@@ -49,9 +49,20 @@ namespace template_test {
     template <
         typename T,
         typename C>
-    class CContainerPush4 {
+    class CContainerPush5 {
     public:
-        CContainerPush4(C& container, T value) {}
+        CContainerPush5(C& container, T value) {}
+    };
+
+
+    template <
+        typename T,
+        template <typename Elem = T, typename = std::allocator<T>> class ContainerIn // определение типа контейнера, поскольку есть значения по умолчанию
+                                                                                     // то в сигнатуре функции можно не указывать параметры шаблона
+        >
+    class CContainerPush6 {
+    public:
+        CContainerPush6(ContainerIn<>& container, T value) {}
     };
 
 
@@ -89,10 +100,11 @@ namespace template_test {
         s = ContainerPush4(v, 9);
         s = ContainerPush4(v, double(10)); // !!! T - double, тип контейнера и тип значения не связаны
 
-        // автоматически вывод типа параметров шаблона
-        CContainerPush4 cc(v, 0);
-
         std::cout << "Container size : " << s << std::endl;
+
+        // автоматически вывод типа параметров шаблона
+        CContainerPush5 cc5(v, 0);
+        CContainerPush6 cc6(v, 0);
     }
 
     class Person {
