@@ -31,10 +31,13 @@ namespace template_specialization_test {
     //X<int>::X() {}
     //void X<int>::f() {}
 
-    // если в определении есть шаблон, то код должен быть в заголовке
+    // если в определении есть шаблон с неопределенным typename(class), то код должен быть в заголовке
     // template <> - не надо
     template <typename T>
     void X<int>::ft() { std::cout << "X<int>::ft()" << std::endl; }
+
+    template <typename T>
+    void f(T t) { std::cout << "ft<T>(T t)" << std::endl; }
 
     void test_outside_definitions();
     void test_explicit_specialization();

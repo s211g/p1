@@ -14,6 +14,17 @@ namespace template_specialization_test {
         std::cout << "X<int>::f()" << std::endl;
     }
 
+    // можно через свободную функцию
+    // void f(std::string t) {
+    //     std::cout << "f(std::string t)" << std::endl;
+    // }
+
+    // или через специализированную от общего шаблона
+    template <>
+    void f<std::string>(std::string t) {
+        std::cout << "f<std::string>(std::string t)" << std::endl;
+    }
+
     void test_outside_definitions() {
         std::cout << "\n test_outside_definitions" << std::endl;
 
@@ -26,6 +37,11 @@ namespace template_specialization_test {
         x2.f();
         // X<int>::X()
         // X<int>::f()
+
+        f(1);
+        f(std::string());
+        // f<T>(T t)
+        // f(std::string t) или  f<std::string>(std::string t)  как переопределено через свободную или специализированную функцию
     }
 
     template <typename T1, typename T2>
