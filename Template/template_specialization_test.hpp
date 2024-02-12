@@ -4,6 +4,8 @@
 
 namespace template_specialization_test {
 
+    // ---------------- шаблон класса -------------------
+
     template <typename>
     class X {
     public:
@@ -26,8 +28,7 @@ namespace template_specialization_test {
         void ft();
     };
 
-    // если в определении нет шаблоа, то код должен быть в cpp файле
-    // в заголовок нельзя выносить реализацию, будет ошибка  multiple definition
+    // при явной(полной) специализации реализация функций в не класса должна находиться в .cpp файле
     //X<int>::X() {}
     //void X<int>::f() {}
 
@@ -36,8 +37,23 @@ namespace template_specialization_test {
     template <typename T>
     void X<int>::ft() { std::cout << "X<int>::ft()" << std::endl; }
 
+    // ---------------- шаблон класса -------------------
+
+    // ---------------- шаблон функции -------------------
+
+    // определение общего шаблона
     template <typename T>
     void f(T t) { std::cout << "ft<T>(T t)" << std::endl; }
+    // объявление сигнатур частичной специализации
+    template <>
+    void f<std::string>(std::string t);
+    template <>
+    void f(char t);
+    // объявление типа свободной функции
+    void f(double t);
+
+    // ---------------- шаблон функции -------------------
+
 
     void test_outside_definitions();
     void test_explicit_specialization();

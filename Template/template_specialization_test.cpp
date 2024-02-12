@@ -4,44 +4,96 @@
 
 #include "template_specialization_test.hpp"
 
+
+namespace template_specialization_test_ {
+    void call_f() {
+        std::cout << "\ncall_f() : " << std::endl;
+        using namespace template_specialization_test;
+        f(1);
+        f(double());
+        f(std::string());
+        f(char());
+    }
+}
+
 namespace template_specialization_test {
 
+    // ---------------- шаблон класса -------------------
+
+    // "template<>" не требуется
     X<int>::X() {
         std::cout << "X<int>::X()" << std::endl;
     }
 
+    // "template<>" не требуется
     void X<int>::f() {
         std::cout << "X<int>::f()" << std::endl;
     }
 
-    // можно через свободную функцию
-    // void f(std::string t) {
-    //     std::cout << "f(std::string t)" << std::endl;
-    // }
+    // ---------------- шаблон класса -------------------
 
-    // или через специализированную от общего шаблона
+    // ---------------- шаблон функции -------------------
+
+    // определение через свободную функцию, будет конфликтовать с явной специализацией "template <> void f<double> {}"
+    void f(double t) {
+        std::cout << "f(double t)" << std::endl;
+    }
+
+    // cпециализация от общего шаблона
     template <>
     void f<std::string>(std::string t) {
         std::cout << "f<std::string>(std::string t)" << std::endl;
     }
 
+    // cпециализация от общего шаблона, Т выводится из аргумента
+    // поэтому можно опустить после имени специализацию в скобках: f<>(...) или f<char>(...)
+    template <>
+    void f(char t) {
+        std::cout << "f<>(char t)" << std::endl;
+    }
+
+    // ---------------- шаблон функции -------------------
+
     void test_outside_definitions() {
         std::cout << "\n test_outside_definitions" << std::endl;
 
+        // при полной(явной) специализации "template<>" либо перед явно специализированным классом(в .hpp), либо перед явно специализированной функцией(в .cpp)
+        // "template<>" перед реализацией члена класса вне класса не надо
+
+        std::cout << "\n class definitions : " << std::endl;
+        // общий шаблон
         X<double> x;
         x.f();
+        // вывод:
         // X<T>::X()
         // X<T>::f()
 
+        // явно специализированный шаблон
         X<int> x2;
         x2.f();
+        // вывод:
         // X<int>::X()
         // X<int>::f()
 
+        std::cout << "\n function definitions f() : " << std::endl;
         f(1);
+        f(double());
         f(std::string());
-        // f<T>(T t)
-        // f(std::string t) или  f<std::string>(std::string t)  как переопределено через свободную или специализированную функцию
+        f(char());
+        // вывод:
+        // f<T>(T t) общий шаблон
+        // f(double t) переопределено через свободную функцию, если не объявить ее в заголовке то может вызваться шаблонная "ft<T>(T t)
+        // f<std::string>(std::string t)  специализация
+        // f<>(char t) специализация, с автоматическим выводом Т из аргумента
+
+        // !!! перед возвращаемым типом можно написать inline и реализацию перенести в заголовок
+
+        // "template <>" сообщает что дальнейшее определение класса или функции относится к явной специализации
+        // и после имени фукции можно не писать ни <Тип> ни <>
+
+        // !!! в заголовке надо объявить сигнатуры явных специализаций и свободных функций
+
+        template_specialization_test_::call_f(); // если в заголовке не объявлены все специализации и сигнатуры свободных функций вывод может не совпасть
     }
 
     template <typename T1, typename T2>
