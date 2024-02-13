@@ -78,12 +78,11 @@ namespace template_specialization_test {
         template <typename T2>
         void ft();
 
-        struct B {}; // класс-член
+        //struct B {}; // класс-член
     };
 
     // при явной(полной) специализации реализация функций в не класса должна находиться в .cpp файле
     //X<int>::X() {}
-
 
     // функция-член ---------------------------------------------------------
     //void X<int>::f() {}
@@ -94,16 +93,7 @@ namespace template_specialization_test {
     template <typename T2>
     void X<int>::ft() { std::cout << "X<int>::ft()" << std::endl; }
 
-
     // класс-член -----------------------------------------------------------
-    // //template <> // специализация класса-члена
-    // class X<int>::B {
-    //     void f();
-    // };
-
-    // // template<> также не используется для члена специализированного класса-члена
-    // void X<int>::B::f() {
-    // }
 
     // ---------------- шаблон класса -------------------
 
@@ -122,14 +112,89 @@ namespace template_specialization_test {
 
     // ---------------- шаблон функции -------------------
 
+    // test_partial_specialization ----------------------------------------------------------
 
-    void test_outside_definitions();
+    // обобщенный шаблон, только объявление без реализации
+    template <typename T1, typename T2>
+    class P;
+
+    template <typename T1>
+    class P<T1, int> {
+    public:
+        P() { std::cout << "P<T1, int>::P()" << std::endl; }
+    };
+
+    template <typename T2>
+    class P<int, T2> {
+    public:
+        P() { std::cout << "P<int, T2>::P()" << std::endl; }
+    };
+
+    template <>
+    class P<int, int> {
+    public:
+        explicit P(int) { std::cout << "P<int, int>::P(int)" << std::endl; }
+        P() { std::cout << "P<int, int>::P()" << std::endl; }
+    };
+
+    template <typename T1>
+    class P<T1*, int> {
+    public:
+        P() { std::cout << "P<T*, int>::P()" << std::endl; }
+        void f(T1 t) { std::cout << "t : " << t << std::endl; }
+    };
+
+    template <typename T1>
+    class P<T1&, int> {
+    public:
+        P() { std::cout << "P<T1&, int>::P()" << std::endl; }
+        //explicit P(T1&) { std::cout << "P<T1&, int>::P(T1&)" << std::endl; }
+        void f(T1 t) { std::cout << "t : " << t << std::endl; }
+    };
+
+    template <typename T1, typename T2>
+    class P<T1*, T2*> {
+    public:
+        P() { std::cout << "P<T*, T*>::P()" << std::endl; }
+    };
+
+    template <typename T>
+    class E {
+    public:
+        E() { std::cout << "E<T>::E()" << std::endl; }
+        explicit E(T&) { std::cout << "E<T>::E(T&)" << std::endl; }
+        explicit E(T*) { std::cout << "E<T>::E(T*)" << std::endl; }
+        //E(T&) { std::cout << "E<T>::E(T&)" << std::endl; }
+    };
+
+    template <>
+    class E<int> {
+    public:
+        E() { std::cout << "E<int>::E()" << std::endl; }
+        explicit E(int&) { std::cout << "E<int>::E(int&)" << std::endl; }
+        explicit E(int*) { std::cout << "E<int>::E(int*)" << std::endl; }
+    };
+
+    template <>
+    class E<int*> {
+    public:
+        E() { std::cout << "E<int*>::E()" << std::endl; }
+        explicit E(int&) { std::cout << "E<int*>::E(int&)" << std::endl; }
+        explicit E(int*) { std::cout << "E<int*>::E(int*)" << std::endl; }
+    };
+
+    // test_partial_specialization ----------------------------------------------------------
+
+    void
+    test_outside_definitions();
     void test_explicit_specialization();
+    void test_partial_specialization();
 
     inline void test() {
         std::cout << "test_explicit_specialization" << std::endl;
 
-        test_outside_definitions();
+        //test_explicit_outside_definitions();
         //test_explicit_specialization();
+        test_partial_specialization();
     }
 }

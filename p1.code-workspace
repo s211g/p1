@@ -92,7 +92,9 @@
 			"any": "cpp",
 			"variant": "cpp",
 			"filesystem": "cpp",
-			"fstream": "cpp"
+			"fstream": "cpp",
+			"codecvt": "cpp",
+			"cinttypes": "cpp"
 		}
 	}
 }

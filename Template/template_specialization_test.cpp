@@ -67,8 +67,8 @@ namespace template_specialization_test {
 
     // ---------------- шаблон функции -------------------
 
-    void test_outside_definitions() {
-        std::cout << "\n test_outside_definitions" << std::endl;
+    void test_explicit_outside_definitions() {
+        std::cout << "\n test_explicit_outside_definitions" << std::endl;
 
         // при полной(явной) специализации "template<>" либо перед явно специализированным классом(в .hpp), либо перед явно специализированной функцией(в .cpp)
         // "template<>" перед реализацией члена класса вне класса не надо если есть объявление полной специализации этого класса:
@@ -212,5 +212,37 @@ namespace template_specialization_test {
         A a4(1, c); // A<int, char>::A(int,char)
         double d;
         A a5(1, d); // A<T1, T2>::A(t1,t2)
+    }
+
+    void test_partial_specialization() {
+        std::cout << "\n test_partial_specialization" << std::endl;
+
+        P<int, char> p1;
+        P<char, int> p2;
+        P<int, int> p3; // если не будет специализации P<int, int> то будет конфликт между <T1,int> и <int,T2>
+        //P<char, char> p4; // ошибка, неполный тип, т.к. нет реализации обобщенного шаблона
+        P<int*, int> p5;
+        P<int&, int> p6;
+        P<int*, int*> p7;
+
+        // вывод типа по типам аргуметов конструктора
+        // !!! в обобщенном шаблоне и в специализированном должна быть возможность вывода типа,
+        // т.е. если хотим выводить по аргументу типа Т/T*/T&, то в обобщенном и в специализированном должен быть консруктор (T/T*/T&)
+        char c{};
+        int i{};
+        int& si = i;
+        E e1(i);
+        E e2(si);
+        E e3(&i);
+        E e4(c);
+        E e5(&c);
+        // вывод:
+        // E<int>::E(int&)
+        // E<int>::E(int&)
+        // E<int>::E(int*)
+        // E<T>::E(T&)
+        // E<T>::E(T*)
+
+        // ??? нет конфликта с E<int*>, даже если поставить определение вперед E<int> все равно сводится к E<int>
     }
 }
