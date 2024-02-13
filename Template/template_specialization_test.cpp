@@ -214,6 +214,22 @@ namespace template_specialization_test {
         A a5(1, d); // A<T1, T2>::A(t1,t2)
     }
 
+    template <typename _T1, typename _T2>
+    P<typename std::decay_t<_T1>,
+      typename std::decay_t<_T2>>
+    make_p(_T1&& t1, _T2&& t2) {
+        typedef typename std::decay_t<_T1> type1;
+        typedef typename std::decay_t<_T2> type2;
+        //return P<type1, type2>(std::forward<_T1>(t1), std::forward<_T2>(t2));
+        return P<type1, type2>();
+    }
+
+    template <template <typename...> class C, typename... T>
+    auto make_x(T&&... t) {
+        //return P<type1, type2>(std::forward<_T1>(t1), std::forward<_T2>(t2));
+        return C<typename std::decay_t<T>...>();
+    }
+
     void test_partial_specialization() {
         std::cout << "\n test_partial_specialization" << std::endl;
 
@@ -224,13 +240,49 @@ namespace template_specialization_test {
         P<int*, int> p5;
         P<int&, int> p6;
         P<int*, int*> p7;
+        // вывод:
+        // P<int, T2>::P()
+        // P<T1, int>::P()
+        // P<int, int>::P()
+        // P<T*, int>::P()
+        // P<T1&, int>::P()
+        // P<T*, T*>::P()
 
-        // вывод типа по типам аргуметов конструктора
-        // !!! в обобщенном шаблоне и в специализированном должна быть возможность вывода типа,
-        // т.е. если хотим выводить по аргументу типа Т/T*/T&, то в обобщенном и в специализированном должен быть консруктор (T/T*/T&)
         char c{};
         int i{};
         int& si = i;
+
+        std::cout << "make_p() ---------------" << std::endl;
+        {
+            auto p1 = make_p(i, c);
+            auto p2 = make_p(c, i);
+            auto p3 = make_p(i, i);
+            auto p5 = make_p(&i, i);
+            auto p6 = make_p(si, i); // ссылка на int воспринимается как int
+            auto p7 = make_p(&i, &i);
+        }
+        std::cout << "make_x() ---------------" << std::endl;
+        {
+            auto p1 = make_x<P>(i, c);
+            auto p2 = make_x<P>(c, i);
+            auto p3 = make_x<P>(i, i);
+            auto p5 = make_x<P>(&i, i);
+            auto p6 = make_x<P>(si, i); // ссылка на int воспринимается как int
+            auto p7 = make_x<P>(&i, &i);
+        }
+
+        // вывод:
+        // P<int, T2>::P()
+        // P<T1, int>::P()
+        // P<int, int>::P()
+        // P<T*, int>::P()
+        // P<int, int>::P()
+        // P<T*, T*>::P()
+
+        std::cout << "auto ---------------" << std::endl;
+        // вывод типа по типам аргуметов конструктора
+        // !!! в обобщенном шаблоне и в специализированном должна быть возможность вывода типа,
+        // т.е. если хотим выводить по аргументу типа Т/T*/T&, то в обобщенном и в специализированном должен быть консруктор (T/T*/T&)
         E e1(i);
         E e2(si);
         E e3(&i);
@@ -242,6 +294,7 @@ namespace template_specialization_test {
         // E<int>::E(int*)
         // E<T>::E(T&)
         // E<T>::E(T*)
+
 
         // ??? нет конфликта с E<int*>, даже если поставить определение вперед E<int> все равно сводится к E<int>
     }
