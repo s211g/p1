@@ -135,7 +135,6 @@ namespace template_specialization_test {
         // f<>(char t) специализация, с автоматическим выводом Т из аргумента
 
 
-
         // notice:
         // !!! перед возвращаемым типом можно написать inline и реализацию перенести в заголовок
 
@@ -225,9 +224,16 @@ namespace template_specialization_test {
     }
 
     template <template <typename...> class C, typename... T>
-    auto make_x(T&&... t) {
-        //return P<type1, type2>(std::forward<_T1>(t1), std::forward<_T2>(t2));
+    auto make_x_(T&&... t) {
         return C<typename std::decay_t<T>...>();
+    }
+
+    // подставляет параметры шаблона в зависимости от типа переменных в аргументе
+    template <template <typename...> class C, typename... T>
+    //auto
+    C<typename std::decay_t<T>...>
+    make_x(T&&... t) {
+        return C<typename std::decay_t<T>...>(std::forward<T>(t)...);
     }
 
     void test_partial_specialization() {
@@ -261,15 +267,8 @@ namespace template_specialization_test {
             auto p6 = make_p(si, i); // ссылка на int воспринимается как int
             auto p7 = make_p(&i, &i);
         }
-        std::cout << "make_x() ---------------" << std::endl;
-        {
-            auto p1 = make_x<P>(i, c);
-            auto p2 = make_x<P>(c, i);
-            auto p3 = make_x<P>(i, i);
-            auto p5 = make_x<P>(&i, i);
-            auto p6 = make_x<P>(si, i); // ссылка на int воспринимается как int
-            auto p7 = make_x<P>(&i, &i);
-        }
+
+        auto xxx = std::make_pair(i, i);
 
         // вывод:
         // P<int, T2>::P()
@@ -278,6 +277,28 @@ namespace template_specialization_test {
         // P<T*, int>::P()
         // P<int, int>::P()
         // P<T*, T*>::P()
+
+        std::cout << "make_x_() ---------------" << std::endl;
+        {
+            auto p1 = make_x_<P>(i, c);
+            auto p2 = make_x_<P>(c, i);
+            auto p3 = make_x_<P>(i, i);
+            auto p5 = make_x_<P>(&i, i);
+            auto p6 = make_x_<P>(si, i); // ссылка на int воспринимается как int
+            auto p7 = make_x_<P>(&i, &i);
+        }
+        // вывод:
+        // P<int, T2>::P()
+        // P<T1, int>::P()
+        // P<int, int>::P()
+        // P<T*, int>::P()
+        // P<int, int>::P()
+        // P<T*, T*>::P()
+
+        std::cout << "make_x() ---------------" << std::endl;
+        auto f = make_x<F>(1, std::string("abc"));
+        // вывод:
+        //F<T1,T2>(1, abc)
 
         std::cout << "auto ---------------" << std::endl;
         // вывод типа по типам аргуметов конструктора
@@ -294,7 +315,6 @@ namespace template_specialization_test {
         // E<int>::E(int*)
         // E<T>::E(T&)
         // E<T>::E(T*)
-
 
         // ??? нет конфликта с E<int*>, даже если поставить определение вперед E<int> все равно сводится к E<int>
     }

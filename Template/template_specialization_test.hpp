@@ -185,8 +185,13 @@ namespace template_specialization_test {
 
     // test_partial_specialization ----------------------------------------------------------
 
-    void
-    test_outside_definitions();
+    template <typename T1, typename T2>
+    class F {
+    public:
+        F(T1 t1, T2 t2) { std::cout << "F<T1,T2>(" << t1 << ", " << t2 << ")" << std::endl; }
+    };
+
+    void test_outside_definitions();
     void test_explicit_specialization();
     void test_partial_specialization();
 
