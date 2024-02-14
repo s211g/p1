@@ -224,8 +224,13 @@ namespace template_explicit_specialization_test {
     }
 
     template <template <typename...> class C, typename... T>
-    auto make_x_(T&&... t) {
+    auto make_x1(T&&... t) {
         return C<typename std::decay_t<T>...>();
+    }
+
+    template <template <typename...> class C, typename... T>
+    auto make_x2(T&&... t) {
+        return C<T...>();
     }
 
     // подставляет параметры шаблона в зависимости от типа переменных в аргументе
@@ -278,14 +283,14 @@ namespace template_explicit_specialization_test {
         // P<int, int>::P()
         // P<T*, T*>::P()
 
-        std::cout << "make_x_() ---------------" << std::endl;
+        std::cout << "make_x1() ---------------" << std::endl;
         {
-            auto p1 = make_x_<P>(i, c);
-            auto p2 = make_x_<P>(c, i);
-            auto p3 = make_x_<P>(i, i);
-            auto p5 = make_x_<P>(&i, i);
-            auto p6 = make_x_<P>(si, i); // ссылка на int воспринимается как int
-            auto p7 = make_x_<P>(&i, &i);
+            auto p1 = make_x1<P>(i, c);
+            auto p2 = make_x1<P>(c, i);
+            auto p3 = make_x1<P>(i, i);
+            auto p5 = make_x1<P>(&i, i);
+            auto p6 = make_x1<P>(si, i); // ссылка на int воспринимается как int
+            auto p7 = make_x1<P>(&i, &i);
         }
         // вывод:
         // P<int, T2>::P()
@@ -294,6 +299,19 @@ namespace template_explicit_specialization_test {
         // P<T*, int>::P()
         // P<int, int>::P()
         // P<T*, T*>::P()
+
+        std::cout << "make_x2() ---------------" << std::endl;
+        {
+            auto p1 = make_x2<P>(i, c);
+            // auto p2 = make_x2<P>(c, i);
+            // auto p3 = make_x2<P>(i, i);
+            // auto p5 = make_x2<P>(&i, i);
+            // auto p6 = make_x2<P>(si, i); // ссылка на int воспринимается как int
+            // auto p7 = make_x2<P>(&i, &i);
+        }
+        // вывод:
+        // P<T&, T&>::P() -  // !!! внутри не используется decay_t() передаем инт,
+        // свертка универсальнной ссылки дает аргумент T&, и передаваемый параметр неявно кастица к T&
 
         std::cout << "make_x() ---------------" << std::endl;
         auto f = make_x<F>(1, std::string("abc"));

@@ -181,14 +181,12 @@ namespace template_universal_arguments_test {
         // на входе НЕ ИМЕНОВАННАЯ rvalue ссылка !!! и поэтому в аргумент идет int&& как rvalue
         std::cout << "\nArg: No Named r-value" << std::endl;
         auto retRvalue = []() -> decltype(auto) {
-            int i = 0;
             return std::move(i);
         };
         std::cout << "arg - " << type_utils::type2name<decltype(retRvalue())>() << ",  param type - , T: " << fi5(retRvalue()) << std::endl;
 
         // на входе НЕ ИМЕНОВАННАЯ const rvalue ссылка !!! и поэтому в аргумент идет const int&& как rvalue
         auto retRvalueC = []() -> const int&& {
-            int i = 0;
             return std::move(i);
         };
         std::cout << "arg - " << type_utils::type2name<decltype(retRvalueC())>() << ",  param type - , T: " << fi5(retRvalueC()) << std::endl;

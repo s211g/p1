@@ -158,6 +158,12 @@ namespace template_explicit_specialization_test {
         P() { std::cout << "P<T*, T*>::P()" << std::endl; }
     };
 
+    template <typename T1, typename T2>
+    class P<T1&, T2&> {
+    public:
+        P() { std::cout << "P<T&, T&>::P()" << std::endl; }
+    };
+
     template <typename T>
     class E {
     public:
