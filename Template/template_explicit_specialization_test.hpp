@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace template_specialization_test {
+namespace template_explicit_specialization_test {
 
     // ---------------- шаблон класса -------------------
 
@@ -196,7 +196,7 @@ namespace template_specialization_test {
     void test_partial_specialization();
 
     inline void test() {
-        std::cout << "test_explicit_specialization" << std::endl;
+        std::cout << "template_explicit_specialization_test" << std::endl;
 
         //test_explicit_outside_definitions();
         //test_explicit_specialization();

@@ -5,23 +5,32 @@
 #include "mutex_test.hpp"
 #include "smartpointer_test.hpp"
 #include "scopeguard_test.hpp"
+
+// Thread
 #include "thread_test.hpp"
-#include "vatemplate_test.hpp"
+
+// TypeDeclaration
 #include "typedeclaration_test.hpp"
+
 #include "initdata_test.hpp"
 #include "functional_hdr_test.hpp"
 #include "future_hdr_test.hpp"
 #include "chrono_hdr_test.hpp"
 #include "atomic_hdr_test.hpp"
 #include "containers_test.hpp"
-#include "crtp_test.hpp"
 
+// Template
+#include "template_explicit_specialization_test.hpp"
+#include "template_template_specialization_test.hpp"
 #include "template_test.hpp"
-#include "template_specialization_test.hpp"
+#include "template_crtp_test.hpp"
+#include "template_variable_arguments_test.hpp"
 
+// Patterns
 #include "patterns_creational_test.hpp"
 #include "patterns_structure_test.hpp"
 #include "patterns_behavior_test.hpp"
+
 #include "virtual_function_test.hpp"
 #include "rtti_cast_test.hpp"
 #include "rvalue_test.hpp"
@@ -36,7 +45,7 @@ int main() {
     //constructor_test::test();
     //rvalue_test::test();
 
-    virtual_function_test::test();
+    //virtual_function_test::test();
 
     //containers_test::test();
     //mutex_test::test();
@@ -50,10 +59,12 @@ int main() {
     //future_hdr_test::test();
     //chrono_hdr_test::test();
     //atomic_hdr_test::test();
-    //crtp_test::test();
 
+    //template_explicit_specialization_test::test();
+    //template_template_specialization_test::test();
     //template_test::test();
-    //template_specialization_test::test();
+    //template_crtp_test::test();
+    template_variable_arguments_test::test();
 
     //patterns_creational_test::test();
     //patterns_structure_test::test();

@@ -4,7 +4,7 @@
 #include <cassert>
 #include <memory>
 
-namespace template_test {
+namespace template_template_specialization_test {
 
     template <typename T,
               template <typename Elem, typename = std::allocator<Elem>> class Cont = std::deque>

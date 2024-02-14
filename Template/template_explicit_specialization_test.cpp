@@ -2,13 +2,13 @@
 #include <string>
 #include <vector>
 
-#include "template_specialization_test.hpp"
+#include "template_explicit_specialization_test.hpp"
 
 
-namespace template_specialization_test_ {
+namespace template_explicit_specialization_test_ {
     void call_f() {
         std::cout << "\ncall_f() : " << std::endl;
-        using namespace template_specialization_test;
+        using namespace template_explicit_specialization_test;
         f(1);
         f(double());
         f(std::string());
@@ -16,7 +16,7 @@ namespace template_specialization_test_ {
     }
 }
 
-namespace template_specialization_test {
+namespace template_explicit_specialization_test {
 
     // ---------------- шаблон класса -------------------
 
@@ -150,7 +150,7 @@ namespace template_specialization_test {
 
         // в явно специализинованном классе все содержимое определятеся лиш тем что определено именно в нем
 
-        template_specialization_test_::call_f(); // если в заголовке не объявлены все специализации и сигнатуры свободных функций вывод может не совпасть
+        template_explicit_specialization_test_::call_f(); // если в заголовке не объявлены все специализации и сигнатуры свободных функций вывод может не совпасть
     }
 
     template <typename T1, typename T2>

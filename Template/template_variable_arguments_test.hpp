@@ -5,7 +5,7 @@
 #include <ostream>
 
 
-namespace vatemplate_test {
+namespace template_variable_arguments_test {
 
     void test_sum17();
 

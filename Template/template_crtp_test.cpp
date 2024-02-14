@@ -1,8 +1,8 @@
 #include <iostream>
 #include <functional>
-#include "crtp_test.hpp"
+#include "template_crtp_test.hpp"
 
-namespace crtp_test {
+namespace template_crtp_test {
 
     void test_1() {
         std::cout << "\ntest crtp" << std::endl;

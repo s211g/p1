@@ -5,9 +5,9 @@
 #include <functional>
 #include <memory>
 
-#include "vatemplate_test.hpp"
+#include "template_variable_arguments_test.hpp"
 
-namespace vatemplate_test {
+namespace template_variable_arguments_test {
 
     void test_sum17() {
         std::cout << "test sum c++17" << std::endl;

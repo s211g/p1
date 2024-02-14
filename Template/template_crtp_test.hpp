@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace crtp_test {
+namespace template_crtp_test {
 
     template <class Derived>
     class addable {
@@ -42,7 +42,7 @@ namespace crtp_test {
     void test_1();
 
     inline void test() {
-        std::cout << "crtp tests" << std::endl;
+        std::cout << "template_crtp_test" << std::endl;
         test_1();
     }
 }
