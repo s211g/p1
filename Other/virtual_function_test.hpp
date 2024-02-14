@@ -50,6 +50,15 @@ namespace virtual_function_test {
         virtual void f() { std::cout << "C::f()" << std::endl; }
     };
 
+    class CC : public B, public A {
+    public:
+        int c{3};
+        CC() {
+            std::cout << "CC::CC()" << std::endl;
+        }
+        ~CC() { std::cout << "CC::~CC()" << std::endl; }
+    };
+
     class BA : public A {
     public:
         int b{2};
@@ -107,10 +116,10 @@ namespace virtual_function_test {
     inline void test() {
         std::cout << "virtual functions tests" << std::endl;
 
-        //test1();
+        test1();
         //test2();
         //test3();
-        test4();
+        //test4();
         //test5();
     }
 }
