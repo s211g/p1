@@ -13,7 +13,6 @@ namespace typedeclaration_test {
     void test_ptr_to_fn();
     void test_declaration_fn();
     void test_declaration_lambda();
-    void test_type_inference();
     void test_auto();
     void test_bracket();
     void test_using();
@@ -27,8 +26,7 @@ namespace typedeclaration_test {
         //test_ptr_to_fn();
         //test_declaration_fn();
         //test_declaration_lambda();
-        //test_type_inference();
-        test_auto();
+        //test_auto();
         //test_bracket();
         //test_using();
         //test_enum();
