@@ -18,6 +18,7 @@ include_directories (
     ${CMAKE_SOURCE_DIR}/Patterns/Structure
     ${CMAKE_SOURCE_DIR}/Patterns/Behavior
     ${CMAKE_SOURCE_DIR}/Inheritance    
+    ${CMAKE_SOURCE_DIR}/Virtual   
     )
 
 include(CTest)
