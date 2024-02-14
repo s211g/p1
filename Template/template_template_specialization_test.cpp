@@ -48,6 +48,8 @@ namespace template_template_specialization_test {
         return container.size();
     }
 
+    // классы ---------------------------------------------------
+
     template <
         typename T,
         typename C>
@@ -55,8 +57,6 @@ namespace template_template_specialization_test {
     public:
         CContainerPush5(C& container, T value) {}
     };
-
-    // классы ---------------------------------------------------
 
     template <
         typename T,

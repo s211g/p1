@@ -2,7 +2,6 @@
 #include <memory>
 #include <functional>
 
-
 // Containers
 #include "containers_test.hpp"
 
