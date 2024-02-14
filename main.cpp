@@ -35,7 +35,9 @@ int main() {
 
     //constructor_test::test();
     //rvalue_test::test();
+
     virtual_function_test::test();
+
     //containers_test::test();
     //mutex_test::test();
     //smartpointer_test::test();
