@@ -35,7 +35,7 @@ int main() {
 
     //constructor_test::test();
     //rvalue_test::test();
-    //virtual_function_test::test();
+    virtual_function_test::test();
     //containers_test::test();
     //mutex_test::test();
     //smartpointer_test::test();
@@ -51,7 +51,7 @@ int main() {
     //crtp_test::test();
 
     //template_test::test();
-    template_specialization_test::test();
+    //template_specialization_test::test();
 
     //patterns_creational_test::test();
     //patterns_structure_test::test();
