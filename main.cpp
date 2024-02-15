@@ -54,7 +54,7 @@ int main() {
               << std::endl;
 
     // Containers
-    containers_test::test();
+    //containers_test::test();
 
     // Inheritance
     // inheritance_test::test();
@@ -85,11 +85,11 @@ int main() {
     // smartpointer_test::test();
 
     // Template
-    template_explicit_specialization_test::test();
+    // template_explicit_specialization_test::test();
     // template_template_specialization_test::test();
-    // template_test::test();
+    template_test::test();
     // template_crtp_test::test();
-    //template_universal_arguments_test::test();
+    // template_universal_arguments_test::test();
     // template_variable_arguments_test::test();
 
     // Thread

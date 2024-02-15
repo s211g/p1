@@ -7,6 +7,104 @@
 
 namespace template_test {
 
+    class ABase1 {
+    public:
+        void f(int) { std::cout << "ABase1:f(int)" << std::endl; }
+        void g(int) { std::cout << "ABase1:g(int)" << std::endl; }
+    };
+
+    class ABase2 {
+    public:
+        void g(char) { std::cout << "ABase2:g(char)" << std::endl; }
+    };
+
+    class A : public ABase1, public ABase2 {
+    public:
+        void f(int*) { std::cout << "A:fx(int*)" << std::endl; }
+    };
+
+    void test1() {
+        std::cout << "\ntest1" << std::endl;
+
+        // Переопределение функций базового класса
+        // если в производном классе переопределена функция(тоже имя но аргументы могут быть и другими),
+        // то доступ к функциям базового класса становица возможным только через пространство имени родительского класса
+        int i;
+        A a;
+        // a.f(1);  // не доступна, тк в производном функция переопределена
+        a.ABase1::f(i);
+        a.f(&i);
+
+        // a.g(1); // неопределенность, пересечение имени фунции в базовых классах
+        // но есть доступ через пространство имен
+        a.ABase1::g(1);
+        a.ABase2::g('a');
+    }
+
+    template <typename T>
+    class AT {
+    public:
+        int a;
+        int a1;
+        void f(int) { std::cout << "A<T>:f(int)" << std::endl; }
+    };
+
+    class B {
+    public:
+        int b;
+        int b1;
+        void f(char) { std::cout << "B:f(char)" << std::endl; }
+    };
+
+    template <typename T>
+    class CT : public AT<T>, public B {
+    public:
+        using AT<T>::a; // для доступа к переменным базового шаблонного класса, если класс не шаблонный то using не требуется
+        using AT<T>::f;
+        using B::f; // для доступа требуется using, тк есть переопределенная функция и есть неоднозначность имен функций базовых классов
+
+        void f() {
+            std::cout << "CT::f()" << std::endl;
+
+            AT<T>::a = 0; // доступ через пространство имен
+            a        = 0; // надо использовать using
+            //a1       = 0; // нет доступа
+            b = 0; // базовый класс не шаблонный поэтому using не требуется
+        }
+    };
+
+    void test2() {
+        std::cout << "\ntest2" << std::endl;
+
+        // чтобы использовать функции совместно с переопределенными без пространства надо использовать:
+        // using BaseClass::FnName;
+        // разрешает использование фунций базовых классов без указания пространств имен(+ делает функцию pablic если класс унаследован закрыто)
+        // если конешно она в базовом была public
+        // вытаскивает все фнкции независимо от сигнатур
+
+        CT<int> c;
+        c.f();
+
+        // доступ через пространство имен
+        c.AT::f(1);
+        c.B::f('a');
+
+        // доступны фунции и переменные базовых классов т.к. использовали using
+        c.f(1);
+        c.f('a');
+        c.a = 0;
+        c.b = 0;
+
+        // вывод:
+        // CT::f()
+        // A<T>:f(int)
+        // B:f(char)
+        // A<T>:f(int)
+        // B:f(char)
+
+        // ??? есть ли вывод аргументов по возвращаемому значению
+    }
+
     class Person {
     public:
         std::string name;
@@ -52,12 +150,12 @@ namespace template_test {
     }
 
     template <typename T>
-    class A {
+    class C {
     public:
-        A(T t_) :
+        C(T t_) :
             t(t_) {}
-        friend std::ostream& operator<<(std::ostream& os, const A<T>& a) {
-            os << a.t;
+        friend std::ostream& operator<<(std::ostream& os, const C<T>& c) {
+            os << c.t;
             return os;
         }
 
@@ -69,9 +167,9 @@ namespace template_test {
         std::cout << "\ntest friend function" << std::endl;
 
         std::cout << "\ntest 1" << std::endl;
-        A a1(1);
-        std::cout << a1 << std::endl;
-        A a2(std::string("abc"));
-        std::cout << a2 << std::endl;
+        C c1(1);
+        std::cout << c1 << std::endl;
+        C c2(std::string("abc"));
+        std::cout << c2 << std::endl;
     }
 }
