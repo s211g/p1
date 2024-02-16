@@ -67,26 +67,46 @@ namespace template_lambda_test {
     template <typename... T>
     class LambdaCollection : T... {
     public:
-        LambdaCollection(T&&... t) :
-            T(std::forward<T>(t))... {}
-
         using T::operator()...;
+        LambdaCollection(T&&... t) :
+            T(std::forward<T>(t))... {
+            std::cout << "LambdaCollection(T && ... t) : T(std::forward<T>(t))... {} " << std::endl;
+        }
+
+        // LambdaCollection(T&&... t) {} тоже работает в случае лямбд
+        LambdaCollection() {
+            std::cout << "LambdaCollection() {} " << std::endl;
+        }
     };
 
     void test2() {
         std::cout << "\ntest2" << std::endl;
 
-        LambdaCollection lc{
+        LambdaCollection lc1{
             [](int i) { std::cout << "[](int){} i = " << i << std::endl; },
             [](int* i) { std::cout << "[](int*){} i = " << i << std::endl; },
-            [](char c) { std::cout << "[](char){} c = " << c << std::endl; },
-        };
+            [](char c) { std::cout << "[](char){} c = " << c << std::endl; }};
 
         int i;
-        lc(1);
-        lc(&i);
-        lc('a');
+        lc1(1);
+        lc1(&i);
+        lc1('a');
         // вывод:
+        // LambdaCollection(T && ... t) : T(std::forward<T>(t))... {}
+        // [](int){} i = 1
+        // [](int*){} i = 0xd4809ff858
+        // [](char){} c = a
+
+        LambdaCollection<
+            decltype([](int i) { std::cout << "[](int){} i = " << i << std::endl; }),
+            decltype([](int* i) { std::cout << "[](int*){} i = " << i << std::endl; }),
+            decltype([](char c) { std::cout << "[](char){} c = " << c << std::endl; })>
+            lc2;
+        lc2(1);
+        lc2(&i);
+        lc2('a');
+        // вывод:
+        // LambdaCollection() {}
         // [](int){} i = 1
         // [](int*){} i = 0xd4809ff858
         // [](char){} c = a
