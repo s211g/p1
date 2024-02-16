@@ -5,6 +5,18 @@
 #include <memory>
 #include <functional>
 
+
+// [this] — Captures *this by reference or &(*this).
+// [*this]— Captures *this by value. By-value capture of *this is introduced in C++17.
+// [this, *this] — Invalid. Cannot have this more than once.
+// [&] — The reference-capture-default can implicitly capture this or &(*this).
+// [&, this] — Same as [&], therefore redundant.
+// [&, *this] — Valid since C++17, but unlikely to be used.
+// [=] — The value-capture-default can implicitly capture this or &(*this). However, the implicit capture of this through [=] is deprecated in C++20.
+// [=, this] — Valid only since C++20. C++20 deprecates the implicit capture of this via [=] and allows the explicit capture of this in combination with [=].
+// [=, *this] — Valid since C++17.
+
+
 namespace lambda_test {
 
     class C {
@@ -150,6 +162,147 @@ namespace lambda_test {
         // лямбда с auto аргументом аналогична классу с шаблонной функцией
         // (auto&& value) - аналогичен универсальной ссылке, поэтому надо использовать конструкцию:
         // std::forward<decltype(value)>(value)
+    }
+
+    constexpr auto Increment1(int n) {
+        return [](auto n) { return ++n; }(n);
+    };
+
+    void test_lambda_constexpr() {
+        std::cout << "\ntest_lambda_constexpr" << std::endl;
+
+        constexpr int result1 = Increment1(10);
+
+        auto Increment2 = [](auto& t) constexpr {
+            return ++t;
+        };
+
+        int i = 0;
+        Increment2(i);
+
+        //Лямбда неявно constexpr , если результат соответствует требованиям constexpr функции:
+        auto Increment3 = [](auto t) {
+            return ++t;
+        };
+        constexpr int result = Increment3(10);
+    }
+
+    class AThis {
+    public:
+        int i{1};
+
+        AThis() { std::cout << "AThis::AThis()" << std::endl; }
+        AThis(AThis&) { std::cout << "AThis::AThis(AThis&)" << std::endl; }
+        AThis(const AThis&) { std::cout << "AThis::AThis(const AThis&)" << std::endl; }
+
+        AThis& operator=(const AThis&) = delete;
+        AThis& operator=(AThis&) = delete;
+        AThis(AThis&&)           = delete;
+        AThis& operator=(AThis&&) = delete;
+
+        void f() {
+            std::cout << "AThis::f() i = " << i << std::endl;
+
+            i = 2;
+            int j{0};
+
+            std::cout << "lambda1 = [=](){}" << std::endl;
+            auto lambda1 = [=]() {
+                std::cout << "lambda1() i = " << i << std::endl;
+            };
+
+            std::cout << "lambda2 = [=, *this](){}" << std::endl;
+            auto lambda2 = [=, *this]() {
+                //++i; не разрешает константность локальных копий
+                std::cout << "lambda2() i = " << i << std::endl;
+            };
+
+            std::cout << "lambda3 = [=, *this]() mutable {}" << std::endl;
+            //mutable for read/write
+            auto lambda3 = [=, *this]() mutable {
+                std::cout << "lambda3() i = " << i << std::endl;
+                i += 10; // mutable убирает константность локальных копий
+                std::cout << "lambda3() i = " << i << std::endl;
+            };
+
+            std::cout << "lambda4 = [this](){}" << std::endl;
+            auto lambda4 = [this]() {
+                std::cout << "lambda4() i = " << i << std::endl;
+                i += 100; // this делает доступными для модификации переменные объекта *this
+                          //j не видна
+                std::cout << "lambda4() i = " << i << std::endl;
+            };
+
+            std::cout << "lambda5 = [&]() {}" << std::endl;
+            auto lambda5 = [&]() {
+                std::cout << "lambda5() i = " << i << std::endl;
+                i += 1000;
+                ++j;
+                std::cout << "lambda5() i = " << i << std::endl;
+            };
+
+            std::cout << "lambda1() ..." << std::endl;
+            lambda1();
+
+            std::cout << "lambda2() ..." << std::endl;
+            lambda2();
+
+            std::cout << "lambda3() ..." << std::endl;
+            lambda3();
+            std::cout << "lambda3() ..." << std::endl;
+            lambda3();
+
+            std::cout << "i = " << i << std::endl;
+
+            std::cout << "lambda4() ..." << std::endl;
+            lambda4();
+
+            std::cout << "i = " << i << std::endl;
+
+            std::cout << "lambda5() ..." << std::endl;
+            lambda5();
+
+            std::cout << "i = " << i << std::endl;
+        }
+    };
+
+    void test_lambda_this() {
+        std::cout << "\ntest_lambda" << std::endl;
+
+        AThis a;
+        std::cout << "a.f()" << std::endl;
+        a.f();
+
+        // вывод:
+        // AThis::AThis()
+        // a.f()
+        // AThis::f() i = 1
+        // lambda1 = [=](){}                делает копии локальных переменных(константные), и членов класса, но не копию самого класса, константные
+        // lambda2 = [=, *this](){}         копии локальных и константная копия объекта *this, видны члены копии объекта
+        // AThis::AThis(AThis&)
+        // lambda3 = [=, *this]()mutable{}  копии локальных и неконстантная копия объекта *this, видны члены копии объекта, mutable убирает константность
+        // AThis::AThis(AThis&)
+        // lambda4 = [this](){}             видны члены объекта this, модификация не запрещена
+        // lambda5 = [&]() {}               есть доступ для модификации и к локальным переменным и к членам вызвавшего объекта
+        // lambda1() ...
+        // lambda1() i = 2
+        // lambda2() ...
+        // lambda2() i = 1
+        // lambda3() ...
+        // lambda3() i = 1
+        // lambda3() i = 11
+        // lambda3() ...
+        // lambda3() i = 11
+        // lambda3() i = 21
+        // i = 2
+        // lambda4() ...
+        // lambda4() i = 2
+        // lambda4() i = 102
+        // i = 102
+        // lambda5() ...
+        // lambda5() i = 102
+        // lambda5() i = 1102
+        // i = 1102
     }
 
     void test_lambda() {
