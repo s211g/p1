@@ -35,6 +35,8 @@ namespace type_utils {
         B(B&&) { std::cout << "B::B(B&&)" << std::endl; }
         B(B&&, int) { std::cout << "B::B(B&&,int)" << std::endl; }
         B& operator=(B&&) = delete;
+
+        void f() {}
     };
 
     template <typename T>
@@ -58,6 +60,14 @@ namespace type_utils {
 
     template <typename T>
     std::string type2name() {
+        if (std::is_same_v<T, double>)
+            return "double";
+        if (std::is_same_v<T, const double>)
+            return "const double";
+        if (std::is_same_v<T, char>)
+            return "char";
+        if (std::is_same_v<T, const char>)
+            return "const char";
         if (std::is_same_v<T, int>)
             return "int";
         if (std::is_same_v<T, const int>)
@@ -78,6 +88,8 @@ namespace type_utils {
             return "int*";
         if (std::is_same_v<T, const int*>)
             return "const int*";
+        if (std::is_same_v<T, int* const>)
+            return "int* const";
         if (std::is_same_v<T, std::reference_wrapper<int>>)
             return "ref<int>";
         if (std::is_same_v<T, std::string>)
@@ -114,6 +126,10 @@ namespace type_utils {
         // class
         if (std::is_same_v<T, B>)
             return "B";
+        if (std::is_same_v<T, const B>)
+            return "const B";
+        if (std::is_same_v<T, const B&>)
+            return "const B&";
         if (std::is_same_v<T, B*>)
             return "B*";
         if (std::is_same_v<T, B&>)

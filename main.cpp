@@ -15,7 +15,7 @@
 #include "constructor_test.hpp"
 #include "functional_hdr_test.hpp"
 #include "future_hdr_test.hpp"
-#include "initdata_test.hpp"
+#include "lambda_test.hpp"
 #include "rtti_cast_test.hpp"
 #include "rvalue_test.hpp"
 #include "static_test.hpp"
@@ -69,7 +69,7 @@ int main() {
     // constructor_test::test();
     // functional_hdr_test::test();
     // future_hdr_test::test();
-    // initdata_test::test();
+    lambda_test::test();
     // rtti_cast_test::test();
     // rvalue_test::test();
     // static_test::test();

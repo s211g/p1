@@ -61,11 +61,12 @@ namespace template_lambda_test {
         b2(6);
 
         // note:
+        // лямбда выражения допускают перемещения
         // в случае лямбды нет необходимости копировать объект, достаточно типа
     }
 
     template <typename... T>
-    class LambdaCollection : T... {
+    class LambdaCollection : public T... {
     public:
         using T::operator()...;
         LambdaCollection(T&&... t) :
@@ -79,8 +80,16 @@ namespace template_lambda_test {
         }
     };
 
-    void test2() {
-        std::cout << "\ntest2" << std::endl;
+    // для выводов параметров шаблона LambdaCollection<T...>
+    // можно и не использовать, выведутся автоматически
+    template <typename... T>
+    auto CreateLambdaCollection(T&&... t) {
+        return LambdaCollection<T...>(std::forward<T>(t)...);
+        //return LambdaCollection<T...>();
+    }
+
+    void test_lambdas_collections() {
+        std::cout << "\ntest_lambdas_collections" << std::endl;
 
         LambdaCollection lc1{
             [](int i) { std::cout << "[](int){} i = " << i << std::endl; },
