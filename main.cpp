@@ -35,6 +35,7 @@
 #include "template_explicit_specialization_test.hpp"
 #include "template_template_specialization_test.hpp"
 #include "template_test.hpp"
+#include "template_lambda_test.hpp"
 #include "template_crtp_test.hpp"
 #include "template_universal_arguments_test.hpp"
 #include "template_variable_arguments_test.hpp"
@@ -87,7 +88,8 @@ int main() {
     // Template
     // template_explicit_specialization_test::test();
     // template_template_specialization_test::test();
-    template_test::test();
+    // template_test::test();
+    template_lambda_test::test();
     // template_crtp_test::test();
     // template_universal_arguments_test::test();
     // template_variable_arguments_test::test();
