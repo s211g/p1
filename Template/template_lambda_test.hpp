@@ -10,7 +10,7 @@ namespace template_lambda_test {
     inline void test() {
         std::cout << "template_lambda_test" << std::endl;
 
-        test1();
-        //test2();
+        //test1();
+        test2();
     }
 }

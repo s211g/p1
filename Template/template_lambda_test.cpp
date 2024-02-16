@@ -64,8 +64,31 @@ namespace template_lambda_test {
         // в случае лямбды нет необходимости копировать объект, достаточно типа
     }
 
+    template <typename... T>
+    class LambdaCollection : T... {
+    public:
+        LambdaCollection(T&&... t) :
+            T(std::forward<T>(t))... {}
+
+        using T::operator()...;
+    };
 
     void test2() {
         std::cout << "\ntest2" << std::endl;
+
+        LambdaCollection lc{
+            [](int i) { std::cout << "[](int){} i = " << i << std::endl; },
+            [](int* i) { std::cout << "[](int*){} i = " << i << std::endl; },
+            [](char c) { std::cout << "[](char){} c = " << c << std::endl; },
+        };
+
+        int i;
+        lc(1);
+        lc(&i);
+        lc('a');
+        // вывод:
+        // [](int){} i = 1
+        // [](int*){} i = 0xd4809ff858
+        // [](char){} c = a
     }
 }
