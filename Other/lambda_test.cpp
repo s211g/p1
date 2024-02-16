@@ -125,6 +125,33 @@ namespace lambda_test {
         // mutable позволяет изменять копии, но не оригиналы
     }
 
+    void test_lambda_auto_arguments() {
+        std::cout << "\ntest_lambda_auto_arguments" << std::endl;
+
+        std::cout << "\nauto lambda1 = ..." << std::endl;
+        auto lambda1 = [i = int(0)](auto v) mutable {
+            ++i;
+            std::cout << "v type :" << type_utils::type2name<decltype(v)>() << std::endl;
+            std::cout << "i = " << i << std::endl;
+        };
+
+        std::cout << "\nlambda1(int) = ..." << std::endl;
+        lambda1(1);
+        std::cout << "\nlambda1(int) = ..." << std::endl;
+        lambda1(1);
+        std::cout << "\nlambda1(int) = ..." << std::endl;
+        lambda1(1);
+        std::cout << "\nlambda1(char) = ..." << std::endl;
+        lambda1('c');
+        std::cout << "\nlambda1(int) = ..." << std::endl;
+        lambda1(1);
+
+        // note
+        // лямбда с auto аргументом аналогична классу с шаблонной функцией
+        // (auto&& value) - аналогичен универсальной ссылке, поэтому надо использовать конструкцию:
+        // std::forward<decltype(value)>(value)
+    }
+
     void test_lambda() {
         std::cout << "\ntest_lambda" << std::endl;
 
