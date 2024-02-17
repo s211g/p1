@@ -16,7 +16,7 @@ namespace virtual_function_test {
             std::cout << "A::A(const A&)" << std::endl;
         }
 
-        ~A() { std::cout << "A::~A()" << std::endl; }
+        virtual ~A() { std::cout << "A::~A()" << std::endl; }
 
         virtual void f() { std::cout << "A::f()" << std::endl; }
 
@@ -33,7 +33,7 @@ namespace virtual_function_test {
             std::cout << "B::B()" << std::endl;
             f();
         }
-        ~B() { std::cout << "B::~B()" << std::endl; }
+        virtual ~B() { std::cout << "B::~B()" << std::endl; }
 
         virtual void f() { std::cout << "B::f()" << std::endl; }
     };
@@ -45,7 +45,7 @@ namespace virtual_function_test {
             std::cout << "C::C()" << std::endl;
             f();
         }
-        ~C() { std::cout << "C::~C()" << std::endl; }
+        virtual ~C() { std::cout << "C::~C()" << std::endl; }
 
         virtual void f() { std::cout << "C::f()" << std::endl; }
     };
@@ -104,22 +104,25 @@ namespace virtual_function_test {
         virtual void f() { std::cout << "F::f()" << std::endl; };
     };
 
-    void
-    dump(uint8_t* data, uint32_t size);
+
+
+    void dump(uint8_t* data, uint32_t size);
 
     void test1();
     void test2();
     void test3();
     void test4();
     void test5();
+    void test_virtual_destructor();
 
     inline void test() {
         std::cout << "virtual functions tests" << std::endl;
 
-        test1();
+        //test1();
         //test2();
         //test3();
         //test4();
         //test5();
+        test_virtual_destructor();
     }
 }

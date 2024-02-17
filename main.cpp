@@ -69,7 +69,7 @@ int main() {
     // constructor_test::test();
     // functional_hdr_test::test();
     // future_hdr_test::test();
-    lambda_test::test();
+    //lambda_test::test();
     // rtti_cast_test::test();
     // rvalue_test::test();
     // static_test::test();
@@ -89,7 +89,7 @@ int main() {
     // template_explicit_specialization_test::test();
     // template_template_specialization_test::test();
     // template_test::test();
-    template_lambda_test::test();
+    // template_lambda_test::test();
     // template_crtp_test::test();
     // template_universal_arguments_test::test();
     // template_variable_arguments_test::test();
@@ -101,7 +101,7 @@ int main() {
     //typedeclaration_test::test();
 
     // Virtual
-    // virtual_function_test::test();
+    virtual_function_test::test();
 
     return 0;
 }

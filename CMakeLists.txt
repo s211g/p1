@@ -43,6 +43,7 @@ file(GLOB src
     ${CMAKE_SOURCE_DIR}/Patterns/Structure/*.cpp
     ${CMAKE_SOURCE_DIR}/Patterns/Behavior/*.cpp
     ${CMAKE_SOURCE_DIR}/Inheritance/*.cpp    
+    ${CMAKE_SOURCE_DIR}/Virtual/*.cpp
     )
 
 set(src ${src})

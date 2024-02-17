@@ -1,5 +1,22 @@
 #include "virtual_function_test.hpp"
 
+void operator delete(void* p) {
+    std::cout << "delete " << p << std::endl;
+    ::delete p;
+}
+
+void operator delete[](void* p) {
+    std::cout << "delete[] " << p << std::endl;
+}
+
+
+void operator delete(void* p, size_t size) noexcept {
+    std::cout << "delete " << p << " size " << size << std::endl;
+    //::delete (p, size);
+}
+
+
+
 namespace virtual_function_test {
 
     void dump(uint8_t* data, uint32_t size) {
@@ -197,7 +214,7 @@ namespace virtual_function_test {
     }
 
     void test5() {
-        std::cout << "virtual function test3" << std::endl;
+        std::cout << "virtual function test5" << std::endl;
         BA ba;
         A* pa = dynamic_cast<A*>(&ba);
         pa->getThis();
@@ -205,5 +222,102 @@ namespace virtual_function_test {
         // случай, когда возвращаемый тип метода - это указатель на сам класс
         pa->A::getThis();
         // можно напрямую указать какой метод вызывать
+    }
+
+    class A_NO_VIRTUAL_DESTRUCTOR {
+    public:
+        int a{1};
+        A_NO_VIRTUAL_DESTRUCTOR() {
+            std::cout << "A_NO_VIRTUAL_DESTRUCTOR::A_NO_VIRTUAL_DESTRUCTOR()" << std::endl;
+        }
+        ~A_NO_VIRTUAL_DESTRUCTOR() { std::cout << "A_NO_VIRTUAL_DESTRUCTOR::~A_NO_VIRTUAL_DESTRUCTOR()" << std::endl; }
+        virtual void f() {}
+    };
+
+    class B_NO_VIRTUAL_DESTRUCTOR {
+    public:
+        int B{1};
+        B_NO_VIRTUAL_DESTRUCTOR() {
+            std::cout << "B_NO_VIRTUAL_DESTRUCTOR::B_NO_VIRTUAL_DESTRUCTOR()" << std::endl;
+        }
+        ~B_NO_VIRTUAL_DESTRUCTOR() { std::cout << "B_NO_VIRTUAL_DESTRUCTOR::~B_NO_VIRTUAL_DESTRUCTOR()" << std::endl; }
+        virtual void f() {}
+    };
+
+    class C_BNVC_ANVC : public B_NO_VIRTUAL_DESTRUCTOR, public A_NO_VIRTUAL_DESTRUCTOR {
+    public:
+        int c{1};
+        C_BNVC_ANVC() {
+            std::cout << "C_BNVC_ANVC::C_BNVC_ANVC()" << std::endl;
+        }
+        virtual ~C_BNVC_ANVC() { std::cout << "C_BNVC_ANVC::~C_BNVC_ANVC()" << std::endl; }
+    };
+
+    void test_virtual_destructor() {
+        std::cout << "test_virtual_destructor" << std::endl;
+
+        std::cout << "\nclass C : public B, public A { ... };" << std::endl;
+        {
+            C* pc = new C();
+            B* pb = pc;
+            A* pa = pc;
+
+            std::cout << "pc " << pc << std::endl;
+            std::cout << "pb " << pb << std::endl;
+            std::cout << "pa " << pa << std::endl;
+
+            // удаление по указателю на родительский класс, все классы полиморфны и имеют виртуальный деструктор
+            std::cout << "delete pc" << std::endl;
+            delete pc;
+            // pc 0x27616b06c10
+            // pb 0x27616b06c10
+            // pa 0x27616b06c20
+            // pc 0x27616b06c10
+            // delete pc
+            // C::~C()
+            // A::~A()
+            // B::~B()
+            // delete 0x27616b06c10 size 32
+        }
+
+        std::cout << "\nclass C_BNVC_ANVC : public B_NO_VIRTUAL_DESTRUCTOR, public A_NO_VIRTUAL_DESTRUCTOR {...}" << std::endl;
+        {
+            C_BNVC_ANVC* pc             = new C_BNVC_ANVC();
+            A_NO_VIRTUAL_DESTRUCTOR* pa = pc;
+            B_NO_VIRTUAL_DESTRUCTOR* pb = pc;
+
+            std::cout << "pc " << pc << std::endl;
+            std::cout << "pb " << pb << std::endl;
+            std::cout << "pa " << pa << std::endl;
+            // вывод
+            // class C_BNVC_ANVC : public B_NO_VIRTUAL_DESTRUCTOR, public A_NO_VIRTUAL_DESTRUCTOR {...}
+            // B_NO_VIRTUAL_DESTRUCTOR::B_NO_VIRTUAL_DESTRUCTOR()
+            // A_NO_VIRTUAL_DESTRUCTOR::A_NO_VIRTUAL_DESTRUCTOR()
+            // C_BNVC_ANVC::C_BNVC_ANVC()
+            // pc 0x1d7682b6f80
+            // pb 0x1d7682b6f80
+            // pa 0x1d7682b6f90
+
+            // удаление по указателю на базовый класс pa, полиморфный, но деструктор не виртуальный
+            std::cout << "delete pa" << std::endl;
+            delete pa;
+            // вывод:
+            // delete pa
+            // A_NO_VIRTUAL_DESTRUCTOR::~A_NO_VIRTUAL_DESTRUCTOR()
+            // delete 0x1d7682b6f90 size 16 -  ни адрес, ни размер не тот
+
+            // удаление по указателю на базовый класс pb, полиморфный, но деструктор не виртуальный
+            std::cout << "delete pb" << std::endl;
+            delete pb;
+            // вывод:
+            // delete pb
+            // B_NO_VIRTUAL_DESTRUCTOR::~B_NO_VIRTUAL_DESTRUCTOR()
+            // delete 0x1d7682b6f80 size 16  - адрес правильный, размер не тот
+
+            // При удалении через указатель на базовый класс, даже если тип полиморфный
+            // не только не вызываются деструкторы в правильной иерархии начиная с родителя
+            // но и удалятеся не вся память выделеная в производном классе
+            // удаляется не по тому адресу и не того размера
+        }
     }
 }
