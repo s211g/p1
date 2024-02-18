@@ -52,6 +52,9 @@
 
 
 int main() {
+    int i = 0xffffffe8;
+    std::cout << i << std::endl;
+
     std::cout << "sizeof(void*) : " << sizeof(void*) << std::endl
               << std::endl;
 

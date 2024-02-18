@@ -25,7 +25,6 @@ namespace utils {
                 }
 
                 ret += " : ";
-
                 return ret;
             };
 
