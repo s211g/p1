@@ -1,10 +1,13 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 #include <type_traits>
 #include <functional>
 
-namespace type_utils {
+namespace utils {
+
+    void dump(std::string caption, void* data, uint32_t size, uint32_t interval = 8, bool print_offset = false, bool print_base_offsest = false);
 
     class A {
     public:

@@ -1,20 +1,9 @@
 #include <iostream>
 
 #include "inheritance_test.hpp"
+#include "Utils.hpp"
 
 namespace inheritance_test {
-
-    void dump(std::string caption, uint8_t* data, uint32_t size, uint32_t interval = 8) {
-        std::cout << caption << "(" << (void*)data << ") : " << std::endl;
-        char buff[23];
-        for (int i = 0; i < size; ++i) {
-            sprintf(buff, "%02X", (int)data[i]);
-            //std::cout << (int)data[i] << " ";
-            //std::cout << buff << " ";
-            std::cout << ((i && (!(i % interval))) ? "\n" : "") << buff << " ";
-        }
-        std::cout << std::endl;
-    }
 
     class A {
     public:
@@ -216,7 +205,7 @@ namespace inheritance_test {
         std::cout << "non-virtual rhombic inheritance -----------------------------------------------------" << std::endl;
 
         D4 d;
-        dump("d", reinterpret_cast<uint8_t*>(&d), sizeof(d), 4);
+        utils::dump("d", reinterpret_cast<uint8_t*>(&d), sizeof(d), 4);
         std::cout << std::endl;
 
         //01 00 00 00 A4 базовый C4A
@@ -229,7 +218,7 @@ namespace inheritance_test {
         d.C4A::i = 6; // указать какой инстанс менять через область видимости
         B4A* b   = &d;
         b->i     = 5;
-        dump("d", reinterpret_cast<uint8_t*>(&d), sizeof(d), 4);
+        utils::dump("d", reinterpret_cast<uint8_t*>(&d), sizeof(d), 4);
         std::cout << std::endl;
 
         //05 00 00 00 // b->i = 5;
@@ -241,7 +230,7 @@ namespace inheritance_test {
         std::cout << "virtual rhombic inheritance -----------------------------------------------------" << std::endl;
 
         B4vA bb;
-        dump("B4vA bb", reinterpret_cast<uint8_t*>(&bb), sizeof(bb), 4);
+        utils::dump("B4vA bb", reinterpret_cast<uint8_t*>(&bb), sizeof(bb), 4);
         std::cout << std::endl;
 
         // !!! в данном случае вызывается конструктор базового виртуального класса
@@ -255,7 +244,7 @@ namespace inheritance_test {
 
         std::cout << "D4v dv; ... " << std::endl;
         D4v dv;
-        dump("D4v", reinterpret_cast<uint8_t*>(&dv), sizeof(dv), 4);
+        utils::dump("D4v", reinterpret_cast<uint8_t*>(&dv), sizeof(dv), 4);
         std::cout << std::endl;
 
         //  !!! Хоть и вызывается конструктор базового класса B4vA() : A4(9) {}
@@ -289,9 +278,9 @@ namespace inheritance_test {
         C4vA* cv = &dv;
         A4* a4   = &dv;
 
-        dump("B4vA", reinterpret_cast<uint8_t*>(bv), sizeof(B4vA), 4);
-        dump("C4vA", reinterpret_cast<uint8_t*>(cv), sizeof(C4vA), 4);
-        dump("A4", reinterpret_cast<uint8_t*>(a4), sizeof(A4), 4);
+        utils::dump("B4vA", reinterpret_cast<uint8_t*>(bv), sizeof(B4vA), 4);
+        utils::dump("C4vA", reinterpret_cast<uint8_t*>(cv), sizeof(C4vA), 4);
+        utils::dump("A4", reinterpret_cast<uint8_t*>(a4), sizeof(A4), 4);
 
         // B4vA :
         // E8 F5 16 0F  // ?? указатель на класс A4
@@ -322,7 +311,7 @@ namespace inheritance_test {
         //A5* a = &c; // нет доступа к приватному базовуму классу
         //A5* a = static_cast<A5*>(&c); // нет доступа к приватному базовуму классу
         A5* a = reinterpret_cast<A5*>(&c); // только насильно
-        dump("A5", reinterpret_cast<uint8_t*>(a), sizeof(A5), 4);
+        utils::dump("A5", reinterpret_cast<uint8_t*>(a), sizeof(A5), 4);
     }
 
     class A6 {
@@ -343,6 +332,4 @@ namespace inheritance_test {
         D6* d = static_cast<D6*>(a); // дает преобразовать без проверки, что приводит к ошибке приведения к другому типу
         //D6* d_dyn = dynamic_cast<D6*>(a); // нельзя тк D6 не полиморфный тип
     }
-
-
 }

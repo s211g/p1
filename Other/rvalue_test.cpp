@@ -1,6 +1,6 @@
 
 #include "rvalue_test.hpp"
-#include "TypeUtils.hpp"
+#include "Utils.hpp"
 
 namespace rvalue_test {
 
@@ -11,9 +11,9 @@ namespace rvalue_test {
 
     template <typename T>
     void print_type(const char* caption, T&& t) {
-        std::cout << caption << ", type T             : " << type_utils::type2name<T>() << std::endl;
-        std::cout << caption << ", type t             : " << type_utils::type2name<decltype(t)>() << std::endl;
-        std::cout << caption << ", forward return type: " << type_utils::type2name<decltype(std::forward<T>(t))>() << std::endl;
+        std::cout << caption << ", type T             : " << utils::type2name<T>() << std::endl;
+        std::cout << caption << ", type t             : " << utils::type2name<decltype(t)>() << std::endl;
+        std::cout << caption << ", forward return type: " << utils::type2name<decltype(std::forward<T>(t))>() << std::endl;
     }
 
     void test1() {
@@ -95,14 +95,14 @@ namespace rvalue_test {
         // && && = &&
         using T1 = int&;
         using T2 = T1&&;
-        std::cout << "type T1 : " << type_utils::type2name<T1>() << std::endl;
-        std::cout << "type T2 : " << type_utils::type2name<T2>() << std::endl;
+        std::cout << "type T1 : " << utils::type2name<T1>() << std::endl;
+        std::cout << "type T2 : " << utils::type2name<T2>() << std::endl;
         using T3 = int&&;
         using T4 = T3&;
         using T5 = T3&&;
-        std::cout << "type T3 : " << type_utils::type2name<T3>() << std::endl;
-        std::cout << "type T4 : " << type_utils::type2name<T4>() << std::endl;
-        std::cout << "type T5 : " << type_utils::type2name<T5>() << std::endl;
+        std::cout << "type T3 : " << utils::type2name<T3>() << std::endl;
+        std::cout << "type T4 : " << utils::type2name<T4>() << std::endl;
+        std::cout << "type T5 : " << utils::type2name<T5>() << std::endl;
         // вывод:
         // type T1 : int&
         // type T2 : int&
@@ -132,12 +132,12 @@ namespace rvalue_test {
         auto&& ref5 = ref1;
         auto&& ref6 = refi;
 
-        std::cout << "ref1 type :" << type_utils::type2name<decltype(ref1)>() << std::endl;
-        std::cout << "ref2 type :" << type_utils::type2name<decltype(ref2)>() << std::endl;
-        std::cout << "ref3 type :" << type_utils::type2name<decltype(ref3)>() << std::endl;
-        std::cout << "ref4 type :" << type_utils::type2name<decltype(ref4)>() << std::endl;
-        std::cout << "ref5 type :" << type_utils::type2name<decltype(ref5)>() << std::endl;
-        std::cout << "ref6 type :" << type_utils::type2name<decltype(ref6)>() << std::endl;
+        std::cout << "ref1 type :" << utils::type2name<decltype(ref1)>() << std::endl;
+        std::cout << "ref2 type :" << utils::type2name<decltype(ref2)>() << std::endl;
+        std::cout << "ref3 type :" << utils::type2name<decltype(ref3)>() << std::endl;
+        std::cout << "ref4 type :" << utils::type2name<decltype(ref4)>() << std::endl;
+        std::cout << "ref5 type :" << utils::type2name<decltype(ref5)>() << std::endl;
+        std::cout << "ref6 type :" << utils::type2name<decltype(ref6)>() << std::endl;
 
         // Person&& rValueRef  = MakePerson(); // rValueRef --- rvalue ссылка
         // auto&& universalRef = rValueRef;    // Не rvalue ссылка

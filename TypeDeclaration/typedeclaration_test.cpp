@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "typedeclaration_test.hpp"
-#include "TypeUtils.hpp"
+#include "Utils.hpp"
 
 namespace typedeclaration_test {
 
@@ -46,9 +46,9 @@ namespace typedeclaration_test {
         int m[10];
         // !!! в аргументе имя массивва превращается в указатель
         auto f5 = [](int m[10]) {
-            std::cout << "fn(int m[10]), sizeof(m) = " << sizeof(m) << ", m type: " << type_utils::type2name<decltype(m)>() << std::endl;
+            std::cout << "fn(int m[10]), sizeof(m) = " << sizeof(m) << ", m type: " << utils::type2name<decltype(m)>() << std::endl;
         };
-        std::cout << "int m[10], sizeof(m) = " << sizeof(m) << ", m type: " << type_utils::type2name<decltype(m)>() << std::endl;
+        std::cout << "int m[10], sizeof(m) = " << sizeof(m) << ", m type: " << utils::type2name<decltype(m)>() << std::endl;
         f5(m);
         // вывод:
         //int m[10], sizeof(m) = 40, m type: int[10]
@@ -206,42 +206,42 @@ namespace typedeclaration_test {
         // PS: для универсальных ссылок пользовать std::forward<>()
 
         std::vector<int> v{1, 2, 3};
-        std::cout << "> " << type_utils::type2name<decltype(v[0])>() << std::endl;
+        std::cout << "> " << utils::type2name<decltype(v[0])>() << std::endl;
         auto printv = [&] {for(const auto& i: v) std::cout << i << " "; std::cout<<std::endl; };
 
         std::cout << "\ntest 0" << std::endl;
 
         int i{0};
         decltype(auto) a00 = i;
-        std::cout << "a00 type : " << type_utils::type2name<decltype(a00)>() << std::endl;
+        std::cout << "a00 type : " << utils::type2name<decltype(a00)>() << std::endl;
 
         decltype(auto) a0 = f0_ta(v);
         a0                = 10;
-        std::cout << "a0 type : " << type_utils::type2name<decltype(a0)>() << std::endl;
+        std::cout << "a0 type : " << utils::type2name<decltype(a0)>() << std::endl;
         printv();
 
         decltype(auto) a1 = f1_ta(v);
         a1                = 11;
-        std::cout << "a1 type : " << type_utils::type2name<decltype(a1)>() << std::endl;
+        std::cout << "a1 type : " << utils::type2name<decltype(a1)>() << std::endl;
         printv();
 
         decltype(auto) a2 = f2_ta(v);
         a2                = 12;
-        std::cout << "a2 type : " << type_utils::type2name<decltype(a2)>() << std::endl;
+        std::cout << "a2 type : " << utils::type2name<decltype(a2)>() << std::endl;
         printv();
 
         decltype(auto) a3 = f3_ta(v);
         a3                = 13;
-        std::cout << "a3 type : " << type_utils::type2name<decltype(a3)>() << std::endl;
+        std::cout << "a3 type : " << utils::type2name<decltype(a3)>() << std::endl;
         printv();
 
         decltype(auto) a4 = f4_ta(v);
         a4                = 14;
-        std::cout << "a4 type : " << type_utils::type2name<decltype(a4)>() << std::endl;
+        std::cout << "a4 type : " << utils::type2name<decltype(a4)>() << std::endl;
         printv();
 
         decltype(auto) a5 = f5_ta(1);
-        std::cout << "a5 type : " << type_utils::type2name<decltype(a5)>() << std::endl;
+        std::cout << "a5 type : " << utils::type2name<decltype(a5)>() << std::endl;
 
         // вывод:
         //a00 type : int
@@ -301,9 +301,9 @@ namespace typedeclaration_test {
 
         // не путать с объявлением функции f type - int(void):
         int f1(); // объявление функции
-        std::cout << "f1 type - " << type_utils::type2name<decltype(f1)>() << std::endl;
+        std::cout << "f1 type - " << utils::type2name<decltype(f1)>() << std::endl;
         int f2{}; // переменная
-        std::cout << "f2 type - " << type_utils::type2name<decltype(f2)>() << std::endl;
+        std::cout << "f2 type - " << utils::type2name<decltype(f2)>() << std::endl;
 
         std::cout << "\ntest 1" << std::endl;
         std::vector<int> v1{3, 5};
@@ -316,10 +316,10 @@ namespace typedeclaration_test {
         std::cout << "\ntest 2 std::initializer_list<int>" << std::endl;
         auto il1 = {1.1, 2.2, 3.3};
         printv(il1);
-        std::cout << "il1 type - " << type_utils::type2name<decltype(il1)>() << std::endl;
+        std::cout << "il1 type - " << utils::type2name<decltype(il1)>() << std::endl;
         auto il2 = {1, 2, 3};
         printv(il2);
-        std::cout << "il2 type - " << type_utils::type2name<decltype(il2)>() << std::endl;
+        std::cout << "il2 type - " << utils::type2name<decltype(il2)>() << std::endl;
         // нельзя задавать разные типы
         //auto il3 = {1, 2.2, 3.3};
 
@@ -384,7 +384,7 @@ namespace typedeclaration_test {
         std::cout << "\ntest 0" << std::endl;
         //std::cout << E::red << std::endl; // error
         // toUType(E::red) преобразует в тип uint
-        std::cout << type_utils::toUType(E::red) << std::endl; // error
+        std::cout << utils::toUType(E::red) << std::endl; // error
     }
 
     class A3 {
@@ -455,10 +455,10 @@ namespace typedeclaration_test {
         std::cout << "\ntest constructor and inference return values from functions" << std::endl;
 
         std::cout << "\ntest 1" << std::endl;
-        using B = type_utils::B;
+        using B = utils::B;
         auto f  = [](B&& b) {
-            using B = type_utils::B;
-            std::cout << "type b : " << type_utils::type2name<decltype(b)>() << std::endl;
+            using B = utils::B;
+            std::cout << "type b : " << utils::type2name<decltype(b)>() << std::endl;
             //B b0(b); // ошибка !!! хоть b имеет тип B&& - тоесть r-value но без move(b) его конструктору как r-value не передать
             B b1(std::move(b));
             std::cout << "-----" << std::endl;
@@ -492,7 +492,7 @@ namespace typedeclaration_test {
         B b6(B(B(B(B(5)))), 0); // сначала вызывается конструктор B::B(int) i = 5, потом B::B(B&&, int)
 
         std::cout << "\ntest 6" << std::endl;
-        using A = type_utils::A;
+        using A = utils::A;
         auto f2 = [](int i) {
             return A{i};
         };

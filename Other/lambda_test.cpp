@@ -1,6 +1,6 @@
 
 #include "lambda_test.hpp"
-#include "TypeUtils.hpp"
+#include "Utils.hpp"
 #include <mutex>
 #include <memory>
 #include <functional>
@@ -62,14 +62,14 @@ namespace lambda_test {
             // но можно вызвать константую функцию
             classc1.fc();
 
-            std::cout << "ext_t type :" << type_utils::type2name<decltype(ext_i)>() << std::endl;
-            std::cout << "i1 type    :" << type_utils::type2name<decltype(i1)>() << std::endl;
-            std::cout << "i2 type    :" << type_utils::type2name<decltype(i2)>() << std::endl;
-            std::cout << "i3 type    :" << type_utils::type2name<decltype(i3)>() << std::endl;
-            std::cout << "i4 type    :" << type_utils::type2name<decltype(i4)>() << std::endl;
-            std::cout << "d type     :" << type_utils::type2name<decltype(d)>() << std::endl;
-            std::cout << "c type     :" << type_utils::type2name<decltype(c)>() << std::endl;
-            std::cout << "pi type    :" << type_utils::type2name<decltype(pi)>() << std::endl;
+            std::cout << "ext_t type :" << utils::type2name<decltype(ext_i)>() << std::endl;
+            std::cout << "i1 type    :" << utils::type2name<decltype(i1)>() << std::endl;
+            std::cout << "i2 type    :" << utils::type2name<decltype(i2)>() << std::endl;
+            std::cout << "i3 type    :" << utils::type2name<decltype(i3)>() << std::endl;
+            std::cout << "i4 type    :" << utils::type2name<decltype(i4)>() << std::endl;
+            std::cout << "d type     :" << utils::type2name<decltype(d)>() << std::endl;
+            std::cout << "c type     :" << utils::type2name<decltype(c)>() << std::endl;
+            std::cout << "pi type    :" << utils::type2name<decltype(pi)>() << std::endl;
         };
 
         std::cout << "lambda1() ... " << std::endl;
@@ -94,13 +94,13 @@ namespace lambda_test {
             classc1.f();
             classc1.i = 0;
 
-            std::cout << "i1 type :" << type_utils::type2name<decltype(i1)>() << std::endl;
-            std::cout << "i2 type :" << type_utils::type2name<decltype(i2)>() << std::endl;
-            std::cout << "i3 type :" << type_utils::type2name<decltype(i3)>() << std::endl;
-            std::cout << "i4 type :" << type_utils::type2name<decltype(i4)>() << std::endl;
-            std::cout << "d type  :" << type_utils::type2name<decltype(d)>() << std::endl;
-            std::cout << "c type  :" << type_utils::type2name<decltype(c)>() << std::endl;
-            std::cout << "pi type :" << type_utils::type2name<decltype(pi)>() << std::endl;
+            std::cout << "i1 type :" << utils::type2name<decltype(i1)>() << std::endl;
+            std::cout << "i2 type :" << utils::type2name<decltype(i2)>() << std::endl;
+            std::cout << "i3 type :" << utils::type2name<decltype(i3)>() << std::endl;
+            std::cout << "i4 type :" << utils::type2name<decltype(i4)>() << std::endl;
+            std::cout << "d type  :" << utils::type2name<decltype(d)>() << std::endl;
+            std::cout << "c type  :" << utils::type2name<decltype(c)>() << std::endl;
+            std::cout << "pi type :" << utils::type2name<decltype(pi)>() << std::endl;
         };
 
         std::cout << "lambda2() ... " << std::endl;
@@ -143,7 +143,7 @@ namespace lambda_test {
         std::cout << "\nauto lambda1 = ..." << std::endl;
         auto lambda1 = [i = int(0)](auto v) mutable {
             ++i;
-            std::cout << "v type :" << type_utils::type2name<decltype(v)>() << std::endl;
+            std::cout << "v type :" << utils::type2name<decltype(v)>() << std::endl;
             std::cout << "i = " << i << std::endl;
         };
 
@@ -374,7 +374,7 @@ namespace lambda_test {
 
         std::cout << "\ntest 3 lambda(auto&&)" << std::endl;
         auto l3 = [](auto&&... arg) {
-            std::cout << "arg type : " << ((type_utils::type2name<decltype(arg)>() + " ") + ...) << std::endl;
+            std::cout << "arg type : " << ((utils::type2name<decltype(arg)>() + " ") + ...) << std::endl;
             {
                 A a(std::forward<decltype(arg)>(arg)...);
             }

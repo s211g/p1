@@ -19,6 +19,7 @@ include_directories (
     ${CMAKE_SOURCE_DIR}/Patterns/Behavior
     ${CMAKE_SOURCE_DIR}/Inheritance    
     ${CMAKE_SOURCE_DIR}/Virtual   
+    ${CMAKE_SOURCE_DIR}/Utils
     )
 
 include(CTest)
@@ -44,6 +45,7 @@ file(GLOB src
     ${CMAKE_SOURCE_DIR}/Patterns/Behavior/*.cpp
     ${CMAKE_SOURCE_DIR}/Inheritance/*.cpp    
     ${CMAKE_SOURCE_DIR}/Virtual/*.cpp
+    ${CMAKE_SOURCE_DIR}/Utils/*.cpp
     )
 
 set(src ${src})

@@ -48,6 +48,7 @@
 
 // Virtual
 #include "virtual_function_test.hpp"
+#include "virtual_table_test.hpp"
 
 
 int main() {
@@ -101,7 +102,8 @@ int main() {
     //typedeclaration_test::test();
 
     // Virtual
-    virtual_function_test::test();
+    //virtual_function_test::test();
+    virtual_table_test::test();
 
     return 0;
 }

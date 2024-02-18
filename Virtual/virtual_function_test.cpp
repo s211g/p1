@@ -1,21 +1,8 @@
 #include "virtual_function_test.hpp"
 
-void operator delete(void* p) {
-    std::cout << "delete " << p << std::endl;
-    ::delete p;
-}
-
-void operator delete[](void* p) {
-    std::cout << "delete[] " << p << std::endl;
-}
-
-
-void operator delete(void* p, size_t size) noexcept {
-    std::cout << "delete " << p << " size " << size << std::endl;
-    //::delete (p, size);
-}
-
-
+// void operator delete(void* p, size_t size) noexcept {
+//     std::cout << "delete " << p << " size " << size << std::endl;
+// }
 
 namespace virtual_function_test {
 
@@ -255,6 +242,9 @@ namespace virtual_function_test {
 
     void test_virtual_destructor() {
         std::cout << "test_virtual_destructor" << std::endl;
+
+        // раскоментировать в шапке:
+        // void operator delete(void* p, size_t size) noexcept {
 
         std::cout << "\nclass C : public B, public A { ... };" << std::endl;
         {

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "TypeUtils.hpp"
+#include "Utils.hpp"
 
 #include "template_universal_arguments_test.hpp"
 
@@ -7,32 +7,32 @@ namespace template_universal_arguments_test {
 
     template <typename T>
     std::string fi0(T x) {
-        return type_utils::type2name<T>() + ",           param: " + type_utils::type2name<decltype(x)>();
+        return utils::type2name<T>() + ",           param: " + utils::type2name<decltype(x)>();
     }
 
     template <typename T>
     std::string fi1(T& x) {
-        return type_utils::type2name<T>() + ",           param: " + type_utils::type2name<decltype(x)>();
+        return utils::type2name<T>() + ",           param: " + utils::type2name<decltype(x)>();
     }
 
     template <typename T>
     std::string fi2(const T& x) {
-        return type_utils::type2name<T>() + ",           param: " + type_utils::type2name<decltype(x)>();
+        return utils::type2name<T>() + ",           param: " + utils::type2name<decltype(x)>();
     }
 
     template <typename T>
     std::string fi3(T* x) {
-        return type_utils::type2name<T>() + ",           param: " + type_utils::type2name<decltype(x)>();
+        return utils::type2name<T>() + ",           param: " + utils::type2name<decltype(x)>();
     }
 
     template <typename T>
     std::string fi4(const T* x) {
-        return type_utils::type2name<T>() + ",           param: " + type_utils::type2name<decltype(x)>();
+        return utils::type2name<T>() + ",           param: " + utils::type2name<decltype(x)>();
     }
 
     template <typename T>
     std::string fi5(T&& x) {
-        return type_utils::type2name<T>() + ",           param: " + type_utils::type2name<decltype(x)>();
+        return utils::type2name<T>() + ",           param: " + utils::type2name<decltype(x)>();
     }
 
     void f_int(int) {}
@@ -175,21 +175,21 @@ namespace template_universal_arguments_test {
         int&& i5(5);
         const int&& i5c(5);
         std::cout << "\nArg: Named r-value" << std::endl;
-        std::cout << "arg - " << type_utils::type2name<decltype(i5)>() << ",  param type - , T: " << fi5(i5) << std::endl;
-        std::cout << "arg - " << type_utils::type2name<decltype(i5c)>() << ",  param type - , T: " << fi5(i5c) << std::endl;
+        std::cout << "arg - " << utils::type2name<decltype(i5)>() << ",  param type - , T: " << fi5(i5) << std::endl;
+        std::cout << "arg - " << utils::type2name<decltype(i5c)>() << ",  param type - , T: " << fi5(i5c) << std::endl;
 
         // на входе НЕ ИМЕНОВАННАЯ rvalue ссылка !!! и поэтому в аргумент идет int&& как rvalue
         std::cout << "\nArg: No Named r-value" << std::endl;
         auto retRvalue = []() -> decltype(auto) {
             return std::move(i);
         };
-        std::cout << "arg - " << type_utils::type2name<decltype(retRvalue())>() << ",  param type - , T: " << fi5(retRvalue()) << std::endl;
+        std::cout << "arg - " << utils::type2name<decltype(retRvalue())>() << ",  param type - , T: " << fi5(retRvalue()) << std::endl;
 
         // на входе НЕ ИМЕНОВАННАЯ const rvalue ссылка !!! и поэтому в аргумент идет const int&& как rvalue
         auto retRvalueC = []() -> const int&& {
             return std::move(i);
         };
-        std::cout << "arg - " << type_utils::type2name<decltype(retRvalueC())>() << ",  param type - , T: " << fi5(retRvalueC()) << std::endl;
+        std::cout << "arg - " << utils::type2name<decltype(retRvalueC())>() << ",  param type - , T: " << fi5(retRvalueC()) << std::endl;
 
         // для функции:
         std::cout << "\nArg: function" << std::endl;
