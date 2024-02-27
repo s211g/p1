@@ -19,6 +19,7 @@
 #include "rtti_cast_test.hpp"
 #include "rvalue_test.hpp"
 #include "static_test.hpp"
+#include "delete_test.hpp"
 
 // Patterns
 #include "patterns_creational_test.hpp"
@@ -73,10 +74,11 @@ int main() {
     // constructor_test::test();
     // functional_hdr_test::test();
     // future_hdr_test::test();
-    //lambda_test::test();
+    // lambda_test::test();
     // rtti_cast_test::test();
     // rvalue_test::test();
     // static_test::test();
+    delete_test::test();
 
     // Patterns
     // patterns_creational_test::test();
@@ -106,7 +108,7 @@ int main() {
 
     // Virtual
     //virtual_function_test::test();
-    virtual_table_test::test();
+    //virtual_table_test::test();
 
     return 0;
 }
