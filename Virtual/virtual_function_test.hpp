@@ -114,6 +114,8 @@ namespace virtual_function_test {
     void test4();
     void test5();
     void test_virtual_destructor();
+    void test_template_class_and_virtual_function();
+    void test_type_erase();
 
     inline void test() {
         std::cout << "virtual functions tests" << std::endl;
@@ -123,6 +125,8 @@ namespace virtual_function_test {
         //test3();
         //test4();
         //test5();
-        test_virtual_destructor();
+        //test_virtual_destructor();
+        //test_template_class_and_virtual_function();
+        test_type_erase();
     }
 }

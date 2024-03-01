@@ -53,9 +53,6 @@
 
 
 int main() {
-    int i = 0xffffffe8;
-    std::cout << i << std::endl;
-
     std::cout << "sizeof(void*) : " << sizeof(void*) << std::endl
               << std::endl;
 
@@ -78,7 +75,7 @@ int main() {
     // rtti_cast_test::test();
     // rvalue_test::test();
     // static_test::test();
-    delete_test::test();
+    //delete_test::test();
 
     // Patterns
     // patterns_creational_test::test();
@@ -107,7 +104,7 @@ int main() {
     //typedeclaration_test::test();
 
     // Virtual
-    //virtual_function_test::test();
+    virtual_function_test::test();
     //virtual_table_test::test();
 
     return 0;

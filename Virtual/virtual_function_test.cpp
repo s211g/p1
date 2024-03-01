@@ -310,4 +310,115 @@ namespace virtual_function_test {
             // удаляется не по тому адресу и не того размера
         }
     }
+
+    class J {
+    public:
+        virtual void f() { std::cout << "J::f()" << std::endl; }
+    };
+
+    template <typename T>
+    class K : public J {
+    public:
+        void f() override { std::cout << "K::f()" << std::endl; }
+    };
+
+    void test_template_class_and_virtual_function() {
+        std::cout << "test_template_class_and_virtual_function" << std::endl;
+
+        J* j = new K<int>();
+        j->f();
+        // вывод:
+        // K::f()
+
+        // в шаблонном классе можно переопределить виртуальную фунцию базового нешаблонного класса
+    }
+
+    // стирание типа -----------------------------------------------------------------------------
+
+    class DeleterWrpBase {
+    public:
+        virtual ~DeleterWrpBase()    = default;
+        virtual void Delete(void* p) = 0;
+    };
+
+    template <typename Deleter>
+    class DeleterWrp : public DeleterWrpBase {
+    public:
+        DeleterWrp(Deleter d_) :
+            d(d_) {}
+        virtual void Delete(void* p) { d(p); }; // если делетер знает тип и сам внутри приведет к нужному типу
+        Deleter d;
+    };
+
+    template <typename T>
+    class SmartPtr {
+    public:
+        template <typename Deleter>
+        SmartPtr(T* v_, Deleter d) :
+            deleter_wrp(new DeleterWrp<Deleter>(d)),
+            v(v_) {
+        }
+
+        ~SmartPtr() {
+            deleter_wrp->Delete(v);
+        }
+        DeleterWrpBase* deleter_wrp;
+        T* v;
+    };
+
+    template <typename T>
+    class SmartPtr2 {
+    public:
+        template <typename Deleter>
+        SmartPtr2(T* v_, Deleter d) :
+            deleter_wrp(new DeleterWrp2<Deleter>(d)),
+            v(v_) {
+        }
+
+        ~SmartPtr2() {
+            deleter_wrp->Delete(v);
+        }
+
+        template <typename Deleter>
+        class DeleterWrp2 : public DeleterWrpBase {
+        public:
+            DeleterWrp2(Deleter d_) :
+                d(d_) {}
+            virtual void Delete(void* p) { d(static_cast<T*>(p)); }; // реализация внутри класса позволяет привести к нужному типу перед удалением
+            Deleter d;
+        };
+
+        DeleterWrpBase* deleter_wrp;
+        T* v;
+    };
+
+
+    void test_type_erase() {
+        std::cout << "test_type_erase" << std::endl;
+
+        int x;
+        //SmartPtr<int> ptr_int(new int(123), x);
+
+        {
+            SmartPtr<int> ptr_int(new int(123),
+                                  [](void* v) {
+                                      int* p_int = reinterpret_cast<int*>(v);
+                                      std::cout << "try delete void* -> int*, value: " << *p_int << std::endl;
+                                      delete p_int;
+                                  });
+        }
+        // вывод:
+        // try delete void* -> int*, value: 123
+
+        {
+            SmartPtr2<int> ptr_int2(new int(456),
+                                    [](int* v) {
+                                        int* p_int = reinterpret_cast<int*>(v);
+                                        std::cout << "try delete int*, value: " << *p_int << std::endl;
+                                        delete p_int;
+                                    });
+        }
+        // вывод:
+        // try delete int*, value: 456
+    }
 }
