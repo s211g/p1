@@ -397,7 +397,6 @@ namespace virtual_function_test {
         std::cout << "test_type_erase" << std::endl;
 
         int x;
-        //SmartPtr<int> ptr_int(new int(123), x);
 
         {
             SmartPtr<int> ptr_int(new int(123),

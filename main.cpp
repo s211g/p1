@@ -46,6 +46,7 @@
 
 // TypeDeclaration
 #include "typedeclaration_test.hpp"
+#include "pointer_to_class_member_test.hpp"
 
 // Virtual
 #include "virtual_function_test.hpp"
@@ -101,10 +102,11 @@ int main() {
     // thread_test::test();
 
     // TypeDeclaration
-    //typedeclaration_test::test();
+    // typedeclaration_test::test();
+    pointer_to_class_member_test::test();
 
     // Virtual
-    virtual_function_test::test();
+    //virtual_function_test::test();
     //virtual_table_test::test();
 
     return 0;

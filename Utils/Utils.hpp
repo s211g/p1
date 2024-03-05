@@ -23,6 +23,28 @@ namespace utils {
         A& operator=(A&&) = delete;
     };
 
+    template <typename T>
+    struct ExtractMembAdr {
+        union {
+            T pm;
+            void* adr[2];
+        };
+    };
+
+    template <typename T>
+    void* membAdrToVoid(T pm) {
+        ExtractMembAdr<T> ema;
+        ema.pm = pm;
+        return ema.adr[0];
+    }
+
+    template <typename T>
+    void* membAdrToVoid2(T pm) {
+        ExtractMembAdr<T> ema;
+        ema.pm = pm;
+        return ema.adr[1];
+    }
+
     class B {
     public:
         int i{0};
