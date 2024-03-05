@@ -60,8 +60,8 @@ namespace pointer_to_class_member_test {
         std::cout << "b.*pi = " << b.*pi << std::endl;
         std::cout << "pb->*pi = " << pb->*pi << std::endl;
         // вывод:
-        // sizeof(pi) = 8 adr = 0
-        // sizeof(pj) = 8 adr = 0x10
+        // sizeof(pi) = 8 adr = 0x10
+        // sizeof(pj) = 8 adr = 0x20
         // b.*pi = 1
         // pb->*pi = 1
 
@@ -89,12 +89,17 @@ namespace pointer_to_class_member_test {
         void (B::*pfa2)() = &B::fa2;
         std::cout << "sizeof(pfa1) = " << sizeof(pfa1) << " adr = " << utils::membAdrToVoid(pfa1) << " offset = " << utils::membAdrToVoid2(pfa1) << std::endl;
         std::cout << "sizeof(pfa2) = " << sizeof(pfa2) << " adr = " << utils::membAdrToVoid(pfa2) << " offset = " << utils::membAdrToVoid2(pfa2) << std::endl;
-
         // вывод:
         // sizeof(pfa1) = 16 adr = 0x7ff69e26aed0 adr2 = 0
         // sizeof(pfa2) = 16 adr = 0x7ff69e26aee0 adr2 = 0x8
 
-        // в указателе не метод два поля по 8 байт,
+        //class B : public A1, public A2
+        // данные внутри объекта класса B
+        // long long A1::a1       - offset = 0
+        // long long A2::a2       - offset = 8
+        // ... данные касса B     - offset = 16(0x10)
+
+        // в указателе не метод два поля по 8 байт
         // - адрес функции
         // - смещение данных
     }
