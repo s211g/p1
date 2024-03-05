@@ -61,7 +61,7 @@ int main() {
     //containers_test::test();
 
     // Inheritance
-    // inheritance_test::test();
+    inheritance_test::test();
 
     // Mutex
     // mutex_test::test();
@@ -103,7 +103,7 @@ int main() {
 
     // TypeDeclaration
     // typedeclaration_test::test();
-    pointer_to_class_member_test::test();
+    // pointer_to_class_member_test::test();
 
     // Virtual
     //virtual_function_test::test();

@@ -59,7 +59,7 @@ namespace inheritance_test {
         }
     };
 
-    void test_1() {
+    void test1() {
         std::cout << "\ntest 1" << std::endl;
 
         // protected - доступ из иерархии потомков
@@ -108,7 +108,7 @@ namespace inheritance_test {
         }
     };
 
-    void test_2() {
+    void test2() {
         std::cout << "\ntest 2" << std::endl;
 
         // используя using можно разприватить закрытое наследование, но нельзя разприватить приватные секции базового класса
@@ -126,7 +126,7 @@ namespace inheritance_test {
         int k{3};
     };
 
-    void test_3() {
+    void test3() {
         std::cout << "\ntest 3" << std::endl;
 
         C3* c = new C3();
@@ -198,7 +198,7 @@ namespace inheritance_test {
         int l{4};
     };
 
-    void test_4() {
+    void test4() {
         std::cout << "\ntest 4" << std::endl;
 
 
@@ -304,7 +304,7 @@ namespace inheritance_test {
         int k{3};
     };
 
-    void test_5() {
+    void test5() {
         std::cout << "\ntest 5" << std::endl;
 
         C5 c;
@@ -324,7 +324,7 @@ namespace inheritance_test {
         int k{4};
     };
 
-    void test_6() {
+    void test6() {
         std::cout << "\ntest 6" << std::endl;
 
         C6 c;
@@ -332,4 +332,24 @@ namespace inheritance_test {
         D6* d = static_cast<D6*>(a); // дает преобразовать без проверки, что приводит к ошибке приведения к другому типу
         //D6* d_dyn = dynamic_cast<D6*>(a); // нельзя тк D6 не полиморфный тип
     }
+
+    class A7 {
+    public:
+        A7() { std::cout << "A7::A7()" << std::endl; }
+        A7(int) { std::cout << "A7::A7(int)" << std::endl; }
+    };
+
+    class B7 : public A7 {
+    public:
+        using A7::A7;
+        //B7(int) { std::cout << "B7::B7(int)" << std::endl; } // ?? если раскоментировать конфликта не будет
+    };
+
+    void test7() {
+        std::cout << "\ntest7" << std::endl;
+        B7 b(1);
+        // вывод:
+        // A7::A7(int)
+    }
+
 }

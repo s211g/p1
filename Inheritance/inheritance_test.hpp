@@ -4,18 +4,22 @@
 
 namespace inheritance_test {
 
-    void test_1();
-    void test_2();
-    void test_3();
-    void test_4();
-    void test_5();
+    void test1();
+    void test2();
+    void test3();
+    void test4();
+    void test5();
+    void test6();
+    void test7();
 
     inline void test() {
         std::cout << "inheritance tests" << std::endl;
-        //test_1();
-        //test_2();
-        //test_3();
-        //test_4();
-        test_5();
+        //test1();
+        //test2();
+        //test3();
+        //test4();
+        //test5();
+        //test6();
+        test7();
     }
 }
