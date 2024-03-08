@@ -68,6 +68,10 @@ namespace template_explicit_specialization_test {
         void g() { std::cout << "X<float>::D::g()" << std::endl; }
     };
 
+    // статический член
+    template <typename T>
+    int X<T>::s{-1};
+
     // ---------------- шаблон класса(явная специализация) -------------------
 
     template <>
@@ -197,15 +201,15 @@ namespace template_explicit_specialization_test {
         F(T1 t1, T2 t2) { std::cout << "F<T1,T2>(" << t1 << ", " << t2 << ")" << std::endl; }
     };
 
-    void test_outside_definitions();
+    void test_explicit_outside_definitions();
     void test_explicit_specialization();
     void test_partial_specialization();
 
     inline void test() {
         std::cout << "template_explicit_specialization_test" << std::endl;
 
-        //test_explicit_outside_definitions();
+        test_explicit_outside_definitions();
         //test_explicit_specialization();
-        test_partial_specialization();
+        //test_partial_specialization();
     }
 }

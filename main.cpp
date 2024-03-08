@@ -58,10 +58,10 @@ int main() {
               << std::endl;
 
     // Containers
-    //containers_test::test();
+    // containers_test::test();
 
     // Inheritance
-    inheritance_test::test();
+    // inheritance_test::test();
 
     // Mutex
     // mutex_test::test();
@@ -75,8 +75,8 @@ int main() {
     // lambda_test::test();
     // rtti_cast_test::test();
     // rvalue_test::test();
-    // static_test::test();
-    //delete_test::test();
+    static_test::test();
+    // delete_test::test();
 
     // Patterns
     // patterns_creational_test::test();

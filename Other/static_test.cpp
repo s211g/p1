@@ -4,6 +4,10 @@
 
 namespace static_test {
 
+    template <>
+    int C<int>::i{1};
+
+
     // Static - это ключевое слово в C++, используемое для придания элементу особых характеристик.
     // Для статических элементов выделение памяти происходит только один раз и существуют эти
     // элементы до завершения программы. Хранятся все эти элементы не в heap и не на stack,
@@ -41,5 +45,23 @@ namespace static_test {
         B b;
         B::printJK(b);
     }
+
+    void test_static_in_template() {
+        std::cout << "test_static_in_template" << std::endl;
+
+        C<float>::i += 1;
+
+        C<float> c_float;
+        std::cout << "c_float.i = " << c_float.i << std::endl;
+        C<char> c_char;
+        std::cout << "c_char.i = " << c_char.i << std::endl;
+        C<int> c_int;
+        std::cout << "c_int.i = " << c_int.i << std::endl;
+        // вывод:
+        // c_float.i = -9
+        // c_char.i = -10
+        // c_int.i = 1
+    }
+
 
 }

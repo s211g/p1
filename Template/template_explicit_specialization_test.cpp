@@ -95,12 +95,14 @@ namespace template_explicit_specialization_test {
         x1.f();
         x1.f1();
         x1.ft<int>();
+        std::cout << "x1.s : " << x1.s << std::endl; // не откомпилируется если нет определения(в сpp или общего для всех типов в hpp)
         // вывод:
         // X<T>::X() - общий шаблон
         // X<float>::f() - специализированная функция общего шаблона
         // X<T>::ft() - общий шаблон
 
-        std::cout << "\n full specialization template class: " << std::endl;
+        std::cout
+            << "\n full specialization template class: " << std::endl;
         // явно специализированный шаблон
         X<int> x2;
         x2.f();
